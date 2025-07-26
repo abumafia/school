@@ -79,7 +79,7 @@
   const videoList = document.getElementById("videoContainer");
   videoList.innerHTML = ""; // avvalgi videolarni tozalash
 
-  const res = await fetch("/api/videos");
+  const res = await fetch("https://school-b97p.onrender.com/api/videos");
   const videos = await res.json();
 
   videos.forEach((video) => {
@@ -156,7 +156,7 @@ modal.addEventListener("click", (e) => {
     e.preventDefault();
 
     const formData = new FormData(uploadForm);
-    const res = await fetch("http://localhost:3000/api/upload", {
+    const res = await fetch("https://school-b97p.onrender.com/api/upload", {
       method: "POST",
       body: formData,
     });
