@@ -6,7 +6,7 @@ const likeList = document.getElementById("likeList");
 
 // Barcha postlarni yuklash
 async function fetchPosts() {
-  const res = await fetch("/api/social");
+  const res = await fetch("https://school-b97p.onrender.com/api/social");
   const posts = await res.json();
   postContainer.innerHTML = "";
   posts.reverse().forEach(renderPost);
@@ -79,7 +79,7 @@ function renderComment(comment, postId) {
 
 // Layk tugmasi
 async function toggleLike(postId) {
-  await fetch(`/api/social/${postId}/like`, {
+  await fetch(`https://school-b97p.onrender.com/api/social/${postId}/like`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ userId }),
@@ -93,7 +93,7 @@ async function addComment(postId) {
   const text = input.value.trim();
   if (!text) return;
 
-  await fetch(`/api/social/${postId}/comment`, {
+  await fetch(`https://school-b97p.onrender.com/api/social/${postId}/comment`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ userId, text }),
@@ -109,7 +109,7 @@ async function addReply(postId, commentId) {
   const text = input.value.trim();
   if (!text) return;
 
-  await fetch(`/api/social/${postId}/comment/${commentId}/reply`, {
+  await fetch(`https://school-b97p.onrender.com/api/social/${postId}/comment/${commentId}/reply`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ userId, text }),
@@ -121,7 +121,7 @@ async function addReply(postId, commentId) {
 
 // Kommentga layk
 async function toggleCommentLike(postId, commentId) {
-  await fetch(`/api/social/${postId}/comment/${commentId}/like`, {
+  await fetch(`https://school-b97p.onrender.com/api/social/${postId}/comment/${commentId}/like`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ userId }),
