@@ -73,7 +73,7 @@
     const container = document.getElementById('lessonContainer');
 
     async function loadLessons(search = "") {
-  const res = await fetch('http://localhost:3000/api/lessons');
+  const res = await fetch('https://school-b97p.onrender.com/api/lessons');
   let lessons = await res.json();
 
   // Eng yangilarni yuqorida ko‘rsatish uchun teskari tartibga o‘tkazamiz
@@ -133,7 +133,7 @@
       document.querySelectorAll('.likeBtn').forEach(btn => {
         btn.addEventListener('click', async () => {
           const lessonId = btn.dataset.id;
-          await fetch(`http://localhost:3000/api/lessons/${lessonId}/like`, {
+          await fetch(`https://school-b97p.onrender.com/api/lessons/${lessonId}/like`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ userId })
@@ -155,7 +155,7 @@
           const input = document.querySelector(`#commentBox-${id} .commentInput`);
           const text = input.value.trim();
           if (!text) return;
-          await fetch(`http://localhost:3000/api/lessons/${id}/comment`, {
+          await fetch(`https://school-b97p.onrender.com/api/lessons/${id}/comment`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ userId, text })
@@ -175,7 +175,7 @@
     document.addEventListener('click', async (e) => {
       if (e.target.matches('.like-count')) {
         const lessonId = e.target.dataset.id;
-        const res = await fetch('http://localhost:3000/api/lessons');
+        const res = await fetch('https://school-b97p.onrender.com/api/lessons');
         const lessons = await res.json();
         const lesson = lessons.find(l => l.id === lessonId);
         const likeList = document.getElementById('likeList');
@@ -199,7 +199,7 @@ document.addEventListener('click', async (e) => {
   if (e.target.matches('.comment-like')) {
     const lessonId = e.target.dataset.lesson;
     const commentIndex = e.target.dataset.comment;
-    await fetch(`http://localhost:3000/api/lessons/${lessonId}/comment-like`, {
+    await fetch(`https://school-b97p.onrender.com/api/lessons/${lessonId}/comment-like`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId, commentIndex })
@@ -211,7 +211,7 @@ document.addEventListener('click', async (e) => {
   if (e.target.matches('.comment-like-view')) {
     const lessonId = e.target.dataset.lesson;
     const commentIndex = e.target.dataset.comment;
-    const res = await fetch('http://localhost:3000/api/lessons');
+    const res = await fetch('https://school-b97p.onrender.com/api/lessons');
     const lessons = await res.json();
     const lesson = lessons.find(l => l.id === lessonId);
     const likes = lesson.comments[commentIndex].likes || [];
@@ -238,7 +238,7 @@ document.addEventListener('click', async (e) => {
     const replyText = parent.querySelector('.reply-text').value.trim();
     if (!replyText) return;
 
-    await fetch(`http://localhost:3000/api/lessons/${lessonId}/reply`, {
+    await fetch(`https://school-b97p.onrender.com/api/lessons/${lessonId}/reply`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId, commentIndex, text: replyText })
