@@ -70,7 +70,7 @@ document.getElementById("lessonForm").addEventListener("submit", async (e) => {
   const data = Object.fromEntries(form.entries());
   data.teacherId = userId;
 
-  const res = await fetch('/api/lessons', {
+  const res = await fetch('https://school-b97p.onrender.com/api/lessons', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data)
@@ -87,7 +87,7 @@ document.getElementById("lessonForm").addEventListener("submit", async (e) => {
 });
 
 async function loadMyLessons() {
-  const res = await fetch('/api/lessons');
+  const res = await fetch('https://school-b97p.onrender.com/api/lessons');
   const allLessons = await res.json();
   const myLessons = allLessons.filter(l => l.teacherId === userId).reverse();
 
@@ -145,7 +145,7 @@ function bindEvents() {
   document.querySelectorAll('.likeBtn').forEach(btn => {
     btn.addEventListener('click', async () => {
       const lessonId = btn.dataset.id;
-      await fetch(`/api/lessons/${lessonId}/like`, {
+      await fetch(`https://school-b97p.onrender.com/api/lessons/${lessonId}/like`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId })
@@ -168,7 +168,7 @@ function bindEvents() {
       const text = input.value.trim();
       if (!text) return;
 
-      await fetch(`/api/lessons/${lessonId}/comment`, {
+      await fetch(`https://school-b97p.onrender.com/api/lessons/${lessonId}/comment`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId, text })
@@ -188,7 +188,7 @@ function bindEvents() {
       if (!text) return;
 
       const fullReply = `@${commenter}ga javob: ${text}`;
-      await fetch(`/api/lessons/${lessonId}/comment`, {
+      await fetch(`https://school-b97p.onrender.com/api/lessons/${lessonId}/comment`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId, text: fullReply })
@@ -207,7 +207,7 @@ function closeEditModal() {
 
 // Modalni ochib formani to‘ldirish
 async function editLesson(lessonId) {
-  const res = await fetch('/api/lessons');
+  const res = await fetch('https://school-b97p.onrender.com/api/lessons');
   const lessons = await res.json();
   const lesson = lessons.find(l => l.id === lessonId);
   if (!lesson) return alert("❌ Dars topilmadi!");
@@ -227,7 +227,7 @@ document.getElementById("editLessonForm").addEventListener("submit", async (e) =
   const form = new FormData(e.target);
   const updatedLesson = Object.fromEntries(form.entries());
 
-  const res = await fetch('/api/lessons/' + updatedLesson.id, {
+  const res = await fetch('https://school-b97p.onrender.com/api/lessons/' + updatedLesson.id, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(updatedLesson)
@@ -251,7 +251,7 @@ document.getElementById("editLessonForm").addEventListener("submit", async funct
   const content = document.getElementById("editContent").value;
   const category = document.getElementById("editCategory").value;
 
-  const res = await fetch(`/api/lessons/${id}`, {
+  const res = await fetch(`https://school-b97p.onrender.com/api/lessons/${id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ title, description, content, category }) // ✅ category kiritildi
