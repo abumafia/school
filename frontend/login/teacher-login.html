@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <title>O'qituvchi Kirish</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-white">
+  <div class="bg-white shadow-xl rounded-xl p-8 w-full max-w-sm">
+    <h2 class="text-2xl font-bold text-center text-blue-700 mb-6">👨‍🏫 O'qituvchi Kirish</h2>
+    <form id="loginForm" class="space-y-4">
+      <input name="email" type="email" required placeholder="Email" class="w-full border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+      <input name="password" type="password" required placeholder="Parol" class="w-full border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+      <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded font-semibold transition">🔐 Kirish</button>
+    </form>
+    <p class="text-center text-sm mt-4 text-gray-500">
+      Hisobingiz yo‘qmi? <a href="../register/teacher-register.html" class="text-blue-600 hover:underline">Ro‘yxatdan o‘tish</a>
+    </p>
+  </div>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = new FormData(e.target);
+      const data = Object.fromEntries(form.entries());
+      data.role = 'teacher';
+
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      const result = await res.json();
+      if (result.success) {
+        localStorage.setItem('user', JSON.stringify(result.user));
+        location.href = '/panel/teacher.html';
+      } else {
+        alert('❌ Login xato: ' + result.message);
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <title>O'qituvchi Paneli</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <!-- Navbar -->
+  <nav class="bg-white shadow p-4 flex justify-between items-center">
+    <h1 class="text-xl font-bold">👩‍🏫 O‘qituvchi Paneli</h1>
+    <div class="space-x-4">
+      <button id="profileBtn" class="text-blue-600 hover:underline">Profil</button>
+      <button id="logoutBtn" class="text-red-500 hover:underline">Chiqish</button>
+    </div>
+  </nav>
+
+  <!-- Yangi dars qo'shish -->
+  <div class="max-w-xl mx-auto bg-white mt-6 p-6 rounded shadow">
+    <h2 class="text-2xl font-bold text-center mb-4">➕ Yangi dars qo‘shish</h2>
+    <form id="lessonForm" class="space-y-3">
+      <input name="title" placeholder="Sarlavha" class="w-full border p-2 rounded" required />
+      <input name="category" placeholder="Kategoriya (masalan: Fizika)" class="w-full border p-2 rounded" required />
+      <textarea name="description" placeholder="Tavsif" class="w-full border p-2 rounded" required></textarea>
+      <input name="content" placeholder="Havola yoki matn" class="w-full border p-2 rounded" required />
+      <button class="w-full bg-blue-600 text-white p-2 rounded">Darsni joylash</button>
+    </form>
+  </div>
+
+  <!-- Joylashtirilgan darslar -->
+  <div class="max-w-4xl mx-auto mt-8 p-4">
+    <h2 class="text-xl font-bold mb-4">📚 Mening darslarim</h2>
+    <div id="myLessons" class="grid gap-4"></div>
+  </div>
+
+  <!-- Modal -->
+<div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+  <div class="bg-white p-6 rounded-lg w-full max-w-md">
+    <h2 class="text-xl font-bold mb-4">✏️ Darsni tahrirlash</h2>
+    <form id="editLessonForm" class="space-y-4">
+  <input type="hidden" id="editId" name="id">
+  <input id="editTitle" name="title" ...>
+  <input id="editCategory" name="category" ...> <!-- ✅ bo'lishi shart -->
+  <textarea id="editDescription" name="description" ...></textarea>
+  <textarea id="editContent" name="content" ...></textarea>
+  <button type="submit">Saqlash</button>
+</form>
+  </div>
+</div>
+
+  <script>
+const user = JSON.parse(localStorage.getItem("user"));
+if (!user || user.role !== "teacher") {
+  location.href = '../login/teacher-login.html';
+}
+const userId = user.id;
+
+document.getElementById("profileBtn").addEventListener("click", () => {
+  location.href = `../profile/profile.html?user=${userId}`;
+});
+document.getElementById("logoutBtn").addEventListener("click", () => {
+  localStorage.removeItem('user');
+  location.href = '../login/teacher-login.html';
+});
+
+// Dars joylash
+document.getElementById("lessonForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const form = new FormData(e.target);
+  const data = Object.fromEntries(form.entries());
+  data.teacherId = userId;
+
+  const res = await fetch('/api/lessons', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  });
+
+  const result = await res.json();
+  if (result.success) {
+    alert("✅ Dars muvaffaqiyatli joylandi!");
+    e.target.reset();
+    loadMyLessons();
+  } else {
+    alert("❌ Xatolik: Dars joylanmadi.");
+  }
+});
+
+async function loadMyLessons() {
+  const res = await fetch('/api/lessons');
+  const allLessons = await res.json();
+  const myLessons = allLessons.filter(l => l.teacherId === userId).reverse();
+
+  const container = document.getElementById('myLessons');
+  container.innerHTML = '';
+
+  myLessons.forEach(lesson => {
+    const card = document.createElement('div');
+    card.className = "bg-white p-4 rounded shadow";
+
+    const liked = lesson.likes.includes(userId);
+
+    card.innerHTML = `
+      <h3 class="text-lg font-bold text-purple-700">${lesson.title}</h3>
+      <p class="text-sm text-gray-600 italic">📂 ${lesson.category || 'Kategoriya yo‘q'}</p>
+      <p class="mt-2 text-gray-800">${lesson.description}</p>
+      <p class="text-sm text-gray-500 mt-1">${lesson.content}</p>
+
+      <div class="mt-3 flex gap-4 text-sm items-center">
+        <button class="likeBtn text-${liked ? 'red' : 'gray'}-600 font-semibold" data-id="${lesson.id}">
+          ❤️ Like (<span class="like-count text-blue-600 underline cursor-pointer" data-id="${lesson.id}">${lesson.likes.length}</span>)
+        </button>
+        <button class="commentToggle text-blue-600 font-semibold" data-id="${lesson.id}">💬 Izoh</button>
+      </div>
+
+      <div class="hidden commentBox mt-3" id="commentBox-${lesson.id}">
+        <input class="commentInput border w-full p-2 mt-2 rounded-lg" placeholder="Izoh yozing..." />
+        <button class="sendComment bg-blue-600 text-white px-4 py-1 rounded mt-2" data-id="${lesson.id}">Yuborish</button>
+        <div class="mt-3 space-y-2 text-sm text-gray-800" id="comments-${lesson.id}">
+          ${lesson.comments.map(c => `
+            <div class="bg-gray-100 p-2 rounded">
+              🧑 <a href="../profile/profile.html?user=${c.userId}" class="text-blue-600 hover:underline">${c.userId}</a>: ${c.text}
+              <div class="ml-4 mt-1">
+                <input placeholder="Javob yozish..." class="replyInput border rounded p-1 w-full text-xs" />
+                <button class="replyBtn text-xs text-indigo-600 mt-1" data-id="${lesson.id}" data-commenter="${c.userId}">Javob berish</button>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+
+      <div class="mt-2">
+        <button onclick="editLesson('${lesson.id}')" class="text-blue-600 hover:underline text-sm">✏️ Tahrirlash</button>
+      </div>
+    `;
+
+    container.appendChild(card);
+  });
+
+  setTimeout(bindEvents, 200); // Eventlar kechikmasligi uchun
+}
+
+// Eventlar biriktirish
+function bindEvents() {
+  document.querySelectorAll('.likeBtn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const lessonId = btn.dataset.id;
+      await fetch(`/api/lessons/${lessonId}/like`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId })
+      });
+      loadMyLessons();
+    });
+  });
+
+  document.querySelectorAll('.commentToggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const box = document.getElementById(`commentBox-${btn.dataset.id}`);
+      box.classList.toggle('hidden');
+    });
+  });
+
+  document.querySelectorAll('.sendComment').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const lessonId = btn.dataset.id;
+      const input = document.querySelector(`#commentBox-${lessonId} .commentInput`);
+      const text = input.value.trim();
+      if (!text) return;
+
+      await fetch(`/api/lessons/${lessonId}/comment`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, text })
+      });
+
+      input.value = '';
+      loadMyLessons();
+    });
+  });
+
+  document.querySelectorAll('.replyBtn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const lessonId = btn.dataset.id;
+      const commenter = btn.dataset.commenter;
+      const input = btn.previousElementSibling;
+      const text = input.value.trim();
+      if (!text) return;
+
+      const fullReply = `@${commenter}ga javob: ${text}`;
+      await fetch(`/api/lessons/${lessonId}/comment`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, text: fullReply })
+      });
+
+      input.value = '';
+      loadMyLessons();
+    });
+  });
+}
+
+// Modalni yopish
+function closeEditModal() {
+  document.getElementById("editModal").classList.add("hidden");
+}
+
+// Modalni ochib formani to‘ldirish
+async function editLesson(lessonId) {
+  const res = await fetch('/api/lessons');
+  const lessons = await res.json();
+  const lesson = lessons.find(l => l.id === lessonId);
+  if (!lesson) return alert("❌ Dars topilmadi!");
+
+  document.getElementById("editId").value = lesson.id;
+  document.getElementById("editTitle").value = lesson.title;
+  document.getElementById("editCategory").value = lesson.category || "";
+  document.getElementById("editDescription").value = lesson.description;
+  document.getElementById("editContent").value = lesson.content;
+
+  document.getElementById("editModal").classList.remove("hidden");
+}
+
+// Modalni submit qilish (darsni yangilash)
+document.getElementById("editLessonForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const form = new FormData(e.target);
+  const updatedLesson = Object.fromEntries(form.entries());
+
+  const res = await fetch('/api/lessons/' + updatedLesson.id, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(updatedLesson)
+  });
+
+  const result = await res.json();
+  if (result.success) {
+    alert("✅ Dars yangilandi!");
+    closeEditModal();
+    loadMyLessons(); // ro‘yxatni qayta yuklaydi
+  } else {
+    alert("❌ Xatolik: Dars yangilanmadi.");
+  }
+});
+
+document.getElementById("editLessonForm").addEventListener("submit", async function (e) {
+  e.preventDefault();
+  const id = document.getElementById("editId").value;
+  const title = document.getElementById("editTitle").value;
+  const description = document.getElementById("editDescription").value;
+  const content = document.getElementById("editContent").value;
+  const category = document.getElementById("editCategory").value;
+
+  const res = await fetch(`/api/lessons/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ title, description, content, category }) // ✅ category kiritildi
+  });
+
+  const result = await res.json();
+  if (result.success) {
+    alert("✅ Dars yangilandi!");
+    document.getElementById("editModal").classList.add("hidden");
+    loadLessons(); // sahifani yangilaydi
+  } else {
+    alert("❌ Xatolik: Dars yangilanmadi");
+  }
+});
+
+// Boshlanishda yuklash
+loadMyLessons();
+</script>
+</body>
+</html>

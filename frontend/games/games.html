@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>O‘yinlar</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen p-6">
+  <h1 class="text-3xl font-bold text-center mb-8">🎮 Qiziqarli O‘yinlar</h1>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+    <!-- Game 1: Raqam topish -->
+    <div class="bg-white rounded-xl p-4 shadow hover:shadow-lg transition cursor-pointer" onclick="openModal('game1')">
+      <h2 class="text-xl font-semibold text-center">🔢 Raqam Topish</h2>
+    </div>
+
+    <!-- Game 2: Click Speed -->
+    <div class="bg-white rounded-xl p-4 shadow hover:shadow-lg transition cursor-pointer" onclick="openModal('game2')">
+      <h2 class="text-xl font-semibold text-center">🖱️ Click Speed</h2>
+    </div>
+
+      <!-- Game 3: Matn Tez Yozish -->
+<div class="bg-white rounded-xl p-4 shadow hover:shadow-lg transition cursor-pointer" onclick="openModal('game3')">
+  <h2 class="text-xl font-semibold text-center">⌨️ Matn Yozish</h2>
+</div>
+
+<!-- Game 4: Rangni Topish -->
+<div class="bg-white rounded-xl p-4 shadow hover:shadow-lg transition cursor-pointer" onclick="openModal('game4')">
+  <h2 class="text-xl font-semibold text-center">🎨 Rang Topish</h2>
+</div>
+
+<!-- Game 5: Yodda Saqlash -->
+<div class="bg-white rounded-xl p-4 shadow hover:shadow-lg transition cursor-pointer" onclick="openModal('game5')">
+  <h2 class="text-xl font-semibold text-center">🧠 Yodlash</h2>
+</div>
+  </div>
+
+  <!-- Modal -->
+  <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-xl p-6 max-w-md w-full relative">
+      <button class="absolute top-2 right-4 text-gray-500 text-2xl" onclick="closeModal()">&times;</button>
+      <div id="game-content"></div>
+    </div>
+  </div>
+
+  <!-- HTML qismi o'zgarmagan, faqat scriptni yangilaymiz -->
+<script>
+  let secret = null;
+  let count = 0;
+  let timer = null;
+
+  function openModal(gameId) {
+    const modal = document.getElementById("modal");
+    const content = document.getElementById("game-content");
+
+    if (gameId === "game1") {
+      secret = Math.floor(Math.random() * 10) + 1;
+      content.innerHTML = `
+        <h2 class="text-xl font-bold mb-4">🔢 Raqam Topish</h2>
+        <p>1 dan 10 gacha raqam tanlang:</p>
+        <input id="guess" type="number" min="1" max="10" class="border p-2 mt-2 w-full" />
+        <button onclick="checkNumber()" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded">Tekshirish</button>
+        <p id="result" class="mt-4 font-semibold"></p>
+      `;
+    }
+
+    if (gameId === "game2") {
+      content.innerHTML = `
+        <h2 class="text-xl font-bold mb-4">🖱️ Click Speed</h2>
+        <p>5 soniyada nechta marta bosasiz?</p>
+        <button onclick="startClickGame()" class="mt-2 bg-green-500 text-white px-4 py-2 rounded">Boshlash</button>
+        <div class="mt-4">
+          <button id="clickBtn" onclick="incrementClick()" class="hidden bg-red-500 text-white px-4 py-2 rounded">Click me!</button>
+          <p id="clickResult" class="mt-2 font-semibold"></p>
+        </div>
+      `;
+    }
+
+    if (gameId === "game3") {
+  content.innerHTML = `
+    <h2 class="text-xl font-bold mb-4">⌨️ Matn Tez Yozish</h2>
+    <p>Quyidagi matnni iloji boricha tez yozing:</p>
+    <p class="mt-2 p-2 bg-gray-100 rounded" id="targetText">Salom, men o‘quvchi emasman, men dasturchiman!</p>
+    <input id="typingInput" type="text" class="w-full border p-2 mt-2" placeholder="Yozishni boshlang...">
+    <p id="typingResult" class="mt-4 font-semibold"></p>
+    <script>
+      let startTime;
+      const input = document.getElementById('typingInput');
+      const target = document.getElementById('targetText').textContent;
+
+      input.addEventListener('input', function() {
+        if (!startTime) startTime = new Date();
+        if (input.value === target) {
+          const endTime = new Date();
+          const seconds = ((endTime - startTime) / 1000).toFixed(2);
+          document.getElementById('typingResult').textContent = '✅ Tugatdingiz! ' + seconds + ' soniyada yozdingiz.';
+        }
+      });
+    <\/script>
+  `;
+}
+
+if (gameId === "game4") {
+  const colors = ["red", "green", "blue", "yellow", "purple", "orange"];
+  const randomColor = colors[Math.floor(Math.random() * colors.length)];
+  content.innerHTML = `
+    <h2 class="text-xl font-bold mb-4">🎨 Rangni Topish</h2>
+    <p>"${randomColor}" rangni tanlang:</p>
+    <div class="flex gap-2 mt-4">
+      ${colors.map(color => `
+        <button onclick="checkColor('${color}', '${randomColor}')" style="background:${color}" class="w-10 h-10 rounded-full border-2"></button>
+      `).join('')}
+    </div>
+    <p id="colorResult" class="mt-4 font-semibold"></p>
+    <script>
+      function checkColor(chosen, correct) {
+        const result = document.getElementById('colorResult');
+        if (chosen === correct) {
+          result.textContent = "✅ To‘g‘ri rang!";
+        } else {
+          result.textContent = "❌ Noto‘g‘ri, boshqa rangni tanlang.";
+        }
+      }
+    <\/script>
+  `;
+}
+
+if (gameId === "game5") {
+  const sequence = [];
+  for (let i = 0; i < 5; i++) sequence.push(Math.floor(Math.random() * 9) + 1);
+  content.innerHTML = `
+    <h2 class="text-xl font-bold mb-4">🧠 Yodda Saqlash</h2>
+    <p>Quyidagi raqamlarni 5 soniyaga eslab qoling:</p>
+    <p class="text-2xl font-mono my-2">${sequence.join(' ')}</p>
+    <p class="text-gray-500 text-sm">5 soniyadan so‘ng kiriting</p>
+    <input id="memoryInput" type="text" class="w-full border p-2 mt-2 hidden" placeholder="Raqamlarni bo‘shliq bilan yozing">
+    <button onclick="checkMemory()" id="memoryBtn" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded hidden">Tekshirish</button>
+    <p id="memoryResult" class="mt-4 font-semibold"></p>
+    <script>
+      setTimeout(() => {
+        document.querySelector('#memoryInput').classList.remove('hidden');
+        document.querySelector('#memoryBtn').classList.remove('hidden');
+        document.querySelector('#memoryInput').focus();
+      }, 5000);
+      function checkMemory() {
+        const input = document.getElementById('memoryInput').value.trim().split(" ");
+        const correct = ${JSON.stringify(sequence)};
+        let correctCount = 0;
+        for (let i = 0; i < correct.length; i++) {
+          if (parseInt(input[i]) === correct[i]) correctCount++;
+        }
+        document.getElementById('memoryResult').textContent = '✅ To‘g‘ri topilganlar: ' + correctCount + ' ta.';
+      }
+    <\/script>
+  `;
+}
+
+    modal.classList.remove("hidden");
+  }
+
+  function closeModal() {
+    document.getElementById("modal").classList.add("hidden");
+    document.getElementById("game-content").innerHTML = "";
+    clearTimeout(timer);
+  }
+
+  function checkNumber() {
+    const val = parseInt(document.getElementById('guess').value);
+    const result = document.getElementById('result');
+    if (val === secret) result.textContent = '✅ To‘g‘ri!';
+    else result.textContent = '❌ Noto‘g‘ri, qayta urinib ko‘ring.';
+  }
+
+  function startClickGame() {
+    count = 0;
+    const btn = document.getElementById('clickBtn');
+    const result = document.getElementById('clickResult');
+
+    result.textContent = '';
+    btn.classList.remove('hidden');
+
+    timer = setTimeout(() => {
+      btn.classList.add('hidden');
+      result.textContent = `⏱️ Siz ${count} marta bosdingiz!`;
+    }, 5000);
+  }
+
+  function incrementClick() {
+    count++;
+  }
+
+  
+</script>
+
+</body>
+</html>

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Talaba Profil</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+</head>
+<body class="bg-gradient-to-br from-indigo-100 to-purple-100 min-h-screen py-10 font-sans">
+
+  <!-- Container -->
+  <div class="max-w-4xl mx-auto bg-white rounded-3xl shadow-2xl p-8 space-y-10">
+    <!-- Profil Header -->
+    <div class="flex justify-between items-center border-b pb-4">
+      <h2 class="text-3xl font-bold text-purple-700">👤 Profil Ma'lumotlari</h2>
+      <button onclick="openCoinModal()"><p class="text-lg font-bold text-yellow-500">💰 Coinlar: <span id="coin-count">0</span></p></button>
+      <button id="logoutBtn" class="text-red-500 left hover:underline">🚪 Chiqish</button>
+      <button id="editBtn" class="text-blue-600 hover:underline hidden">✏️ Tahrirlash</button>
+    </div>
+
+    <!-- Modal -->
+<div id="coinModal" class="fixed inset-0 bg-black bg-opacity-40 hidden flex items-center justify-center">
+  <div class="bg-white p-6 rounded shadow w-96">
+    <h2 class="text-xl font-semibold mb-2">Coin so‘rov</h2>
+    <input type="number" id="coin-amount" placeholder="Nechta coin?" class="border p-2 w-full mb-4" />
+    <button onclick="sendCoinRequest()" id="request-coin-btn" class="bg-blue-500 text-white px-4 py-2 rounded">Yuborish</button>
+    <button onclick="closeCoinModal()" class="ml-2 text-red-500">Bekor qilish</button>
+  </div>
+</div>
+    <!-- Profil Ko'rinishi -->
+    <div id="profileInfo" class="grid sm:grid-cols-2 gap-6 text-gray-800 text-lg">
+      <p><strong>Ism:</strong> <span id="name" class="ml-1 font-medium text-gray-900"></span></p>
+      <p><strong>Familiya:</strong> <span id="surname" class="ml-1 font-medium text-gray-900"></span></p>
+      <p><strong>Maktab:</strong> <span id="school" class="ml-1 font-medium text-gray-900"></span></p>
+      <p><strong>Roli:</strong> <span id="role" class="ml-1 font-medium text-gray-900"></span></p>
+      <p><strong>Email:</strong> <span id="email" class="ml-1 font-medium text-gray-900"></span></p>
+      <p class="sm:col-span-2"><strong>Bio:</strong> <span id="bio" class="ml-1 font-medium text-gray-900"></span></p>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="editModal" class="hidden">
+      <form id="editForm" class="grid sm:grid-cols-2 gap-4 mt-4">
+        <input name="name" placeholder="Ism" class="border border-gray-300 rounded-xl px-4 py-2" />
+        <input name="surname" placeholder="Familiya" class="border border-gray-300 rounded-xl px-4 py-2" />
+        <input name="school" placeholder="Maktab" class="border border-gray-300 rounded-xl px-4 py-2" />
+        <input name="email" placeholder="Email" class="border border-gray-300 rounded-xl px-4 py-2" />
+        <input name="bio" placeholder="Bio" class="border border-gray-300 rounded-xl px-4 py-2 sm:col-span-2" />
+        <div class="flex gap-4 justify-end sm:col-span-2">
+          <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg">💾 Saqlash</button>
+          <button type="button" id="cancelEdit" class="text-gray-600 hover:underline">❌ Bekor qilish</button>
+        </div>
+      </form>
+    </div>
+
+<!-- Chat trigger (profil sahifasidagi foydalanuvchi uchun) -->
+<button id="openChatBtn" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded">✉️ Xabar yozish</button>
+
+<!-- Chat Modal -->
+<div id="chatModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+  <div class="bg-white w-full max-w-md rounded-lg shadow-lg p-4 relative">
+    <button id="closeChatBtn" class="absolute top-2 right-2 text-gray-500 hover:text-red-600">&times;</button>
+    <h2 class="text-lg font-bold mb-2">Shaxsiy chat</h2>
+
+    <div id="chatBox" class="h-64 overflow-y-auto border p-2 mb-2 bg-gray-100 rounded"></div>
+
+    <input type="text" id="messageInput" placeholder="Xabar yozing..." class="w-full border p-2 rounded mb-2" />
+    <input type="file" id="fileInput" class="w-full mb-2" />
+    <button onclick="sendMessage()" class="w-full bg-blue-500 text-white py-2 rounded">📨 Yuborish</button>
+  </div>
+</div>
+
+  <script src="profile.js"></script>
+
+  <script>
+const currentUser = JSON.parse(localStorage.getItem("user"));
+if (!currentUser) {
+  window.location.href = "/frontend/login/student-login.html";
+}
+
+const viewedUserId = new URLSearchParams(location.search).get("user") || currentUser.id;
+let targetUserId = viewedUserId;
+
+const chatModal = document.getElementById("chatModal");
+const openChatBtn = document.getElementById("openChatBtn");
+const closeChatBtn = document.getElementById("closeChatBtn");
+
+openChatBtn.addEventListener("click", () => {
+  chatModal.classList.remove("hidden");
+});
+closeChatBtn.addEventListener("click", () => {
+  chatModal.classList.add("hidden");
+});
+chatModal.addEventListener("click", (e) => {
+  if (e.target === chatModal) chatModal.classList.add("hidden");
+});
+
+const socket = io('http://localhost:3000');
+socket.emit('register', currentUser.id);
+
+function sendMessage() {
+  const file = document.getElementById('fileInput').files[0];
+  const text = document.getElementById('messageInput').value;
+
+  if (file) {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    fetch('http://localhost:3000/api/chat/upload', {
+      method: 'POST',
+      body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+      socket.emit('privateMessage', {
+        from: currentUser.id,
+        to: targetUserId,
+        content: data.url,
+        type: file.type.startsWith('audio') ? 'audio' :
+              file.type.startsWith('video') ? 'video' :
+              file.type.startsWith('image') ? 'image' : 'file'
+      });
+    });
+  } else if (text.trim()) {
+    socket.emit('privateMessage', {
+      from: currentUser.id,
+      to: targetUserId,
+      content: text,
+      type: 'text'
+    });
+    document.getElementById('messageInput').value = '';
+  }
+}
+
+const logoutBtn = document.getElementById('logoutBtn');
+if (logoutBtn) {
+  logoutBtn.addEventListener('click', () => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (user && user.role) {
+      switch (user.role) {
+        case 'student':
+          location.href = '../login/student-login.html';
+          break;
+        case 'teacher':
+          location.href = '../login/teacher-login.html';
+          break;
+        case 'bachelor':
+          location.href = '../login/bachelor-login.html';
+          break;
+        case 'admin':
+          location.href = '../login/admin-login.html';
+          break;
+        default:
+          location.href = '../index.html';
+      }
+    } else {
+      location.href = '../index.html';
+    }
+    localStorage.removeItem('user');
+  });
+}
+
+socket.on('message', (msg) => {
+  const div = document.createElement('div');
+  div.classList.add("mb-1", "p-2", "rounded", "bg-white", "shadow");
+
+  if (msg.type === 'text') div.innerText = msg.content;
+  else if (msg.type === 'image') div.innerHTML = `<img src="${msg.content}" class="w-32" />`;
+  else if (msg.type === 'audio') div.innerHTML = `<audio controls src="${msg.content}"></audio>`;
+  else if (msg.type === 'video') div.innerHTML = `<video controls class="w-48" src="${msg.content}"></video>`;
+  else div.innerHTML = `<a href="${msg.content}" download>📥 Faylni yuklab olish</a>`;
+
+  document.getElementById('chatBox').appendChild(div);
+});
+
+const user = JSON.parse(localStorage.getItem("loggedInUser"));
+  if (user && user.coin !== undefined) {
+    document.getElementById("coin-count").innerText = user.coin;
+  }
+
+  fetch('/api/users')
+  .then(res => res.json())
+  .then(users => {
+    const currentUserId = localStorage.getItem('userId');
+    const user = users.find(u => u.id === currentUserId);
+    if (user) {
+      document.getElementById('coin-count').innerText = user.coin;
+    }
+  });
+</script>
+</body>
+</html>

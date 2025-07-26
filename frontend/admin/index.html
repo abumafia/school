@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Panel</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen p-6">
+  <div class="max-w-5xl mx-auto">
+    <h1 class="text-3xl font-bold text-center mb-6">
+  📊 Admin Panel <span id="admin-name" class="text-blue-600 text-lg ml-4"></span>
+</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div class="bg-white p-4 rounded shadow">
+        <p class="text-gray-600">👥 Foydalanuvchilar soni</p>
+        <h2 id="userCount" class="text-2xl font-bold">0</h2>
+      </div>
+      <div class="bg-white p-4 rounded shadow">
+        <p class="text-gray-600">👨‍🏫 O‘qituvchilar soni</p>
+        <h2 id="teacherCount" class="text-2xl font-bold">0</h2>
+      </div>
+      <div class="bg-white p-4 rounded shadow">
+        <p class="text-gray-600">📚 Darslar soni</p>
+        <h2 id="lessonCount" class="text-2xl font-bold">0</h2>
+      </div>
+    </div>
+
+    <div class="mt-10">
+  <h2 class="text-lg font-bold">⛏ Coin So‘rovlar</h2>
+  <div id="coin-requests" class="mt-4 space-y-2"></div>
+</div>
+
+    <div class="bg-white p-4 rounded shadow mb-6">
+      <h2 class="text-xl font-bold mb-3">📖 Darslar ro‘yxati</h2>
+      <div id="lessonList" class="space-y-2"></div>
+    </div>
+
+    <div class="bg-white p-4 rounded shadow">
+      <h2 class="text-xl font-bold mb-3">👤 Foydalanuvchilar ro‘yxati</h2>
+      <div id="userList" class="space-y-2"></div>
+    </div>
+  </div>
+
+  <script>
+    async function loadStats() {
+      const res = await fetch('http://localhost:3000/api/admin/stats');
+      const stats = await res.json();
+      document.getElementById('userCount').textContent = stats.totalUsers;
+      document.getElementById('teacherCount').textContent = stats.totalTeachers;
+      document.getElementById('lessonCount').textContent = stats.totalLessons;
+    }
+
+    async function loadLessons() {
+      const res = await fetch('http://localhost:3000/api/admin/lessons');
+      const lessons = await res.json();
+      const container = document.getElementById('lessonList');
+      container.innerHTML = '';
+      lessons.forEach(lesson => {
+        const div = document.createElement('div');
+        div.className = 'border p-2 rounded flex justify-between items-center';
+        div.innerHTML = `
+          <span>${lesson.title}</span>
+          <button class="text-red-600" onclick="deleteLesson('${lesson.id}')">🗑 O‘chirish</button>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    // Coin so‘rovlarini olish
+fetch('/api/coin/requests')
+  .then(res => res.json())
+  .then(requests => {
+    const container = document.getElementById('coin-requests');
+    container.innerHTML = '';
+    requests.filter(r => r.status === 'pending').forEach(r => {
+      const div = document.createElement('div');
+      div.className = 'border p-2 rounded flex justify-between items-center';
+      div.innerHTML = `
+        <span><b>ID:</b> ${r.userId} | <b>Coin:</b> ${r.amount}</span>
+        <button class="bg-green-600 text-white px-2 py-1 rounded hover:bg-green-700" onclick="approveCoin('${r.userId}')">Tasdiqlash</button>
+      `;
+      container.appendChild(div);
+    });
+  });
+
+function approveCoin(userId) {
+  fetch('/api/coin/approve', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ userId })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      alert('Coin berildi!');
+      location.reload();
+    } else {
+      alert('Xatolik!');
+    }
+  });
+}
+
+    async function loadUsers() {
+      const res = await fetch('http://localhost:3000/api/admin/users');
+      const users = await res.json();
+      const container = document.getElementById('userList');
+      container.innerHTML = '';
+      users.forEach(user => {
+        const div = document.createElement('div');
+        div.className = 'border p-2 rounded flex justify-between items-center';
+        div.innerHTML = `
+          <span>${user.name} (${user.role})</span>
+          <button class="text-red-600" onclick="deleteUser('${user.id}')">🗑 O‘chirish</button>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    async function deleteLesson(id) {
+      if (confirm("Rostdan ham bu darsni o‘chirmoqchimisiz?")) {
+        await fetch(`http://localhost:3000/api/admin/delete-lesson/${id}`, { method: 'DELETE' });
+        loadLessons();
+        loadStats();
+      }
+    }
+
+    async function deleteUser(id) {
+      if (confirm("Bu foydalanuvchini o‘chirmoqchimisiz?")) {
+        await fetch(`http://localhost:3000/api/admin/delete-user/${id}`, { method: 'DELETE' });
+        loadUsers();
+        loadStats();
+      }
+    }
+
+    const admin = JSON.parse(localStorage.getItem("admin"));
+if (!admin) {
+  location.href = "../login/admin-login.html";
+} else {
+  document.getElementById("admin-name").textContent = " | Admin: " + (admin.name || "Admin");
+}
+
+// GET /api/coin/requests -> [{id, userId, amount, status}]
+fetch('/api/coin/requests')
+  .then(res => res.json())
+  .then(requests => {
+    // jadvalga chiqarish va har biriga "Tasdiqlash" tugmasi qo‘yish
+  });
+
+    loadStats();
+    loadLessons();
+    loadUsers();
+  </script>
+</body>
+</html>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Video Panel</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+  <!-- Navbar -->
+  <header class="bg-white shadow-md sticky top-0 z-50">
+    <div class="flex items-center justify-between p-4">
+      <h1 class="text-xl font-bold text-red-600">EduTube</h1>
+      <input type="text" placeholder="Qidirish..." class="w-1/2 border p-2 rounded-lg shadow-sm focus:outline-none" />
+      <button id="openUploadModal" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">Video joylash</button>
+    </div>
+  </header>
+
+  <!-- Sidebar (desktop) -->
+  <aside class="hidden md:block fixed top-[64px] left-0 w-48 h-full bg-white border-r">
+    <nav class="flex flex-col p-4 space-y-4">
+      <a href="#" class="hover:text-red-500">🏠 Bosh sahifa</a>
+      <a href="#" class="hover:text-red-500">📱 Shorts</a>
+      <a href="#" class="hover:text-red-500">⭐ Sevimlilar</a>
+      <a href="#" class="hover:text-red-500">🕓 Tarix</a>
+      <a href="#" class="hover:text-red-500">⚙️ Sozlamalar</a>
+    </nav>
+  </aside>
+
+  <!-- Modal -->
+<div id="uploadModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
+  <div class="bg-white p-6 rounded-lg w-full max-w-md space-y-4 relative max-h-[90vh] overflow-y-auto">
+    <button id="closeUploadModal" class="absolute top-2 right-2 text-gray-500 hover:text-red-600">&times;</button>
+    <h2 class="text-xl font-bold text-center">Video joylash</h2>
+    <form id="uploadForm" enctype="multipart/form-data" class="space-y-3">
+      <input type="text" name="title" placeholder="Sarlavha" required class="border p-2 w-full rounded" />
+      <textarea name="desc" placeholder="Tavsif" required class="border p-2 w-full rounded"></textarea>
+      <input type="text" name="user" placeholder="Foydalanuvchi nomi" required class="border p-2 w-full rounded" />
+      <input type="text" name="avatar" placeholder="Avatar URL (ixtiyoriy)" class="border p-2 w-full rounded" />
+      <input type="file" name="video" accept="video/*" required class="border p-2 w-full rounded" />
+      <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 w-full">Yuklash</button>
+    </form>
+  </div>
+</div>
+
+  <!-- Main content -->
+  <main id="videoContainer" class="md:ml-52 p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- Videolar backenddan yuklanadi -->
+  </main>
+
+  <!-- Video Modal -->
+  <div id="videoModal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center hidden z-50">
+    <div class="bg-white rounded-xl w-full max-w-3xl p-6 relative">
+      <button onclick="closeVideo()" class="absolute top-2 right-4 text-xl font-bold">&times;</button>
+      <video id="modalVideo" class="w-full rounded-lg mb-4" controls></video>
+      <h2 id="modalTitle" class="text-lg font-bold mb-2"></h2>
+      <p id="modalDesc" class="text-gray-600 mb-4"></p>
+      <div class="flex items-center justify-between">
+        <button class="text-red-500 hover:underline">❤️ Layk</button>
+        <button class="text-blue-500 hover:underline">💬 Komment</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Bottom Navbar -->
+  <nav class="fixed md:hidden bottom-0 left-0 right-0 bg-white border-t flex justify-around items-center h-14">
+    <a href="#" class="text-red-500">🏠</a>
+    <a href="#">📱</a>
+    <a href="#">⭐</a>
+    <a href="#">⚙️</a>
+  </nav>
+
+  <div id="uploadModalContent" class="bg-white p-6 rounded-lg w-full max-w-md space-y-4 relative max-h-[90vh] overflow-y-auto">
+
+  <script>
+    // Videolarni backenddan yuklash (masalan, /backend/data/videos.json)
+    async function loadVideos() {
+  const videoList = document.getElementById("videoContainer");
+  videoList.innerHTML = ""; // avvalgi videolarni tozalash
+
+  const res = await fetch("/api/videos");
+  const videos = await res.json();
+
+  videos.forEach((video) => {
+    const isShort = video.duration && video.duration < 60;
+    const card = document.createElement("div");
+    card.className = "bg-white rounded-lg shadow p-4";
+
+    card.innerHTML = `
+      <video src="${video.src}" controls onclick="openVideo('${video.src}', '${video.title}', '${video.desc}')" class="w-full rounded mb-2"></video>
+      <h2 class="text-lg font-semibold">${video.title}</h2>
+      <p class="text-gray-600 text-sm">${video.desc}</p>
+      <div class="flex items-center mt-2">
+        <img src="${video.avatar}" alt="Avatar" class="w-8 h-8 rounded-full mr-2" />
+        <span class="text-gray-700 font-medium">${video.user}</span>
+        <span class="ml-auto px-2 py-1 text-xs ${isShort ? 'bg-green-200 text-green-800' : 'bg-blue-200 text-blue-800'} rounded-full">
+          ${isShort ? "Short" : "Video"}
+        </span>
+      </div>
+      <div class="mt-2 text-sm text-gray-500">${video.likes || 0} ta like</div>
+    `;
+
+    videoList.appendChild(card);
+  });
+}
+
+loadVideos();
+
+    function openVideo(src, title, desc) {
+      document.getElementById('modalVideo').src = src;
+      document.getElementById('modalTitle').innerText = title;
+      document.getElementById('modalDesc').innerText = desc;
+      document.getElementById('videoModal').classList.remove('hidden');
+    }
+
+    function closeVideo() {
+      document.getElementById('videoModal').classList.add('hidden');
+      document.getElementById('modalVideo').pause();
+      document.getElementById('modalVideo').src = '';
+    }
+
+    const openBtn = document.getElementById("openUploadModal");
+  const closeBtn = document.getElementById("closeUploadModal");
+  const modal = document.getElementById("uploadModal");
+
+  openBtn.onclick = () => modal.classList.remove("hidden");
+  closeBtn.onclick = () => modal.classList.add("hidden");
+  window.onclick = (e) => {
+    if (e.target === modal) modal.classList.add("hidden");
+  };
+
+  // ESC tugmasi bilan yopish
+window.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") modal.classList.add("hidden");
+});
+
+// Fon bosilganda yopish
+modal.onclick = (e) => {
+  if (!modalContent.contains(e.target)) {
+    modal.classList.add("hidden");
+  }
+};
+
+const modalContent = document.getElementById("uploadModalContent");
+
+modal.addEventListener("click", (e) => {
+  if (!modalContent.contains(e.target)) {
+    modal.classList.add("hidden");
+  }
+});
+
+  // Formni yuborish
+  const uploadForm = document.getElementById("uploadForm");
+  uploadForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(uploadForm);
+    const res = await fetch("http://localhost:3000/api/upload", {
+      method: "POST",
+      body: formData,
+    });
+
+    if (res.ok) {
+      alert("✅ Video muvaffaqiyatli yuklandi!");
+      uploadForm.reset();
+      modal.classList.add("hidden");
+    } else {
+      alert("❌ Yuklashda xatolik yuz berdi!");
+    }
+  });
+
+    window.onload = loadVideos;
+  </script>
+
+</body>
+</html>

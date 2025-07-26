@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <title>Bachelor Ro'yxatdan O'tish</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div class="bg-white p-8 rounded shadow-md w-full max-w-md">
+    <h2 class="text-2xl font-bold text-center mb-6">Bachelor Ro'yxatdan O'tish</h2>
+    <form id="registerForm" class="space-y-4">
+      <input name="name" placeholder="Ism" required class="w-full p-2 border rounded" />
+      <input name="school" placeholder="Maktab" required class="w-full p-2 border rounded" />
+      <input name="email" placeholder="Email" type="email" required class="w-full p-2 border rounded" />
+      <input name="password" placeholder="Parol" type="password" required class="w-full p-2 border rounded" />
+      <input name="bio" placeholder="Bio" class="w-full p-2 border rounded" />
+      <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded">Ro'yxatdan O'tish</button>
+    </form>
+    <p class="mt-4 text-center text-sm">Allaqachon hisobingiz bormi? <a href="../login/bachelor-login.html" class="text-blue-600">Kirish</a></p>
+  </div>
+
+  <script>
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = new FormData(e.target);
+      const data = Object.fromEntries(form.entries());
+      data.role = "bachelor";
+
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      const result = await res.json();
+      if (result.success) {
+        alert("Muvaffaqqiyatli ro'yxatdan o'tdingiz! Endi kirishingiz mumkin.");
+        location.href = "../login/bachelor-login.html";
+      } else {
+        alert(result.message || "Xatolik yuz berdi");
+      }
+    });
+  </script>
+</body>
+</html>

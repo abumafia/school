@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <title>Post Yaratish</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 p-8 max-w-xl mx-auto">
+
+  <h2 class="text-2xl font-bold text-purple-700 mb-4">✍️ Yangi Post Yaratish</h2>
+  <form id="postForm" class="space-y-4">
+    <input id="title" type="text" class="w-full border p-2 rounded" placeholder="Sarlavha..." required />
+    <textarea id="content" rows="4" class="w-full border p-2 rounded" placeholder="Post matni..." required></textarea>
+    <input id="hashtags" type="text" class="w-full border p-2 rounded" placeholder="#hashtaglar vergul bilan..." />
+    <button type="submit" class="bg-purple-600 text-white px-4 py-2 rounded">📤 Yuborish</button>
+  </form>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('postForm');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const user = JSON.parse(localStorage.getItem('user'));
+      if (!user) return alert('Avval tizimga kiring!');
+
+      const post = {
+        id: Date.now(),
+        userId: user.id,
+        username: user.name,
+        title: form.title.value.trim(),
+        content: form.content.value.trim(),
+        hashtags: form.hashtags.value.split(',').map(tag => tag.trim().toLowerCase()).filter(tag => tag),
+        likes: [],
+        comments: [],
+        date: new Date().toISOString()
+      };
+
+      try {
+        const res = await fetch('http://localhost:3000/api/posts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(post)
+        });
+
+        if (res.ok) {
+          window.location.href = 'social.html';
+        } else {
+          const err = await res.text();
+          alert('Xatolik: ' + err);
+        }
+      } catch (error) {
+        alert('Serverga ulanib bo‘lmadi: ' + error.message);
+      }
+    });
+  });
+</script>
+</body>
+</html>

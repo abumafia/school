@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <title>Bachelor Panel</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-4">
+  <h1 class="text-2xl font-bold text-center mb-6 text-purple-800">Bachelor Darslar Paneli</h1>
+  <div id="lesson-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+
+  <!-- Likers Modal -->
+  <div id="likersModal" class="fixed inset-0 bg-black bg-opacity-50 hidden justify-center items-center z-50">
+    <div class="bg-white p-6 rounded-lg shadow-xl max-w-md w-full">
+      <h2 class="text-lg font-bold mb-4">❤️ Layk bosganlar</h2>
+      <ul id="likersList" class="space-y-2"></ul>
+      <button onclick="closeLikersModal()" class="mt-4 bg-red-500 text-white px-4 py-2 rounded">Yopish</button>
+    </div>
+  </div>
+
+  <script>
+    const userId = localStorage.getItem("userId");
+if (!userId) window.location.href = "../login/bachelor-login.html";
+
+const container = document.getElementById("lesson-container");
+
+fetch("http://localhost:3000/api/lessons")
+  .then(res => res.json())
+  .then(lessons => {
+    const bachelorLessons = lessons.filter(l => l.category === 'bachelor');
+    renderLessons(bachelorLessons);
+  });
+
+function renderLessons(lessons) {
+  container.innerHTML = '';
+  lessons.forEach(lesson => {
+    const liked = lesson.likes.includes(userId);
+    const card = document.createElement('div');
+    card.className = "bg-white p-6 rounded-xl shadow-lg";
+
+    card.innerHTML = `
+      <h3 class="text-xl font-semibold text-purple-700 mb-2">${lesson.title}</h3>
+      <p class="text-gray-500 italic mb-2">📂 Kategoriya: <span class="text-indigo-700 font-medium">${lesson.category || 'Umumiy'}</span></p>
+      <p class="text-gray-700 mb-2">${lesson.description}</p>
+      <p class="text-sm text-gray-500">${lesson.content}</p>
+      <div class="flex items-center gap-4 mt-4">
+        <button class="likeBtn text-${liked ? 'red' : 'gray'}-600 font-semibold" data-id="${lesson.id}">
+          ❤️ Like (<span class="like-count text-blue-600 underline cursor-pointer" data-id="${lesson.id}">${lesson.likes.length}</span>)
+        </button>
+        <button class="commentToggle text-blue-600 font-semibold" data-id="${lesson.id}">💬 Izoh</button>
+      </div>
+      <div class="hidden commentBox mt-4" id="commentBox-${lesson.id}">
+        <input class="border w-full p-2 rounded-lg commentInput" placeholder="Izoh..." />
+        <button class="sendComment bg-blue-600 text-white px-4 py-1 rounded mt-2" data-id="${lesson.id}">Yuborish</button>
+        <div class="text-sm text-gray-600 mt-3">
+          ${lesson.comments.map(c => `<p>🧑 <a href="../profile/profile.html?user=${c.userId}" class="text-blue-600 hover:underline">${c.userId}</a>: ${c.text}</p>`).join('')}
+        </div>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+// Event delegation
+container.addEventListener("click", async (e) => {
+  const id = e.target.dataset.id;
+  if (e.target.classList.contains("likeBtn")) {
+    await fetch(`http://localhost:3000/api/lessons/${id}/like`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId })
+    });
+    location.reload();
+  }
+
+  if (e.target.classList.contains("commentToggle")) {
+    document.getElementById(`commentBox-${id}`).classList.toggle("hidden");
+  }
+
+  if (e.target.classList.contains("sendComment")) {
+    const input = document.querySelector(`#commentBox-${id} .commentInput`);
+    const text = input.value.trim();
+    if (!text) return;
+    await fetch(`http://localhost:3000/api/lessons/${id}/comment`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId, text })
+    });
+    input.value = "";
+    location.reload();
+  }
+
+  if (e.target.classList.contains("like-count")) {
+    const lessons = await fetch("http://localhost:3000/api/lessons").then(r => r.json());
+    const lesson = lessons.find(l => l.id === id);
+    const likersList = document.getElementById("likersList");
+    likersList.innerHTML = lesson.likes.map(u => `<li><a href="../profile/profile.html?user=${u}" class="text-blue-600 hover:underline">${u}</a></li>`).join('');
+    document.getElementById("likersModal").classList.remove("hidden");
+  }
+});
+
+function closeLikersModal() {
+  document.getElementById("likersModal").classList.add("hidden");
+}
+  </script>
+</body>
+</html>

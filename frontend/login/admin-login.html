@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Login</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div class="bg-white p-8 rounded shadow-md w-full max-w-md">
+    <h2 class="text-2xl font-bold text-center mb-6">🔐 Admin Kirish</h2>
+    <form id="adminLoginForm" class="space-y-4">
+      <div>
+        <label class="block text-gray-700">Email</label>
+        <input type="email" id="email" class="w-full border border-gray-300 p-2 rounded" required />
+      </div>
+      <div>
+        <label class="block text-gray-700">Parol</label>
+        <input type="password" id="password" class="w-full border border-gray-300 p-2 rounded" required />
+      </div>
+      <button type="submit" class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">Kirish</button>
+      <p id="error" class="text-red-600 text-center mt-2 hidden">❌ Email yoki parol noto‘g‘ri</p>
+    </form>
+  </div>
+
+  <script>
+    const adminCredentials = {
+      email: "admin@gmail.com",
+      password: "admin123",
+      name: "SuperAdmin"
+    };
+
+    document.getElementById("adminLoginForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      if (email === adminCredentials.email && password === adminCredentials.password) {
+        localStorage.setItem("admin", JSON.stringify(adminCredentials));
+        window.location.href = "../admin/index.html";
+      } else {
+        document.getElementById("error").classList.remove("hidden");
+      }
+    });
+  </script>
+</body>
+</html>
