@@ -95,7 +95,7 @@ chatModal.addEventListener("click", (e) => {
   if (e.target === chatModal) chatModal.classList.add("hidden");
 });
 
-const socket = io('http://localhost:3000');
+const socket = io('https://school-b97p.onrender.com');
 socket.emit('register', currentUser.id);
 
 function sendMessage() {
@@ -106,7 +106,7 @@ function sendMessage() {
     const formData = new FormData();
     formData.append('file', file);
 
-    fetch('http://localhost:3000/api/chat/upload', {
+    fetch('https://school-b97p.onrender.com/api/chat/upload', {
       method: 'POST',
       body: formData
     })
@@ -178,7 +178,7 @@ const user = JSON.parse(localStorage.getItem("loggedInUser"));
     document.getElementById("coin-count").innerText = user.coin;
   }
 
-  fetch('/api/users')
+  fetch('https://school-b97p.onrender.com/api/users')
   .then(res => res.json())
   .then(users => {
     const currentUserId = localStorage.getItem('userId');
