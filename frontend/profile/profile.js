@@ -1,6 +1,6 @@
 const currentUser = JSON.parse(localStorage.getItem("user"));
 if (!currentUser) {
-  window.location.href = "/frontend/login/student-login.html";
+  window.location.href = "../login/student-login.html";
 }
 
 const viewedUserId = new URLSearchParams(location.search).get("user") || currentUser.id;
@@ -17,7 +17,7 @@ if (viewedUserId === currentUser.id) {
 
 async function loadUserProfile() {
   try {
-    const res = await fetch("http://localhost:3000/api/users");
+    const res = await fetch("https://school-b97p.onrender.com/api/users");
     const users = await res.json();
     viewedUser = users.find(u => u.id == viewedUserId);
 
@@ -63,7 +63,7 @@ editForm?.addEventListener("submit", async (e) => {
   const data = Object.fromEntries(formData.entries());
 
   try {
-    const res = await fetch(`http://localhost:3000/api/users/${currentUser.id}`, {
+    const res = await fetch(`https://school-b97p.onrender.com/api/users/${currentUser.id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
@@ -105,7 +105,7 @@ function sendCoinRequest() {
   const amount = parseInt(document.getElementById('coin-amount').value);
   if (!amount || amount <= 0) return alert('Iltimos, coin miqdorini to‘g‘ri kiriting');
 
-  fetch('/api/coin/request', {
+  fetch('https://school-b97p.onrender.com/api/coin/request', {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({ userId, amount })
@@ -120,7 +120,7 @@ function sendCoinRequest() {
 function useCoins(amount, reason) {
   const userId = currentUser.id;
 
-  fetch('/api/coins/use', {
+  fetch('https://school-b97p.onrender.com/api/coins/use', {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({ userId, amount, reason })
@@ -136,7 +136,7 @@ function useCoins(amount, reason) {
   });
 }
 
-fetch(`/api/coins/history/${viewedUserId}`)
+fetch(`https://school-b97p.onrender.com/api/coins/history/${viewedUserId}`)
   .then(res => res.json())
   .then(data => {
     const container = document.getElementById('coin-history');
@@ -151,7 +151,7 @@ fetch(`/api/coins/history/${viewedUserId}`)
 
 // ================== CHAT QISMI ==================
 
-const socket = io('http://localhost:3000');
+const socket = io('https://school-b97p.onrender.com');
 const userId = currentUser.id;
 const targetUserId = viewedUserId;
 
