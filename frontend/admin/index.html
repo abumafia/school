@@ -44,7 +44,7 @@
 
   <script>
     async function loadStats() {
-      const res = await fetch('http://localhost:3000/api/admin/stats');
+      const res = await fetch('https://school-b97p.onrender.com/api/admin/stats');
       const stats = await res.json();
       document.getElementById('userCount').textContent = stats.totalUsers;
       document.getElementById('teacherCount').textContent = stats.totalTeachers;
@@ -52,7 +52,7 @@
     }
 
     async function loadLessons() {
-      const res = await fetch('http://localhost:3000/api/admin/lessons');
+      const res = await fetch('https://school-b97p.onrender.com/api/admin/lessons');
       const lessons = await res.json();
       const container = document.getElementById('lessonList');
       container.innerHTML = '';
@@ -68,7 +68,7 @@
     }
 
     // Coin so‘rovlarini olish
-fetch('/api/coin/requests')
+fetch('https://school-b97p.onrender.com/api/coin/requests')
   .then(res => res.json())
   .then(requests => {
     const container = document.getElementById('coin-requests');
@@ -85,7 +85,7 @@ fetch('/api/coin/requests')
   });
 
 function approveCoin(userId) {
-  fetch('/api/coin/approve', {
+  fetch('https://school-b97p.onrender.com/api/coin/approve', {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({ userId })
@@ -102,7 +102,7 @@ function approveCoin(userId) {
 }
 
     async function loadUsers() {
-      const res = await fetch('http://localhost:3000/api/admin/users');
+      const res = await fetch('https://school-b97p.onrender.com/api/admin/users');
       const users = await res.json();
       const container = document.getElementById('userList');
       container.innerHTML = '';
@@ -119,7 +119,7 @@ function approveCoin(userId) {
 
     async function deleteLesson(id) {
       if (confirm("Rostdan ham bu darsni o‘chirmoqchimisiz?")) {
-        await fetch(`http://localhost:3000/api/admin/delete-lesson/${id}`, { method: 'DELETE' });
+        await fetch(`https://school-b97p.onrender.com/api/admin/delete-lesson/${id}`, { method: 'DELETE' });
         loadLessons();
         loadStats();
       }
@@ -127,7 +127,7 @@ function approveCoin(userId) {
 
     async function deleteUser(id) {
       if (confirm("Bu foydalanuvchini o‘chirmoqchimisiz?")) {
-        await fetch(`http://localhost:3000/api/admin/delete-user/${id}`, { method: 'DELETE' });
+        await fetch(`https://school-b97p.onrender.com/api/admin/delete-user/${id}`, { method: 'DELETE' });
         loadUsers();
         loadStats();
       }
@@ -141,7 +141,7 @@ if (!admin) {
 }
 
 // GET /api/coin/requests -> [{id, userId, amount, status}]
-fetch('/api/coin/requests')
+fetch('https://school-b97p.onrender.com/api/coin/requests')
   .then(res => res.json())
   .then(requests => {
     // jadvalga chiqarish va har biriga "Tasdiqlash" tugmasi qo‘yish
