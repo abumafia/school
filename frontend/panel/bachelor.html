@@ -24,7 +24,7 @@ if (!userId) window.location.href = "../login/bachelor-login.html";
 
 const container = document.getElementById("lesson-container");
 
-fetch("http://localhost:3000/api/lessons")
+fetch("https://school-b97p.onrender.com/api/lessons")
   .then(res => res.json())
   .then(lessons => {
     const bachelorLessons = lessons.filter(l => l.category === 'bachelor');
@@ -65,7 +65,7 @@ function renderLessons(lessons) {
 container.addEventListener("click", async (e) => {
   const id = e.target.dataset.id;
   if (e.target.classList.contains("likeBtn")) {
-    await fetch(`http://localhost:3000/api/lessons/${id}/like`, {
+    await fetch(`https://school-b97p.onrender.com/api/lessons/${id}/like`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ userId })
@@ -81,7 +81,7 @@ container.addEventListener("click", async (e) => {
     const input = document.querySelector(`#commentBox-${id} .commentInput`);
     const text = input.value.trim();
     if (!text) return;
-    await fetch(`http://localhost:3000/api/lessons/${id}/comment`, {
+    await fetch(`https://school-b97p.onrender.com/api/lessons/${id}/comment`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ userId, text })
@@ -91,7 +91,7 @@ container.addEventListener("click", async (e) => {
   }
 
   if (e.target.classList.contains("like-count")) {
-    const lessons = await fetch("http://localhost:3000/api/lessons").then(r => r.json());
+    const lessons = await fetch("https://school-b97p.onrender.com/api/lessons").then(r => r.json());
     const lesson = lessons.find(l => l.id === id);
     const likersList = document.getElementById("likersList");
     likersList.innerHTML = lesson.likes.map(u => `<li><a href="../profile/profile.html?user=${u}" class="text-blue-600 hover:underline">${u}</a></li>`).join('');
