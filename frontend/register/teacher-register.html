@@ -2,57 +2,329 @@
 <html lang="uz">
 <head>
   <meta charset="UTF-8">
-  <title>O'qituvchi Ro'yxatdan O'tish</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>O'qituvchi Ro'yxatdan O'tish | Ta'lim Platformasi</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+            },
+            secondary: {
+              500: '#3b82f6',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          boxShadow: {
+            'soft': '0 4px 20px rgba(0, 0, 0, 0.08)',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .animate-fade-in {
+      animation: fadeIn 0.6s ease-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .input-focus:focus {
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+      border-color: #10b981;
+    }
+    .animate-shake {
+      animation: shake 0.5s ease-in-out;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-5px); }
+      40%, 80% { transform: translateX(5px); }
+    }
+  </style>
 </head>
-<body class="min-h-screen bg-gradient-to-br from-blue-100 to-green-100 flex items-center justify-center">
-  <div class="bg-white shadow-xl rounded-2xl p-8 w-full max-w-md">
-    <h2 class="text-2xl font-bold text-center text-gray-700 mb-6">O'qituvchi Ro'yxatdan O'tish</h2>
-
-    <div class="space-y-4">
-      <input id="name" type="text" placeholder="Ism Familiya" class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-green-400" />
-      <input id="school" type="text" placeholder="Maktab" class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-green-400" />
-      <input id="subject" type="text" placeholder="Fan nomi" class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-green-400" />
-      <input id="experience" type="number" placeholder="Tajriba (yil)" class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-green-400" />
-      <input id="phone" type="text" placeholder="Telefon raqami" class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-green-400" />
-      <input id="email" type="email" placeholder="Email" class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-green-400" />
-      <input id="password" type="password" placeholder="Parol" class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-green-400" />
-      <textarea id="bio" placeholder="Tavsif" rows="3" class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-green-400"></textarea>
+<body class="bg-gradient-to-br from-blue-50 to-primary-50 font-sans min-h-screen flex items-center justify-center p-4">
+  <div class="max-w-2xl w-full bg-white rounded-2xl shadow-soft overflow-hidden animate-fade-in">
+    <!-- Header Section -->
+    <div class="bg-gradient-to-r from-primary-600 to-primary-700 py-6 px-8 text-center">
+      <h1 class="text-2xl font-bold text-white flex items-center justify-center gap-3">
+        <i class="fas fa-chalkboard-teacher"></i>
+        O'qituvchi Ro'yxatdan O'tish
+      </h1>
+      <p class="text-primary-100 mt-2">Platformamizdan foydalanish uchun hisob yarating</p>
     </div>
-
-    <button onclick="register()" class="w-full mt-6 bg-green-500 hover:bg-green-600 transition text-white font-semibold py-2 rounded-xl">
-      Ro'yxatdan O'tish
-    </button>
+    
+    <!-- Registration Form -->
+    <div class="p-8">
+      <form id="registrationForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Personal Information Column -->
+        <div class="space-y-4">
+          <h3 class="text-lg font-semibold text-gray-700 border-b pb-2 flex items-center gap-2">
+            <i class="fas fa-user text-primary-600"></i>
+            Shaxsiy ma'lumotlar
+          </h3>
+          
+          <div>
+            <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Ism Familiya</label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <i class="fas fa-user text-gray-400"></i>
+              </div>
+              <input 
+                type="text" 
+                id="name" 
+                required
+                placeholder="Aliyev Ali" 
+                class="input-focus w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none transition duration-200"
+              />
+            </div>
+          </div>
+          
+          <div>
+            <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Telefon raqami</label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <i class="fas fa-phone text-gray-400"></i>
+              </div>
+              <input 
+                type="tel" 
+                id="phone" 
+                required
+                placeholder="+998901234567" 
+                class="input-focus w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none transition duration-200"
+              />
+            </div>
+          </div>
+          
+          <div>
+            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Elektron pochta</label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <i class="fas fa-envelope text-gray-400"></i>
+              </div>
+              <input 
+                type="email" 
+                id="email" 
+                required
+                placeholder="aliyev@maktab.edu.uz" 
+                class="input-focus w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none transition duration-200"
+              />
+            </div>
+          </div>
+          
+          <div>
+            <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Parol</label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <i class="fas fa-lock text-gray-400"></i>
+              </div>
+              <input 
+                type="password" 
+                id="password" 
+                required
+                placeholder="••••••••" 
+                class="input-focus w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none transition duration-200"
+              />
+            </div>
+          </div>
+        </div>
+        
+        <!-- Professional Information Column -->
+        <div class="space-y-4">
+          <h3 class="text-lg font-semibold text-gray-700 border-b pb-2 flex items-center gap-2">
+            <i class="fas fa-briefcase text-primary-600"></i>
+            Kasbiy ma'lumotlar
+          </h3>
+          
+          <div>
+            <label for="school" class="block text-sm font-medium text-gray-700 mb-1">Maktab</label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <i class="fas fa-school text-gray-400"></i>
+              </div>
+              <input 
+                type="text" 
+                id="school" 
+                required
+                placeholder="25-sonli maktab" 
+                class="input-focus w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none transition duration-200"
+              />
+            </div>
+          </div>
+          
+          <div>
+            <label for="subject" class="block text-sm font-medium text-gray-700 mb-1">Fan nomi</label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <i class="fas fa-book text-gray-400"></i>
+              </div>
+              <input 
+                type="text" 
+                id="subject" 
+                required
+                placeholder="Matematika" 
+                class="input-focus w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none transition duration-200"
+              />
+            </div>
+          </div>
+          
+          <div>
+            <label for="experience" class="block text-sm font-medium text-gray-700 mb-1">Tajriba (yil)</label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <i class="fas fa-clock text-gray-400"></i>
+              </div>
+              <input 
+                type="number" 
+                id="experience" 
+                required
+                min="0"
+                placeholder="5" 
+                class="input-focus w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none transition duration-200"
+              />
+            </div>
+          </div>
+          
+          <div>
+            <label for="bio" class="block text-sm font-medium text-gray-700 mb-1">Qisqacha tavsif</label>
+            <textarea 
+              id="bio" 
+              rows="3" 
+              placeholder="O'zim haqimda qisqacha..." 
+              class="input-focus w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none transition duration-200"
+            ></textarea>
+          </div>
+        </div>
+        
+        <!-- Full width elements -->
+        <div class="md:col-span-2 flex items-center">
+          <input id="terms" name="terms" type="checkbox" required class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded">
+          <label for="terms" class="ml-2 block text-sm text-gray-700">
+            <a href="#" class="text-primary-600 hover:text-primary-500">Foydalanish shartlari</a> bilan tanishdim va roziman
+          </label>
+        </div>
+        
+        <div class="md:col-span-2">
+          <button 
+            type="submit" 
+            id="registerButton"
+            class="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition duration-200"
+          >
+            <i class="fas fa-user-plus mr-2"></i>
+            Ro'yxatdan o'tish
+          </button>
+        </div>
+      </form>
+      
+      <div class="mt-6 text-center">
+        <p class="text-sm text-gray-500">
+          Allaqachon hisobingiz bormi? 
+          <a href="/login/teacher-login.html" class="font-medium text-primary-600 hover:text-primary-500 hover:underline">
+            Tizimga kirish
+          </a>
+        </p>
+      </div>
+      
+      <div id="errorMessage" class="hidden mt-4 bg-red-50 border-l-4 border-red-500 p-4 rounded">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <i class="fas fa-exclamation-circle text-red-500"></i>
+          </div>
+          <div class="ml-3">
+            <p class="text-sm text-red-700" id="errorText">Ma'lumotlarni to'ldirishda xatolik yuz berdi. Iltimos, tekshirib qayta urinib ko'ring.</p>
+          </div>
+        </div>
+      </div>
+      
+      <div id="successMessage" class="hidden mt-4 bg-green-50 border-l-4 border-green-500 p-4 rounded">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <i class="fas fa-check-circle text-green-500"></i>
+          </div>
+          <div class="ml-3">
+            <p class="text-sm text-green-700">Ro'yxatdan o'tish muvaffaqiyatli yakunlandi!</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script>
-    async function register() {
-      const data = {
-        role: 'teacher',
-        name: document.getElementById('name').value,
-        school: document.getElementById('school').value,
-        subject: document.getElementById('subject').value,
-        experience: document.getElementById('experience').value,
-        phone: document.getElementById('phone').value,
-        email: document.getElementById('email').value,
-        password: document.getElementById('password').value,
-        bio: document.getElementById('bio').value,
-      };
+    document.getElementById('registrationForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const registerButton = document.getElementById('registerButton');
+      const errorMessage = document.getElementById('errorMessage');
+      const successMessage = document.getElementById('successMessage');
+      
+      // Hide messages
+      errorMessage.classList.add('hidden');
+      successMessage.classList.add('hidden');
+      
+      // Show loading state
+      registerButton.innerHTML = `
+        <i class="fas fa-spinner fa-spin mr-2"></i>
+        Ro'yxatdan o'tilmoqda...
+      `;
+      registerButton.disabled = true;
+      
+      try {
+        const data = {
+          role: 'teacher',
+          name: document.getElementById('name').value,
+          school: document.getElementById('school').value,
+          subject: document.getElementById('subject').value,
+          experience: parseInt(document.getElementById('experience').value),
+          phone: document.getElementById('phone').value,
+          email: document.getElementById('email').value,
+          password: document.getElementById('password').value,
+          bio: document.getElementById('bio').value,
+        };
 
-      const res = await fetch('https://school-b97p.onrender.com/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      });
+        // Simulate API call (replace with actual fetch)
+        const res = await fetch('https://school-b97p.onrender.com/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
 
-      if (res.ok) {
-        alert("Ro'yxatdan o'tish muvaffaqiyatli!");
-        window.location.href = "/login/teacher-login.html";
-      } else {
-        const error = await res.json();
-        alert(error.message);
+        if (res.ok) {
+          successMessage.classList.remove('hidden');
+          setTimeout(() => {
+            window.location.href = "../login/teacher-login.html";
+          }, 1500);
+        } else {
+          const error = await res.json();
+          document.getElementById('errorText').textContent = error.message || 'Ro\'yxatdan o\'tishda xatolik yuz berdi';
+          errorMessage.classList.remove('hidden');
+          errorMessage.classList.add('animate-shake');
+          setTimeout(() => {
+            errorMessage.classList.remove('animate-shake');
+          }, 500);
+        }
+      } catch (error) {
+        document.getElementById('errorText').textContent = 'Tarmoq xatosi. Iltimos, internet aloqasini tekshiring';
+        errorMessage.classList.remove('hidden');
+      } finally {
+        // Reset button
+        registerButton.innerHTML = `
+          <i class="fas fa-user-plus mr-2"></i>
+          Ro'yxatdan o'tish
+        `;
+        registerButton.disabled = false;
       }
-    }
+    });
   </script>
 </body>
 </html>
