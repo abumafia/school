@@ -2,43 +2,170 @@
 <html lang="uz">
 <head>
   <meta charset="UTF-8">
-  <title>Admin Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Paneliga Kirish</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#f0f9ff',
+              100: '#e0f2fe',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+            },
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <style>
+    .animate-fade-in {
+      animation: fadeIn 0.5s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .input-focus:focus {
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+      border-color: #3b82f6;
+    }
+  </style>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
-  <div class="bg-white p-8 rounded shadow-md w-full max-w-md">
-    <h2 class="text-2xl font-bold text-center mb-6">🔐 Admin Kirish</h2>
-    <form id="adminLoginForm" class="space-y-4">
-      <div>
-        <label class="block text-gray-700">Email</label>
-        <input type="email" id="email" class="w-full border border-gray-300 p-2 rounded" required />
+<body class="bg-gradient-to-br from-primary-50 to-primary-100 font-sans flex items-center justify-center min-h-screen p-4">
+  <div class="bg-white rounded-2xl shadow-xl overflow-hidden w-full max-w-md animate-fade-in">
+    <div class="bg-primary-600 py-6 px-8 text-center">
+      <h1 class="text-2xl font-bold text-white flex items-center justify-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4" />
+        </svg>
+        Admin Panel
+      </h1>
+      <p class="text-primary-100 mt-1">Tizimga kirish uchun hisob ma'lumotlaringizni kiriting</p>
+    </div>
+    
+    <form id="adminLoginForm" class="p-8 space-y-6">
+      <div class="space-y-1">
+        <label for="email" class="block text-sm font-medium text-gray-700">Elektron pochta</label>
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <input 
+            type="email" 
+            id="email" 
+            class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg input-focus transition duration-200 focus:outline-none" 
+            placeholder="admin@gmail.com"
+            required
+          />
+        </div>
       </div>
-      <div>
-        <label class="block text-gray-700">Parol</label>
-        <input type="password" id="password" class="w-full border border-gray-300 p-2 rounded" required />
+      
+      <div class="space-y-1">
+        <label for="password" class="block text-sm font-medium text-gray-700">Parol</label>
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+          </div>
+          <input 
+            type="password" 
+            id="password" 
+            class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg input-focus transition duration-200 focus:outline-none" 
+            placeholder="••••••••"
+            required
+          />
+        </div>
       </div>
-      <button type="submit" class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">Kirish</button>
-      <p id="error" class="text-red-600 text-center mt-2 hidden">❌ Email yoki parol noto‘g‘ri</p>
+      
+      <div class="flex items-center justify-between">
+        <div class="flex items-center">
+          <input id="remember-me" name="remember-me" type="checkbox" class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded">
+          <label for="remember-me" class="ml-2 block text-sm text-gray-700">Eslab qolish</label>
+        </div>
+        <a href="#" class="text-sm text-primary-600 hover:text-primary-500">Parolni unutdingizmi?</a>
+      </div>
+      
+      <button 
+        type="submit" 
+        class="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition duration-200"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+        </svg>
+        Tizimga kirish
+      </button>
+      
+      <div id="error" class="hidden bg-red-50 border-l-4 border-red-500 p-4 rounded">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <svg class="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <div class="ml-3">
+            <p class="text-sm text-red-700">Email yoki parol noto'g'ri. Iltimos, qayta urinib ko'ring.</p>
+          </div>
+        </div>
+      </div>
     </form>
+    
+    <div class="px-8 py-4 bg-gray-50 border-t border-gray-200 text-center">
+      <p class="text-xs text-gray-500">&copy; 2023 Barcha huquqlar himoyalangan</p>
+    </div>
   </div>
 
   <script>
     const adminCredentials = {
-      email: "hallaym0@gmail.com",
+      email: "abumafia@hallaym.com",
       password: "hallaym0877",
-      name: "HALLAYM LLC"
+      name: "HALLAYM LLC Admin"
     };
 
     document.getElementById("adminLoginForm").addEventListener("submit", function (e) {
       e.preventDefault();
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value.trim();
+      const errorElement = document.getElementById("error");
 
       if (email === adminCredentials.email && password === adminCredentials.password) {
-        localStorage.setItem("admin", JSON.stringify(adminCredentials));
-        window.location.href = "../admin/index.html";
+        // Remove error if visible
+        errorElement.classList.add("hidden");
+        
+        // Add loading state
+        const submitButton = e.target.querySelector('button[type="submit"]');
+        submitButton.innerHTML = `
+          <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          Kirilmoqda...
+        `;
+        submitButton.disabled = true;
+        
+        // Simulate API call
+        setTimeout(() => {
+          localStorage.setItem("admin", JSON.stringify(adminCredentials));
+          window.location.href = "../admin/index.html";
+        }, 1500);
       } else {
-        document.getElementById("error").classList.remove("hidden");
+        errorElement.classList.remove("hidden");
+        // Add shake animation to error
+        errorElement.classList.add("animate-shake");
+        setTimeout(() => {
+          errorElement.classList.remove("animate-shake");
+        }, 500);
       }
     });
   </script>
