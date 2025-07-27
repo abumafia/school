@@ -1,107 +1,551 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-  <meta charset="UTF-8">
-  <title>Bachelor Panel</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduTube - Video Yuklash</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f8fafc;
+    }
+    .recording-indicator {
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+    .filter-option {
+      transition: all 0.3s ease;
+    }
+    .filter-option:hover {
+      transform: scale(1.05);
+    }
+    .filter-option.active {
+      border: 2px solid #ef4444;
+    }
+    #videoPreview {
+      transition: filter 0.3s ease;
+    }
+  </style>
 </head>
-<body class="bg-gray-100 p-4">
-  <h1 class="text-2xl font-bold text-center mb-6 text-purple-800">Bachelor Darslar Paneli</h1>
-  <div id="lesson-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+<body class="min-h-screen">
 
-  <!-- Likers Modal -->
-  <div id="likersModal" class="fixed inset-0 bg-black bg-opacity-50 hidden justify-center items-center z-50">
-    <div class="bg-white p-6 rounded-lg shadow-xl max-w-md w-full">
-      <h2 class="text-lg font-bold mb-4">❤️ Layk bosganlar</h2>
-      <ul id="likersList" class="space-y-2"></ul>
-      <button onclick="closeLikersModal()" class="mt-4 bg-red-500 text-white px-4 py-2 rounded">Yopish</button>
+  <!-- Navbar -->
+  <header class="bg-white shadow-sm sticky top-0 z-50">
+    <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+      <button onclick="window.history.back()" class="text-gray-700">
+        <i class="fas fa-arrow-left text-xl"></i>
+      </button>
+      <h1 class="text-xl font-bold text-gray-900">Video Yuklash</h1>
+      <div class="w-8"></div> <!-- For balance -->
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container mx-auto px-4 py-6">
+    <div class="max-w-2xl mx-auto">
+      <!-- Video Capture/Upload Section -->
+      <div class="bg-white rounded-xl shadow-md overflow-hidden mb-6">
+        <div class="p-4 border-b">
+          <h2 class="font-bold text-lg flex items-center">
+            <i class="fas fa-video mr-2 text-red-600"></i>
+            Video
+          </h2>
+        </div>
+        
+        <div class="p-4">
+          <!-- Video Preview -->
+          <div id="videoPreviewContainer" class="hidden mb-4 relative bg-black rounded-lg overflow-hidden">
+            <video id="videoPreview" class="w-full h-auto max-h-[400px] object-contain" controls></video>
+            <div id="appliedFilter" class="absolute top-2 left-2 bg-black bg-opacity-50 text-white px-2 py-1 rounded text-sm hidden"></div>
+            <button id="cancelPreview" class="absolute top-2 right-2 bg-black bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-70">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          
+          <!-- Recording Indicator -->
+          <div id="recordingIndicator" class="hidden items-center justify-center mb-4">
+            <div class="recording-indicator bg-red-600 w-3 h-3 rounded-full mr-2"></div>
+            <span class="text-red-600 font-medium">Yozib olinmoqda...</span>
+          </div>
+          
+          <!-- Action Buttons -->
+          <div class="flex flex-col sm:flex-row gap-3">
+            <button id="startCamera" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 py-3 px-4 rounded-lg flex items-center justify-center space-x-2">
+              <i class="fas fa-camera"></i>
+              <span>Kamerani ochish</span>
+            </button>
+            
+            <button id="startRecording" class="hidden flex-1 bg-red-600 hover:bg-red-700 text-white py-3 px-4 rounded-lg flex items-center justify-center space-x-2">
+              <i class="fas fa-circle"></i>
+              <span>Yozishni boshlash</span>
+            </button>
+            
+            <button id="stopRecording" class="hidden flex-1 bg-gray-800 hover:bg-gray-900 text-white py-3 px-4 rounded-lg flex items-center justify-center space-x-2">
+              <i class="fas fa-stop"></i>
+              <span>Yozishni to'xtatish</span>
+            </button>
+            
+            <button id="uploadFile" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg flex items-center justify-center space-x-2">
+              <i class="fas fa-upload"></i>
+              <span>Fayl yuklash</span>
+              <input type="file" id="fileInput" accept="video/*" class="hidden" />
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Video Editing Section -->
+      <div id="editingSection" class="hidden bg-white rounded-xl shadow-md overflow-hidden mb-6">
+        <div class="p-4 border-b">
+          <h2 class="font-bold text-lg flex items-center">
+            <i class="fas fa-sliders-h mr-2 text-red-600"></i>
+            Tahrirlash
+          </h2>
+        </div>
+        
+        <div class="p-4">
+          <!-- Filters -->
+          <div class="mb-6">
+            <h3 class="font-medium text-gray-700 mb-3">Effektlar</h3>
+            <div class="grid grid-cols-4 gap-3">
+              <div class="filter-option rounded-lg overflow-hidden cursor-pointer" data-filter="none">
+                <div class="aspect-square bg-gray-100 flex items-center justify-center">
+                  <span class="text-sm">Original</span>
+                </div>
+              </div>
+              <div class="filter-option rounded-lg overflow-hidden cursor-pointer" data-filter="sepia">
+                <div class="aspect-square bg-gray-100 flex items-center justify-center" style="filter: sepia(100%)">
+                  <span class="text-sm">Sepia</span>
+                </div>
+              </div>
+              <div class="filter-option rounded-lg overflow-hidden cursor-pointer" data-filter="grayscale">
+                <div class="aspect-square bg-gray-100 flex items-center justify-center" style="filter: grayscale(100%)">
+                  <span class="text-sm">Qora-oq</span>
+                </div>
+              </div>
+              <div class="filter-option rounded-lg overflow-hidden cursor-pointer" data-filter="contrast">
+                <div class="aspect-square bg-gray-100 flex items-center justify-center" style="filter: contrast(200%)">
+                  <span class="text-sm">Kontrast</span>
+                </div>
+              </div>
+              <div class="filter-option rounded-lg overflow-hidden cursor-pointer" data-filter="hue">
+                <div class="aspect-square bg-gray-100 flex items-center justify-center" style="filter: hue-rotate(90deg)">
+                  <span class="text-sm">Rang</span>
+                </div>
+              </div>
+              <div class="filter-option rounded-lg overflow-hidden cursor-pointer" data-filter="blur">
+                <div class="aspect-square bg-gray-100 flex items-center justify-center" style="filter: blur(2px)">
+                  <span class="text-sm">Bulutli</span>
+                </div>
+              </div>
+              <div class="filter-option rounded-lg overflow-hidden cursor-pointer" data-filter="brightness">
+                <div class="aspect-square bg-gray-100 flex items-center justify-center" style="filter: brightness(1.5)">
+                  <span class="text-sm">Yorqin</span>
+                </div>
+              </div>
+              <div class="filter-option rounded-lg overflow-hidden cursor-pointer" data-filter="saturate">
+                <div class="aspect-square bg-gray-100 flex items-center justify-center" style="filter: saturate(300%)">
+                  <span class="text-sm">To'yingan</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Trim Video -->
+          <div class="mb-6">
+            <h3 class="font-medium text-gray-700 mb-3">Qirqish</h3>
+            <div class="bg-gray-100 rounded-lg p-3">
+              <div class="flex items-center justify-between mb-2">
+                <span id="currentTime">0:00</span>
+                <span id="durationTime">0:00</span>
+              </div>
+              <input type="range" id="trimRange" min="0" max="100" value="0" class="w-full h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer">
+              <div class="flex justify-between mt-3">
+                <button id="setStart" class="text-sm bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded">Boshlanishi</button>
+                <button id="setEnd" class="text-sm bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded">Tugashi</button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Video Info Form -->
+          <form id="videoInfoForm" class="space-y-4">
+            <div>
+              <label for="videoTitle" class="block text-sm font-medium text-gray-700 mb-1">Sarlavha</label>
+              <input type="text" id="videoTitle" name="title" required placeholder="Video sarlavhasi" 
+                class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-red-300 focus:border-transparent">
+            </div>
+            
+            <div>
+              <label for="videoDesc" class="block text-sm font-medium text-gray-700 mb-1">Tavsif</label>
+              <textarea id="videoDesc" name="description" rows="3" placeholder="Video haqida qisqacha..." 
+                class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-red-300 focus:border-transparent"></textarea>
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Video turi</label>
+              <div class="flex space-x-4">
+                <label class="inline-flex items-center">
+                  <input type="radio" name="videoType" value="normal" checked class="form-radio text-red-600">
+                  <span class="ml-2">Oddiy video</span>
+                </label>
+                <label class="inline-flex items-center">
+                  <input type="radio" name="videoType" value="short" class="form-radio text-red-600">
+                  <span class="ml-2">Short video</span>
+                </label>
+              </div>
+            </div>
+            
+            <div class="pt-4">
+              <button type="submit" id="uploadBtn" class="w-full bg-red-600 hover:bg-red-700 text-white py-3 px-4 rounded-lg flex items-center justify-center space-x-2">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <span>Video yuklash</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Loading Modal -->
+  <div id="loadingModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
+    <div class="bg-white rounded-xl p-6 max-w-sm text-center">
+      <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600 mx-auto mb-4"></div>
+      <h3 class="text-lg font-medium mb-2">Video yuklanmoqda...</h3>
+      <p class="text-gray-600" id="uploadProgress">Tayyorlanmoqda</p>
+    </div>
+  </div>
+
+  <!-- Success Modal -->
+  <div id="successModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
+    <div class="bg-white rounded-xl p-6 max-w-sm text-center">
+      <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+        <i class="fas fa-check text-green-600 text-2xl"></i>
+      </div>
+      <h3 class="text-lg font-medium mb-2">Muvaffaqiyatli yuklandi!</h3>
+      <p class="text-gray-600 mb-4">Video platformada ko'rinishi uchun bir necha daqiqa vaqt ketishi mumkin.</p>
+      <div class="flex space-x-3">
+        <button onclick="window.location.href='/'" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 px-4 rounded-lg">
+          Bosh sahifa
+        </button>
+        <button onclick="window.location.href=`/videos/${videoId}`" class="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-lg">
+          Videoni ko'rish
+        </button>
+      </div>
     </div>
   </div>
 
   <script>
-    const userId = localStorage.getItem("userId");
-if (!userId) window.location.href = "../login/bachelor-login.html";
+    // DOM elementlari
+    const startCameraBtn = document.getElementById('startCamera');
+    const startRecordingBtn = document.getElementById('startRecording');
+    const stopRecordingBtn = document.getElementById('stopRecording');
+    const uploadFileBtn = document.getElementById('uploadFile');
+    const fileInput = document.getElementById('fileInput');
+    const videoPreviewContainer = document.getElementById('videoPreviewContainer');
+    const videoPreview = document.getElementById('videoPreview');
+    const cancelPreviewBtn = document.getElementById('cancelPreview');
+    const recordingIndicator = document.getElementById('recordingIndicator');
+    const editingSection = document.getElementById('editingSection');
+    const videoInfoForm = document.getElementById('videoInfoForm');
+    const uploadBtn = document.getElementById('uploadBtn');
+    const loadingModal = document.getElementById('loadingModal');
+    const successModal = document.getElementById('successModal');
+    const appliedFilter = document.getElementById('appliedFilter');
+    const filterOptions = document.querySelectorAll('.filter-option');
+    
+    // Video yozish uchun o'zgaruvchilar
+    let mediaStream = null;
+    let mediaRecorder = null;
+    let recordedChunks = [];
+    let currentFilter = 'none';
+    let videoId = null;
+    let videoBlob = null;
+    let videoStartTime = 0;
+    let videoEndTime = 0;
 
-const container = document.getElementById("lesson-container");
-
-fetch("https://school-b97p.onrender.com/api/lessons")
-  .then(res => res.json())
-  .then(lessons => {
-    const bachelorLessons = lessons.filter(l => l.category === 'bachelor');
-    renderLessons(bachelorLessons);
-  });
-
-function renderLessons(lessons) {
-  container.innerHTML = '';
-  lessons.forEach(lesson => {
-    const liked = lesson.likes.includes(userId);
-    const card = document.createElement('div');
-    card.className = "bg-white p-6 rounded-xl shadow-lg";
-
-    card.innerHTML = `
-      <h3 class="text-xl font-semibold text-purple-700 mb-2">${lesson.title}</h3>
-      <p class="text-gray-500 italic mb-2">📂 Kategoriya: <span class="text-indigo-700 font-medium">${lesson.category || 'Umumiy'}</span></p>
-      <p class="text-gray-700 mb-2">${lesson.description}</p>
-      <p class="text-sm text-gray-500">${lesson.content}</p>
-      <div class="flex items-center gap-4 mt-4">
-        <button class="likeBtn text-${liked ? 'red' : 'gray'}-600 font-semibold" data-id="${lesson.id}">
-          ❤️ Like (<span class="like-count text-blue-600 underline cursor-pointer" data-id="${lesson.id}">${lesson.likes.length}</span>)
-        </button>
-        <button class="commentToggle text-blue-600 font-semibold" data-id="${lesson.id}">💬 Izoh</button>
-      </div>
-      <div class="hidden commentBox mt-4" id="commentBox-${lesson.id}">
-        <input class="border w-full p-2 rounded-lg commentInput" placeholder="Izoh..." />
-        <button class="sendComment bg-blue-600 text-white px-4 py-1 rounded mt-2" data-id="${lesson.id}">Yuborish</button>
-        <div class="text-sm text-gray-600 mt-3">
-          ${lesson.comments.map(c => `<p>🧑 <a href="../profile/profile.html?user=${c.userId}" class="text-blue-600 hover:underline">${c.userId}</a>: ${c.text}</p>`).join('')}
-        </div>
-      </div>
-    `;
-    container.appendChild(card);
-  });
-}
-
-// Event delegation
-container.addEventListener("click", async (e) => {
-  const id = e.target.dataset.id;
-  if (e.target.classList.contains("likeBtn")) {
-    await fetch(`https://school-b97p.onrender.com/api/lessons/${id}/like`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId })
+    // Kamerani ochish
+    startCameraBtn.addEventListener('click', async () => {
+      try {
+        mediaStream = await navigator.mediaDevices.getUserMedia({ 
+          video: {
+            width: { ideal: 1280 },
+            height: { ideal: 720 },
+            facingMode: 'user'
+          }, 
+          audio: true 
+        });
+        
+        videoPreview.srcObject = mediaStream;
+        videoPreviewContainer.classList.remove('hidden');
+        startCameraBtn.classList.add('hidden');
+        startRecordingBtn.classList.remove('hidden');
+        editingSection.classList.add('hidden');
+        
+        // Kamerani ko'rsatish
+        videoPreview.muted = true;
+        videoPreview.play();
+      } catch (error) {
+        alert(`Kamerani ochishda xatolik: ${error.message}`);
+        console.error('Camera error:', error);
+      }
     });
-    location.reload();
-  }
 
-  if (e.target.classList.contains("commentToggle")) {
-    document.getElementById(`commentBox-${id}`).classList.toggle("hidden");
-  }
-
-  if (e.target.classList.contains("sendComment")) {
-    const input = document.querySelector(`#commentBox-${id} .commentInput`);
-    const text = input.value.trim();
-    if (!text) return;
-    await fetch(`https://school-b97p.onrender.com/api/lessons/${id}/comment`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId, text })
+    // Yozishni boshlash
+    startRecordingBtn.addEventListener('click', () => {
+      recordedChunks = [];
+      mediaRecorder = new MediaRecorder(mediaStream);
+      
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          recordedChunks.push(event.data);
+        }
+      };
+      
+      mediaRecorder.onstop = () => {
+        videoBlob = new Blob(recordedChunks, { type: 'video/mp4' });
+        const videoURL = URL.createObjectURL(videoBlob);
+        
+        videoPreview.srcObject = null;
+        videoPreview.src = videoURL;
+        videoPreview.controls = true;
+        videoPreview.muted = false;
+        
+        recordingIndicator.classList.add('hidden');
+        stopRecordingBtn.classList.add('hidden');
+        editingSection.classList.remove('hidden');
+        
+        // Video davomiyligini o'rnatish
+        videoPreview.onloadedmetadata = () => {
+          videoEndTime = videoPreview.duration;
+          document.getElementById('durationTime').textContent = formatTime(videoPreview.duration);
+        };
+      };
+      
+      mediaRecorder.start(100); // Har 100ms da data yig'ish
+      recordingIndicator.classList.remove('hidden');
+      startRecordingBtn.classList.add('hidden');
+      stopRecordingBtn.classList.remove('hidden');
     });
-    input.value = "";
-    location.reload();
-  }
 
-  if (e.target.classList.contains("like-count")) {
-    const lessons = await fetch("https://school-b97p.onrender.com/api/lessons").then(r => r.json());
-    const lesson = lessons.find(l => l.id === id);
-    const likersList = document.getElementById("likersList");
-    likersList.innerHTML = lesson.likes.map(u => `<li><a href="../profile/profile.html?user=${u}" class="text-blue-600 hover:underline">${u}</a></li>`).join('');
-    document.getElementById("likersModal").classList.remove("hidden");
-  }
-});
+    // Yozishni to'xtatish
+    stopRecordingBtn.addEventListener('click', () => {
+      mediaRecorder.stop();
+      mediaStream.getTracks().forEach(track => track.stop());
+    });
 
-function closeLikersModal() {
-  document.getElementById("likersModal").classList.add("hidden");
-}
+    // Fayl yuklash
+    uploadFileBtn.addEventListener('click', () => {
+      fileInput.click();
+    });
+    
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files.length > 0) {
+        const file = e.target.files[0];
+        if (!file.type.includes('video')) {
+          alert('Iltimos, faqat video fayllarni yuklang!');
+          return;
+        }
+        
+        videoBlob = file;
+        const videoURL = URL.createObjectURL(file);
+        
+        videoPreview.srcObject = null;
+        videoPreview.src = videoURL;
+        videoPreview.controls = true;
+        videoPreviewContainer.classList.remove('hidden');
+        editingSection.classList.remove('hidden');
+        
+        // Video davomiyligini o'rnatish
+        videoPreview.onloadedmetadata = () => {
+          videoEndTime = videoPreview.duration;
+          document.getElementById('durationTime').textContent = formatTime(videoPreview.duration);
+        };
+      }
+    });
+
+    // Previewni bekor qilish
+    cancelPreviewBtn.addEventListener('click', () => {
+      if (mediaStream) {
+        mediaStream.getTracks().forEach(track => track.stop());
+        mediaStream = null;
+      }
+      
+      if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        mediaRecorder.stop();
+      }
+      
+      videoPreview.src = '';
+      videoPreview.srcObject = null;
+      videoPreviewContainer.classList.add('hidden');
+      recordingIndicator.classList.add('hidden');
+      startRecordingBtn.classList.add('hidden');
+      stopRecordingBtn.classList.add('hidden');
+      startCameraBtn.classList.remove('hidden');
+      editingSection.classList.add('hidden');
+      videoBlob = null;
+    });
+
+    // Vaqtni formatlash
+    function formatTime(seconds) {
+      const mins = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+      return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+    }
+
+    // Filterlarni qo'llash
+    filterOptions.forEach(option => {
+      option.addEventListener('click', () => {
+        const filter = option.dataset.filter;
+        currentFilter = filter;
+        
+        // Active klassini o'zgartirish
+        filterOptions.forEach(opt => opt.classList.remove('active'));
+        option.classList.add('active');
+        
+        // Filterni video'ga qo'llash
+        if (filter === 'none') {
+          videoPreview.style.filter = '';
+          appliedFilter.classList.add('hidden');
+        } else {
+          let filterValue = '';
+          switch(filter) {
+            case 'sepia': filterValue = 'sepia(100%)'; break;
+            case 'grayscale': filterValue = 'grayscale(100%)'; break;
+            case 'contrast': filterValue = 'contrast(200%)'; break;
+            case 'hue': filterValue = 'hue-rotate(90deg)'; break;
+            case 'blur': filterValue = 'blur(2px)'; break;
+            case 'brightness': filterValue = 'brightness(1.5)'; break;
+            case 'saturate': filterValue = 'saturate(300%)'; break;
+          }
+          
+          videoPreview.style.filter = filterValue;
+          appliedFilter.textContent = option.querySelector('span').textContent;
+          appliedFilter.classList.remove('hidden');
+        }
+      });
+    });
+
+    // Video qirqish
+    document.getElementById('trimRange').addEventListener('input', (e) => {
+      const time = (e.target.value / 100) * videoPreview.duration;
+      document.getElementById('currentTime').textContent = formatTime(time);
+      videoPreview.currentTime = time;
+    });
+
+    videoPreview.addEventListener('timeupdate', () => {
+      const range = document.getElementById('trimRange');
+      const percent = (videoPreview.currentTime / videoPreview.duration) * 100;
+      range.value = percent;
+      document.getElementById('currentTime').textContent = formatTime(videoPreview.currentTime);
+    });
+
+    document.getElementById('setStart').addEventListener('click', () => {
+      videoStartTime = videoPreview.currentTime;
+      alert(`Boshlanish vaqti: ${formatTime(videoStartTime)} ga o'rnatildi`);
+    });
+
+    document.getElementById('setEnd').addEventListener('click', () => {
+      videoEndTime = videoPreview.currentTime;
+      alert(`Tugash vaqti: ${formatTime(videoEndTime)} ga o'rnatildi`);
+    });
+
+    // Video yuklash
+    videoInfoForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const title = document.getElementById('videoTitle').value;
+      const description = document.getElementById('videoDesc').value;
+      const videoType = document.querySelector('input[name="videoType"]:checked').value;
+      
+      if (!videoBlob) {
+        alert('Iltimos, avval video yozing yoki yuklang!');
+        return;
+      }
+      
+      if (!title) {
+        alert('Video sarlavhasi kiritilishi shart!');
+        return;
+      }
+      
+      loadingModal.classList.remove('hidden');
+      document.getElementById('uploadProgress').textContent = "Video tayyorlanmoqda...";
+      
+      try {
+        // Video'ni qirqish kerak bo'lsa
+        let finalBlob = videoBlob;
+        if (videoStartTime > 0 || videoEndTime < videoPreview.duration) {
+          document.getElementById('uploadProgress').textContent = "Video qirqilmoqda...";
+          finalBlob = await trimVideo(videoBlob, videoStartTime, videoEndTime);
+        }
+        
+        // FormData yaratish
+        const formData = new FormData();
+        formData.append('video', finalBlob, `${Date.now()}.mp4`);
+        formData.append('title', title);
+        formData.append('description', description);
+        formData.append('type', videoType);
+        formData.append('filter', currentFilter);
+        
+        // Yuklash progressi
+        const xhr = new XMLHttpRequest();
+        xhr.upload.onprogress = (e) => {
+          if (e.lengthComputable) {
+            const percent = Math.round((e.loaded / e.total) * 100);
+            document.getElementById('uploadProgress').textContent = `Yuklanmoqda: ${percent}%`;
+          }
+        };
+        
+        // Backendga yuborish
+        xhr.open('POST', '/api/videos/upload', true);
+        xhr.onload = () => {
+          if (xhr.status === 200) {
+            const response = JSON.parse(xhr.responseText);
+            videoId = response.videoId;
+            
+            loadingModal.classList.add('hidden');
+            successModal.classList.remove('hidden');
+          } else {
+            throw new Error(xhr.statusText);
+          }
+        };
+        
+        xhr.onerror = () => {
+          throw new Error('Server bilan aloqa xatosi');
+        };
+        
+        xhr.send(formData);
+      } catch (error) {
+        loadingModal.classList.add('hidden');
+        alert(`Video yuklashda xatolik: ${error.message}`);
+        console.error('Upload error:', error);
+      }
+    });
+
+    // Video'ni qirqish funksiyasi (simplyfied version)
+    async function trimVideo(blob, start, end) {
+      // Haqiqiy loyihada bu videoni qirqish uchun ffmpeg.js yoki shunga o'xshash kutubxonadan foydalanish kerak
+      // Bu yerda soddalashtirilgan versiya
+      return new Promise((resolve) => {
+        // Demo uchun asl blob'ni qaytaramiz
+        setTimeout(() => resolve(blob), 1000);
+      });
+    }
+
+    // Foydalanuvchini tekshirish
+    document.addEventListener('DOMContentLoaded', () => {
+      const user = JSON.parse(localStorage.getItem('user'));
+      if (!user) {
+        window.location.href = '/login';
+      }
+    });
   </script>
 </body>
 </html>
