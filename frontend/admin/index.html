@@ -294,7 +294,7 @@
 
     async function loadStats() {
       try {
-        const res = await fetch('http://localhost:3000/api/admin/stats');
+        const res = await fetch('https://school-b97p.onrender.com/api/admin/stats');
         const stats = await res.json();
         
         document.getElementById('userCount').textContent = stats.totalUsers;
@@ -313,7 +313,7 @@
     // Coin so'rovlarini yuklash
     async function loadCoinRequests() {
       try {
-        const res = await fetch('/api/coin/requests');
+        const res = await fetch('https://school-b97p.onrender.com/api/coin/requests');
         const requests = await res.json();
         const container = document.getElementById('coin-requests-body');
         
@@ -357,7 +357,7 @@
         confirmAction.disabled = true;
         
         try {
-          const res = await fetch('/api/coin/approve', {
+          const res = await fetch('https://school-b97p.onrender.com/api/coin/approve', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({ userId })
@@ -392,7 +392,7 @@
         confirmAction.disabled = true;
         
         try {
-          const res = await fetch('/api/coin/reject', {
+          const res = await fetch('https://school-b97p.onrender.com/api/coin/reject', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({ userId })
@@ -420,7 +420,7 @@
 
     async function loadLessons() {
       try {
-        const res = await fetch('http://localhost:3000/api/admin/lessons');
+        const res = await fetch('https://school-b97p.onrender.com/api/admin/lessons');
         const lessons = await res.json();
         const container = document.getElementById('lessonList');
         
@@ -465,7 +465,7 @@
         confirmAction.disabled = true;
         
         try {
-          await fetch(`http://localhost:3000/api/admin/delete-lesson/${lessonId}`, { 
+          await fetch(`https://school-b97p.onrender.com/api/admin/delete-lesson/${lessonId}`, { 
             method: 'DELETE' 
           });
           
@@ -487,7 +487,7 @@
 
     async function loadUsers() {
       try {
-        const res = await fetch('http://localhost:3000/api/admin/users');
+        const res = await fetch('https://school-b97p.onrender.com/api/admin/users');
         const users = await res.json();
         const container = document.getElementById('userList');
         
@@ -544,7 +544,7 @@
         confirmAction.disabled = true;
         
         try {
-          await fetch(`http://localhost:3000/api/admin/delete-user/${userId}`, { 
+          await fetch(`https://school-b97p.onrender.com/api/admin/delete-user/${userId}`, { 
             method: 'DELETE' 
           });
           
