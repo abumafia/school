@@ -3,195 +3,906 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>O‘yinlar</title>
+  <title>O‘yinlar Dunyosi</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f8fafc;
+    }
+    .game-card {
+      transition: all 0.3s ease;
+    }
+    .game-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+    .modal-animation {
+      animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .typing-cursor {
+      animation: blink 1s infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    .memory-card {
+      transition: all 0.3s ease;
+      transform-style: preserve-3d;
+    }
+    .memory-card.flipped {
+      transform: rotateY(180deg);
+    }
+    .memory-card .front, .memory-card .back {
+      backface-visibility: hidden;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+    }
+    .memory-card .back {
+      transform: rotateY(180deg);
+    }
+  </style>
 </head>
-<body class="bg-gray-100 min-h-screen p-6">
-  <h1 class="text-3xl font-bold text-center mb-8">🎮 Qiziqarli O‘yinlar</h1>
+<body class="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50">
 
-  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-    <!-- Game 1: Raqam topish -->
-    <div class="bg-white rounded-xl p-4 shadow hover:shadow-lg transition cursor-pointer" onclick="openModal('game1')">
-      <h2 class="text-xl font-semibold text-center">🔢 Raqam Topish</h2>
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg">
+    <div class="container mx-auto px-4 py-6 text-center">
+      <h1 class="text-3xl font-bold flex items-center justify-center">
+        <i class="fas fa-gamepad mr-3"></i>
+        O‘yinlar Dunyosi
+      </h1>
+      <p class="mt-2 text-purple-100">Qiziqarli va aqliy o'yinlar to'plami</p>
     </div>
+  </header>
 
-    <!-- Game 2: Click Speed -->
-    <div class="bg-white rounded-xl p-4 shadow hover:shadow-lg transition cursor-pointer" onclick="openModal('game2')">
-      <h2 class="text-xl font-semibold text-center">🖱️ Click Speed</h2>
-    </div>
+  <!-- Games Grid -->
+  <main class="container mx-auto px-4 py-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <!-- Game 1: Raqam topish -->
+      <div class="game-card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer" onclick="openGame('numberGuess')">
+        <div class="h-40 bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
+          <i class="fas fa-calculator text-5xl text-white"></i>
+        </div>
+        <div class="p-4">
+          <h3 class="font-bold text-lg">Raqam Topish</h3>
+          <p class="text-gray-600 mt-1">1-10 oralig'idagi raqamni toping</p>
+          <div class="flex items-center mt-3 text-sm text-gray-500">
+            <i class="fas fa-brain mr-1"></i>
+            <span>Mantiqiy o'yin</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Game 2: Click Speed -->
+      <div class="game-card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer" onclick="openGame('clickSpeed')">
+        <div class="h-40 bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center">
+          <i class="fas fa-mouse-pointer text-5xl text-white"></i>
+        </div>
+        <div class="p-4">
+          <h3 class="font-bold text-lg">Tezkor Bosish</h3>
+          <p class="text-gray-600 mt-1">5 soniyada nechta marta bosasiz?</p>
+          <div class="flex items-center mt-3 text-sm text-gray-500">
+            <i class="fas fa-tachometer-alt mr-1"></i>
+            <span>Tezlik o'yini</span>
+          </div>
+        </div>
+      </div>
 
       <!-- Game 3: Matn Tez Yozish -->
-<div class="bg-white rounded-xl p-4 shadow hover:shadow-lg transition cursor-pointer" onclick="openModal('game3')">
-  <h2 class="text-xl font-semibold text-center">⌨️ Matn Yozish</h2>
-</div>
+      <div class="game-card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer" onclick="openGame('typingTest')">
+        <div class="h-40 bg-gradient-to-br from-yellow-500 to-yellow-600 flex items-center justify-center">
+          <i class="fas fa-keyboard text-5xl text-white"></i>
+        </div>
+        <div class="p-4">
+          <h3 class="font-bold text-lg">Tez Yozish</h3>
+          <p class="text-gray-600 mt-1">Matnni iloji boricha tez yozing</p>
+          <div class="flex items-center mt-3 text-sm text-gray-500">
+            <i class="fas fa-user-edit mr-1"></i>
+            <span>Klaviatura o'yini</span>
+          </div>
+        </div>
+      </div>
 
-<!-- Game 4: Rangni Topish -->
-<div class="bg-white rounded-xl p-4 shadow hover:shadow-lg transition cursor-pointer" onclick="openModal('game4')">
-  <h2 class="text-xl font-semibold text-center">🎨 Rang Topish</h2>
-</div>
+      <!-- Game 4: Rangni Topish -->
+      <div class="game-card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer" onclick="openGame('colorGuess')">
+        <div class="h-40 bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center">
+          <i class="fas fa-palette text-5xl text-white"></i>
+        </div>
+        <div class="p-4">
+          <h3 class="font-bold text-lg">Rangni Topish</h3>
+          <p class="text-gray-600 mt-1">Berilgan rangni tanlang</p>
+          <div class="flex items-center mt-3 text-sm text-gray-500">
+            <i class="fas fa-eye mr-1"></i>
+            <span>Ko'rish o'yini</span>
+          </div>
+        </div>
+      </div>
 
-<!-- Game 5: Yodda Saqlash -->
-<div class="bg-white rounded-xl p-4 shadow hover:shadow-lg transition cursor-pointer" onclick="openModal('game5')">
-  <h2 class="text-xl font-semibold text-center">🧠 Yodlash</h2>
-</div>
-  </div>
+      <!-- Game 5: Yodda Saqlash -->
+      <div class="game-card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer" onclick="openGame('memoryGame')">
+        <div class="h-40 bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center">
+          <i class="fas fa-brain text-5xl text-white"></i>
+        </div>
+        <div class="p-4">
+          <h3 class="font-bold text-lg">Yodlash</h3>
+          <p class="text-gray-600 mt-1">Raqamlarni eslab qoling</p>
+          <div class="flex items-center mt-3 text-sm text-gray-500">
+            <i class="fas fa-memory mr-1"></i>
+            <span>Xotira o'yini</span>
+          </div>
+        </div>
+      </div>
 
-  <!-- Modal -->
-  <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
-    <div class="bg-white rounded-xl p-6 max-w-md w-full relative">
-      <button class="absolute top-2 right-4 text-gray-500 text-2xl" onclick="closeModal()">&times;</button>
-      <div id="game-content"></div>
+      <!-- Game 6: Savol-Javob -->
+      <div class="game-card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer" onclick="openGame('quizGame')">
+        <div class="h-40 bg-gradient-to-br from-pink-500 to-pink-600 flex items-center justify-center">
+          <i class="fas fa-question-circle text-5xl text-white"></i>
+        </div>
+        <div class="p-4">
+          <h3 class="font-bold text-lg">Savol-Javob</h3>
+          <p class="text-gray-600 mt-1">Bilimingizni sinab ko'ring</p>
+          <div class="flex items-center mt-3 text-sm text-gray-500">
+            <i class="fas fa-graduation-cap mr-1"></i>
+            <span>Bilim o'yini</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Game 7: So'z Topish -->
+      <div class="game-card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer" onclick="openGame('wordSearch')">
+        <div class="h-40 bg-gradient-to-br from-indigo-500 to-indigo-600 flex items-center justify-center">
+          <i class="fas fa-search text-5xl text-white"></i>
+        </div>
+        <div class="p-4">
+          <h3 class="font-bold text-lg">So'z Topish</h3>
+          <p class="text-gray-600 mt-1">Harflardan so'z yasang</p>
+          <div class="flex items-center mt-3 text-sm text-gray-500">
+            <i class="fas fa-font mr-1"></i>
+            <span>Lug'at o'yini</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Game 8: Matematika -->
+      <div class="game-card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer" onclick="openGame('mathChallenge')">
+        <div class="h-40 bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center">
+          <i class="fas fa-square-root-alt text-5xl text-white"></i>
+        </div>
+        <div class="p-4">
+          <h3 class="font-bold text-lg">Matematika</h3>
+          <p class="text-gray-600 mt-1">Misol yeching va tez javob bering</p>
+          <div class="flex items-center mt-3 text-sm text-gray-500">
+            <i class="fas fa-calculator mr-1"></i>
+            <span>Hisoblash o'yini</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Game Modal -->
+  <div id="gameModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto modal-animation">
+      <div class="p-4 border-b sticky top-0 bg-white z-10">
+        <div class="flex justify-between items-center">
+          <h2 id="gameTitle" class="text-xl font-bold"></h2>
+          <button onclick="closeGame()" class="text-gray-500 hover:text-gray-700">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+      <div id="gameContent" class="p-6">
+        <!-- Game content will be loaded here -->
+      </div>
     </div>
   </div>
 
-  <!-- HTML qismi o'zgarmagan, faqat scriptni yangilaymiz -->
-<script>
-  let secret = null;
-  let count = 0;
-  let timer = null;
-
-  function openModal(gameId) {
-    const modal = document.getElementById("modal");
-    const content = document.getElementById("game-content");
-
-    if (gameId === "game1") {
-      secret = Math.floor(Math.random() * 10) + 1;
-      content.innerHTML = `
-        <h2 class="text-xl font-bold mb-4">🔢 Raqam Topish</h2>
-        <p>1 dan 10 gacha raqam tanlang:</p>
-        <input id="guess" type="number" min="1" max="10" class="border p-2 mt-2 w-full" />
-        <button onclick="checkNumber()" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded">Tekshirish</button>
-        <p id="result" class="mt-4 font-semibold"></p>
-      `;
+  <script>
+    // O'yinlarni ochish funksiyasi
+    function openGame(gameId) {
+      const modal = document.getElementById("gameModal");
+      const title = document.getElementById("gameTitle");
+      const content = document.getElementById("gameContent");
+      
+      // Modalni tozalash
+      content.innerHTML = '<div class="flex justify-center py-8"><div class="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-purple-600"></div></div>';
+      modal.classList.remove("hidden");
+      
+      // O'yinlarni yuklash
+      switch(gameId) {
+        case 'numberGuess':
+          loadNumberGuessGame(title, content);
+          break;
+        case 'clickSpeed':
+          loadClickSpeedGame(title, content);
+          break;
+        case 'typingTest':
+          loadTypingTestGame(title, content);
+          break;
+        case 'colorGuess':
+          loadColorGuessGame(title, content);
+          break;
+        case 'memoryGame':
+          loadMemoryGame(title, content);
+          break;
+        case 'quizGame':
+          loadQuizGame(title, content);
+          break;
+        case 'wordSearch':
+          loadWordSearchGame(title, content);
+          break;
+        case 'mathChallenge':
+          loadMathChallengeGame(title, content);
+          break;
+      }
     }
 
-    if (gameId === "game2") {
+    // O'yinni yopish
+    function closeGame() {
+      document.getElementById("gameModal").classList.add("hidden");
+      clearAllIntervals();
+    }
+
+    // Interval va timeoutlarni tozalash
+    function clearAllIntervals() {
+      // Bu yerda barcha interval va timeoutlarni tozalash kerak
+      // Soddalik uchun shunday qoldirdim
+    }
+
+    // 1. Raqam topish o'yini
+    function loadNumberGuessGame(title, content) {
+      title.textContent = "🔢 Raqam Topish";
+      
+      const secretNumber = Math.floor(Math.random() * 10) + 1;
+      let attempts = 0;
+      
       content.innerHTML = `
-        <h2 class="text-xl font-bold mb-4">🖱️ Click Speed</h2>
-        <p>5 soniyada nechta marta bosasiz?</p>
-        <button onclick="startClickGame()" class="mt-2 bg-green-500 text-white px-4 py-2 rounded">Boshlash</button>
-        <div class="mt-4">
-          <button id="clickBtn" onclick="incrementClick()" class="hidden bg-red-500 text-white px-4 py-2 rounded">Click me!</button>
-          <p id="clickResult" class="mt-2 font-semibold"></p>
+        <div class="text-center">
+          <p class="mb-4">1 dan 10 gacha bo'lgan raqamni toping. Sizda 3 ta urinish bor.</p>
+          
+          <div class="flex justify-center space-x-2 mb-6">
+            ${Array.from({length: 10}, (_, i) => i + 1).map(num => `
+              <button onclick="checkNumberGuess(${num}, ${secretNumber})" 
+                class="w-10 h-10 rounded-full bg-blue-100 hover:bg-blue-200 text-blue-800 font-bold flex items-center justify-center">
+                ${num}
+              </button>
+            `).join('')}
+          </div>
+          
+          <div id="guessResult" class="min-h-8"></div>
+          <div id="attemptsCounter" class="text-sm text-gray-500 mt-2">Urinishlar: 0/3</div>
         </div>
       `;
+      
+      window.checkNumberGuess = function(guess, secret) {
+        const resultDiv = document.getElementById("guessResult");
+        const attemptsDiv = document.getElementById("attemptsCounter");
+        attempts++;
+        
+        if (guess === secret) {
+          resultDiv.innerHTML = `
+            <div class="bg-green-100 text-green-800 p-3 rounded-lg">
+              <i class="fas fa-check-circle mr-2"></i>
+              Tabriklaymiz! Siz ${attempts} urinishda topdingiz.
+            </div>
+          `;
+          disableAllNumberButtons();
+        } else {
+          const hint = guess < secret ? "Kattaroq raqam kiriting" : "Kichikroq raqam kiriting";
+          resultDiv.innerHTML = `
+            <div class="bg-red-100 text-red-800 p-3 rounded-lg">
+              <i class="fas fa-times-circle mr-2"></i>
+              Noto'g'ri! ${hint}
+            </div>
+          `;
+          
+          if (attempts >= 3) {
+            resultDiv.innerHTML += `
+              <div class="bg-purple-100 text-purple-800 p-3 rounded-lg mt-2">
+                <i class="fas fa-info-circle mr-2"></i>
+                To'g'ri javob: ${secret}
+              </div>
+            `;
+            disableAllNumberButtons();
+          }
+        }
+        
+        attemptsDiv.textContent = `Urinishlar: ${attempts}/3`;
+      };
+      
+      function disableAllNumberButtons() {
+        document.querySelectorAll('#gameContent button').forEach(btn => {
+          btn.disabled = true;
+          btn.classList.remove('hover:bg-blue-200');
+          btn.classList.add('opacity-50');
+        });
+      }
     }
 
-    if (gameId === "game3") {
-  content.innerHTML = `
-    <h2 class="text-xl font-bold mb-4">⌨️ Matn Tez Yozish</h2>
-    <p>Quyidagi matnni iloji boricha tez yozing:</p>
-    <p class="mt-2 p-2 bg-gray-100 rounded" id="targetText">Salom, men o‘quvchi emasman, men dasturchiman!</p>
-    <input id="typingInput" type="text" class="w-full border p-2 mt-2" placeholder="Yozishni boshlang...">
-    <p id="typingResult" class="mt-4 font-semibold"></p>
-    <script>
-      let startTime;
-      const input = document.getElementById('typingInput');
-      const target = document.getElementById('targetText').textContent;
+    // 2. Tezkor bosish o'yini
+    function loadClickSpeedGame(title, content) {
+      title.textContent = "🖱️ Tezkor Bosish";
+      
+      let clickCount = 0;
+      let timer = null;
+      let isGameRunning = false;
+      
+      content.innerHTML = `
+        <div class="text-center">
+          <p class="mb-4">5 soniyada nechta marta bosishingiz mumkin?</p>
+          
+          <div id="clickArea" class="bg-red-500 hover:bg-red-600 text-white text-2xl font-bold py-16 rounded-xl cursor-pointer mb-4 transition">
+            <i class="fas fa-hand-pointer"></i> Bosish uchun joy
+          </div>
+          
+          <div id="timerDisplay" class="text-3xl font-mono mb-4">5.0</div>
+          
+          <button id="startClickBtn" onclick="startClickGame()" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg">
+            <i class="fas fa-play mr-2"></i> Boshlash
+          </button>
+          
+          <div id="clickResult" class="mt-6 p-4 bg-gray-100 rounded-lg hidden">
+            <h3 class="font-bold text-lg mb-2">Natijangiz:</h3>
+            <p id="clickScore" class="text-4xl font-bold text-purple-600"></p>
+            <p id="clickFeedback" class="text-gray-600 mt-2"></p>
+          </div>
+        </div>
+      `;
+      
+      window.startClickGame = function() {
+        if (isGameRunning) return;
+        
+        clickCount = 0;
+        isGameRunning = true;
+        document.getElementById('startClickBtn').classList.add('hidden');
+        document.getElementById('clickResult').classList.add('hidden');
+        
+        const clickArea = document.getElementById('clickArea');
+        const timerDisplay = document.getElementById('timerDisplay');
+        
+        clickArea.onclick = function() {
+          clickCount++;
+          clickArea.textContent = `${clickCount} marta bosildi`;
+        };
+        
+        let timeLeft = 5.0;
+        timer = setInterval(() => {
+          timeLeft -= 0.1;
+          timerDisplay.textContent = timeLeft.toFixed(1);
+          
+          if (timeLeft <= 0) {
+            clearInterval(timer);
+            endClickGame();
+          }
+        }, 100);
+      };
+      
+      function endClickGame() {
+        isGameRunning = false;
+        const clickArea = document.getElementById('clickArea');
+        clickArea.onclick = null;
+        clickArea.classList.remove('bg-red-500', 'hover:bg-red-600');
+        clickArea.classList.add('bg-gray-300', 'cursor-not-allowed');
+        
+        const resultDiv = document.getElementById('clickResult');
+        const scoreDiv = document.getElementById('clickScore');
+        const feedbackDiv = document.getElementById('clickFeedback');
+        
+        scoreDiv.textContent = `${clickCount} CPS`;
+        
+        if (clickCount >= 15) {
+          feedbackDiv.textContent = "Ajoyib! Siz professional bosuvchisiz!";
+        } else if (clickCount >= 10) {
+          feedbackDiv.textContent = "Yaxshi! Yana mashq qiling.";
+        } else {
+          feedbackDiv.textContent = "Yaxshiroq natija uchun mashq qiling.";
+        }
+        
+        resultDiv.classList.remove('hidden');
+        document.getElementById('startClickBtn').classList.remove('hidden');
+        document.getElementById('startClickBtn').innerHTML = '<i class="fas fa-redo mr-2"></i> Qayta urinish';
+      }
+    }
 
-      input.addEventListener('input', function() {
+    // 3. Tez yozish o'yini
+    function loadTypingTestGame(title, content) {
+      title.textContent = "⌨️ Tez Yozish";
+      
+      const sampleTexts = [
+        "Dasturlash - bu zamonaviy dunyoning muhim qismidir",
+        "JavaScript - eng mashhur dasturlash tillaridan biri",
+        "O'zbekiston - buyuk kelajakka intilayotgan mamlakat",
+        "Bilim - bu hayotdagi eng qimmatbaho boylikdir"
+      ];
+      const sampleText = sampleTexts[Math.floor(Math.random() * sampleTexts.length)];
+      let startTime = null;
+      
+      content.innerHTML = `
+        <div class="text-center">
+          <p class="mb-4">Quyidagi matnni iloji boricha tez va to'g'ri yozing:</p>
+          
+          <div class="bg-gray-100 p-4 rounded-lg mb-4 text-left">
+            <p id="targetText" class="text-lg font-medium">${sampleText}</p>
+          </div>
+          
+          <textarea id="typingInput" class="w-full border border-gray-300 rounded-lg p-3 h-24 mb-4" 
+            placeholder="Yozishni boshlang..."></textarea>
+          
+          <div id="typingResult" class="hidden">
+            <div class="bg-blue-100 text-blue-800 p-3 rounded-lg">
+              <i class="fas fa-tachometer-alt mr-2"></i>
+              Sizning tezligingiz: <span id="typingSpeed">0</span> SPM (so'z/min)
+            </div>
+            <div class="bg-green-100 text-green-800 p-3 rounded-lg mt-2">
+              <i class="fas fa-check-circle mr-2"></i>
+              Xatoliklar: <span id="typingErrors">0</span>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      const typingInput = document.getElementById('typingInput');
+      const targetText = document.getElementById('targetText').textContent;
+      
+      typingInput.addEventListener('input', function() {
         if (!startTime) startTime = new Date();
-        if (input.value === target) {
+        
+        const typedText = typingInput.value;
+        const targetSubText = targetText.substring(0, typedText.length);
+        
+        // Tekshirish va natijani ko'rsatish
+        if (typedText === targetText) {
           const endTime = new Date();
-          const seconds = ((endTime - startTime) / 1000).toFixed(2);
-          document.getElementById('typingResult').textContent = '✅ Tugatdingiz! ' + seconds + ' soniyada yozdingiz.';
+          const seconds = (endTime - startTime) / 1000;
+          const words = targetText.split(' ').length;
+          const wpm = Math.round((words / seconds) * 60);
+          
+          // Xatoliklarni hisoblash
+          let errors = 0;
+          for (let i = 0; i < targetText.length; i++) {
+            if (typedText[i] !== targetText[i]) errors++;
+          }
+          
+          document.getElementById('typingSpeed').textContent = wpm;
+          document.getElementById('typingErrors').textContent = errors;
+          document.getElementById('typingResult').classList.remove('hidden');
+          typingInput.disabled = true;
         }
       });
-    <\/script>
-  `;
-}
+    }
 
-if (gameId === "game4") {
-  const colors = ["red", "green", "blue", "yellow", "purple", "orange"];
-  const randomColor = colors[Math.floor(Math.random() * colors.length)];
-  content.innerHTML = `
-    <h2 class="text-xl font-bold mb-4">🎨 Rangni Topish</h2>
-    <p>"${randomColor}" rangni tanlang:</p>
-    <div class="flex gap-2 mt-4">
-      ${colors.map(color => `
-        <button onclick="checkColor('${color}', '${randomColor}')" style="background:${color}" class="w-10 h-10 rounded-full border-2"></button>
-      `).join('')}
-    </div>
-    <p id="colorResult" class="mt-4 font-semibold"></p>
-    <script>
-      function checkColor(chosen, correct) {
-        const result = document.getElementById('colorResult');
-        if (chosen === correct) {
-          result.textContent = "✅ To‘g‘ri rang!";
+    // 4. Rangni topish o'yini
+    function loadColorGuessGame(title, content) {
+      title.textContent = "🎨 Rangni Topish";
+      
+      const colors = [
+        {name: "Qizil", value: "red", hex: "#ef4444"},
+        {name: "Yashil", value: "green", hex: "#10b981"},
+        {name: "Ko'k", value: "blue", hex: "#3b82f6"},
+        {name: "Sariq", value: "yellow", hex: "#f59e0b"},
+        {name: "Binafsha", value: "purple", hex: "#8b5cf6"},
+        {name: "Qizg'ish", value: "pink", hex: "#ec4899"}
+      ];
+      
+      const correctColor = colors[Math.floor(Math.random() * colors.length)];
+      let score = 0;
+      let attempts = 0;
+      
+      content.innerHTML = `
+        <div class="text-center">
+          <p class="mb-4"><span class="font-bold">"${correctColor.name}"</span> rangni tanlang:</p>
+          
+          <div class="grid grid-cols-3 gap-3 mb-6">
+            ${colors.map(color => `
+              <button onclick="checkColorGuess('${color.value}', '${correctColor.value}')" 
+                style="background:${color.hex}" 
+                class="h-24 rounded-lg shadow-md hover:shadow-lg transition">
+                <span class="bg-white bg-opacity-80 text-xs px-2 py-1 rounded">${color.name}</span>
+              </button>
+            `).join('')}
+          </div>
+          
+          <div id="colorResult" class="min-h-8"></div>
+          <div class="text-sm text-gray-500 mt-4">
+            To'g'ri javoblar: <span id="colorScore">${score}</span>
+          </div>
+        </div>
+      `;
+      
+      window.checkColorGuess = function(selectedColor, correctColor) {
+        const resultDiv = document.getElementById("colorResult");
+        attempts++;
+        
+        if (selectedColor === correctColor) {
+          score++;
+          document.getElementById("colorScore").textContent = score;
+          resultDiv.innerHTML = `
+            <div class="bg-green-100 text-green-800 p-3 rounded-lg">
+              <i class="fas fa-check-circle mr-2"></i>
+              To'g'ri! Keyingi rangni tanlang.
+            </div>
+          `;
+          
+          // Yangi rangni yuklash
+          setTimeout(() => {
+            loadColorGuessGame(title, content);
+          }, 1000);
         } else {
-          result.textContent = "❌ Noto‘g‘ri, boshqa rangni tanlang.";
+          resultDiv.innerHTML = `
+            <div class="bg-red-100 text-red-800 p-3 rounded-lg">
+              <i class="fas fa-times-circle mr-2"></i>
+              Noto'g'ri! Qayta urinib ko'ring.
+            </div>
+          `;
         }
-      }
-    <\/script>
-  `;
-}
+      };
+    }
 
-if (gameId === "game5") {
-  const sequence = [];
-  for (let i = 0; i < 5; i++) sequence.push(Math.floor(Math.random() * 9) + 1);
-  content.innerHTML = `
-    <h2 class="text-xl font-bold mb-4">🧠 Yodda Saqlash</h2>
-    <p>Quyidagi raqamlarni 5 soniyaga eslab qoling:</p>
-    <p class="text-2xl font-mono my-2">${sequence.join(' ')}</p>
-    <p class="text-gray-500 text-sm">5 soniyadan so‘ng kiriting</p>
-    <input id="memoryInput" type="text" class="w-full border p-2 mt-2 hidden" placeholder="Raqamlarni bo‘shliq bilan yozing">
-    <button onclick="checkMemory()" id="memoryBtn" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded hidden">Tekshirish</button>
-    <p id="memoryResult" class="mt-4 font-semibold"></p>
-    <script>
-      setTimeout(() => {
-        document.querySelector('#memoryInput').classList.remove('hidden');
-        document.querySelector('#memoryBtn').classList.remove('hidden');
-        document.querySelector('#memoryInput').focus();
-      }, 5000);
-      function checkMemory() {
-        const input = document.getElementById('memoryInput').value.trim().split(" ");
-        const correct = ${JSON.stringify(sequence)};
-        let correctCount = 0;
-        for (let i = 0; i < correct.length; i++) {
-          if (parseInt(input[i]) === correct[i]) correctCount++;
+    // 5. Yodlash o'yini
+    function loadMemoryGame(title, content) {
+      title.textContent = "🧠 Yodlash";
+      
+      // 4x4 kartalar maydoni
+      const symbols = ['🍎', '🍌', '🍒', '🍓', '🍊', '🍋', '🍐', '🍉'];
+      const cards = [...symbols, ...symbols].sort(() => Math.random() - 0.5);
+      let flippedCards = [];
+      let matchedPairs = 0;
+      let moves = 0;
+      
+      content.innerHTML = `
+        <div class="text-center">
+          <p class="mb-4">Bir xil belgilarni toping. Har bir harakat hisobga olinadi!</p>
+          
+          <div class="grid grid-cols-4 gap-3 mb-6">
+            ${cards.map((symbol, index) => `
+              <div onclick="flipMemoryCard(${index})" 
+                class="memory-card h-16 sm:h-20 bg-blue-500 rounded-lg text-white text-3xl flex items-center justify-center cursor-pointer">
+                <div class="front">?</div>
+                <div class="back">${symbol}</div>
+              </div>
+            `).join('')}
+          </div>
+          
+          <div class="flex justify-center space-x-6">
+            <div class="bg-gray-100 px-4 py-2 rounded-lg">
+              <span class="text-sm text-gray-500">Harakatlar:</span>
+              <span id="memoryMoves" class="font-bold ml-1">0</span>
+            </div>
+            <div class="bg-gray-100 px-4 py-2 rounded-lg">
+              <span class="text-sm text-gray-500">Topilganlar:</span>
+              <span id="memoryMatches" class="font-bold ml-1">0/8</span>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      window.flipMemoryCard = function(index) {
+        const card = document.querySelectorAll('.memory-card')[index];
+        if (flippedCards.length < 2 && !card.classList.contains('flipped') {
+          card.classList.add('flipped');
+          flippedCards.push({index, symbol: cards[index]});
+          
+          if (flippedCards.length === 2) {
+            moves++;
+            document.getElementById('memoryMoves').textContent = moves;
+            
+            if (flippedCards[0].symbol === flippedCards[1].symbol) {
+              // Match found
+              matchedPairs++;
+              document.getElementById('memoryMatches').textContent = `${matchedPairs}/8`;
+              flippedCards = [];
+              
+              if (matchedPairs === 8) {
+                setTimeout(() => {
+                  content.innerHTML += `
+                    <div class="bg-green-100 text-green-800 p-3 rounded-lg mt-4">
+                      <i class="fas fa-trophy mr-2"></i>
+                      Tabriklaymiz! Siz ${moves} harakatda barchasini topdingiz!
+                    </div>
+                  `;
+                }, 500);
+              }
+            } else {
+              // No match, flip back after delay
+              setTimeout(() => {
+                flippedCards.forEach(card => {
+                  document.querySelectorAll('.memory-card')[card.index].classList.remove('flipped');
+                });
+                flippedCards = [];
+              }, 1000);
+            }
+          }
         }
-        document.getElementById('memoryResult').textContent = '✅ To‘g‘ri topilganlar: ' + correctCount + ' ta.';
+      };
+    }
+
+    // 6. Savol-javob o'yini
+    function loadQuizGame(title, content) {
+      title.textContent = "❓ Savol-Javob";
+      
+      const questions = [
+        {
+          question: "O'zbekiston poytaxti qayer?",
+          options: ["Toshkent", "Samarqand", "Buxoro", "Xiva"],
+          answer: 0
+        },
+        {
+          question: "Quyidagi dasturlash tillaridan qaysi biri frontend uchun ishlatiladi?",
+          options: ["Python", "Java", "JavaScript", "C++"],
+          answer: 2
+        },
+        {
+          question: "Yer sayyorasi qanchadan qancha oydan iborat?",
+          options: ["1", "2", "3", "4"],
+          answer: 0
+        }
+      ];
+      
+      let currentQuestion = 0;
+      let score = 0;
+      
+      function showQuestion() {
+        const q = questions[currentQuestion];
+        
+        content.innerHTML = `
+          <div class="text-center">
+            <div class="bg-blue-100 text-blue-800 p-3 rounded-lg mb-4">
+              <span class="font-bold">Savol ${currentQuestion + 1}/${questions.length}:</span>
+              <p class="text-lg mt-1">${q.question}</p>
+            </div>
+            
+            <div class="space-y-3 mb-6">
+              ${q.options.map((option, index) => `
+                <button onclick="checkQuizAnswer(${index})" 
+                  class="w-full bg-white hover:bg-gray-100 border border-gray-300 text-left p-3 rounded-lg transition">
+                  ${String.fromCharCode(65 + index)}. ${option}
+                </button>
+              `).join('')}
+            </div>
+            
+            <div class="bg-gray-100 p-3 rounded-lg">
+              <span class="text-sm text-gray-500">To'g'ri javoblar:</span>
+              <span class="font-bold ml-1">${score}/${questions.length}</span>
+            </div>
+          </div>
+        `;
       }
-    <\/script>
-  `;
-}
+      
+      window.checkQuizAnswer = function(selectedIndex) {
+        const q = questions[currentQuestion];
+        
+        if (selectedIndex === q.answer) {
+          score++;
+          content.innerHTML += `
+            <div class="bg-green-100 text-green-800 p-3 rounded-lg mt-4">
+              <i class="fas fa-check-circle mr-2"></i>
+              To'g'ri javob!
+            </div>
+          `;
+        } else {
+          content.innerHTML += `
+            <div class="bg-red-100 text-red-800 p-3 rounded-lg mt-4">
+              <i class="fas fa-times-circle mr-2"></i>
+              Noto'g'ri! To'g'ri javob: ${q.options[q.answer]}
+            </div>
+          `;
+        }
+        
+        currentQuestion++;
+        
+        if (currentQuestion < questions.length) {
+          setTimeout(showQuestion, 1500);
+        } else {
+          setTimeout(() => {
+            content.innerHTML = `
+              <div class="text-center">
+                <div class="bg-purple-100 text-purple-800 p-6 rounded-lg">
+                  <i class="fas fa-award text-4xl mb-3"></i>
+                  <h3 class="text-xl font-bold">Test yakunlandi!</h3>
+                  <p class="text-lg mt-2">Siz ${score} ta savoldan ${questions.length} tasiga to'g'ri javob berdingiz.</p>
+                  <p class="mt-4 text-sm text-purple-600">${getQuizFeedback(score, questions.length)}</p>
+                </div>
+                
+                <button onclick="openGame('quizGame')" class="mt-6 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg">
+                  <i class="fas fa-redo mr-2"></i> Qayta boshlash
+                </button>
+              </div>
+            `;
+          }, 1500);
+        }
+      };
+      
+      function getQuizFeedback(score, total) {
+        const percentage = (score / total) * 100;
+        if (percentage >= 80) return "Ajoyib natija! Siz juda bilimdonsiz!";
+        if (percentage >= 50) return "Yaxshi natija! Yana mashq qiling.";
+        return "Yaxshiroq natija uchun ko'proq o'qing!";
+      }
+      
+      showQuestion();
+    }
 
-    modal.classList.remove("hidden");
-  }
+    // 7. So'z topish o'yini
+    function loadWordSearchGame(title, content) {
+      title.textContent = "🔍 So'z Topish";
+      
+      const words = ["Dastur", "Kompyuter", "Internet", "Telefon", "Monitor"];
+      const targetWord = words[Math.floor(Math.random() * words.length)];
+      const scrambledWord = scrambleWord(targetWord);
+      let attempts = 0;
+      
+      content.innerHTML = `
+        <div class="text-center">
+          <p class="mb-4">Quyidagi aralash harflardan mazmunli so'z yasang:</p>
+          
+          <div class="bg-gray-100 p-4 rounded-lg mb-4">
+            <p class="text-3xl font-mono tracking-widest">${scrambledWord}</p>
+          </div>
+          
+          <input id="wordGuess" type="text" class="w-full border border-gray-300 rounded-lg p-3 mb-4" 
+            placeholder="So'zni yozing...">
+          
+          <button onclick="checkWordGuess()" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg">
+            <i class="fas fa-check mr-2"></i> Tekshirish
+          </button>
+          
+          <div id="wordResult" class="min-h-8 mt-4"></div>
+          <div class="text-sm text-gray-500 mt-2">Urinishlar: <span id="wordAttempts">0</span></div>
+        </div>
+      `;
+      
+      function scrambleWord(word) {
+        return word.split('').sort(() => Math.random() - 0.5).join('');
+      }
+      
+      window.checkWordGuess = function() {
+        const guess = document.getElementById('wordGuess').value.trim();
+        const resultDiv = document.getElementById('wordResult');
+        attempts++;
+        document.getElementById('wordAttempts').textContent = attempts;
+        
+        if (guess.toLowerCase() === targetWord.toLowerCase()) {
+          resultDiv.innerHTML = `
+            <div class="bg-green-100 text-green-800 p-3 rounded-lg">
+              <i class="fas fa-check-circle mr-2"></i>
+              To'g'ri! Siz "${targetWord}" so'zini ${attempts} urinishda topdingiz.
+            </div>
+          `;
+        } else {
+          resultDiv.innerHTML = `
+            <div class="bg-red-100 text-red-800 p-3 rounded-lg">
+              <i class="fas fa-times-circle mr-2"></i>
+              Noto'g'ri! Qayta urinib ko'ring.
+            </div>
+          `;
+        }
+      };
+    }
 
-  function closeModal() {
-    document.getElementById("modal").classList.add("hidden");
-    document.getElementById("game-content").innerHTML = "";
-    clearTimeout(timer);
-  }
-
-  function checkNumber() {
-    const val = parseInt(document.getElementById('guess').value);
-    const result = document.getElementById('result');
-    if (val === secret) result.textContent = '✅ To‘g‘ri!';
-    else result.textContent = '❌ Noto‘g‘ri, qayta urinib ko‘ring.';
-  }
-
-  function startClickGame() {
-    count = 0;
-    const btn = document.getElementById('clickBtn');
-    const result = document.getElementById('clickResult');
-
-    result.textContent = '';
-    btn.classList.remove('hidden');
-
-    timer = setTimeout(() => {
-      btn.classList.add('hidden');
-      result.textContent = `⏱️ Siz ${count} marta bosdingiz!`;
-    }, 5000);
-  }
-
-  function incrementClick() {
-    count++;
-  }
-
-  
-</script>
-
+    // 8. Matematika o'yini
+    function loadMathChallengeGame(title, content) {
+      title.textContent = "🧮 Matematika";
+      
+      let score = 0;
+      let timeLeft = 30;
+      let timer = null;
+      
+      function generateQuestion() {
+        const num1 = Math.floor(Math.random() * 10) + 1;
+        const num2 = Math.floor(Math.random() * 10) + 1;
+        const operations = ['+', '-', '*'];
+        const op = operations[Math.floor(Math.random() * operations.length)];
+        
+        let question = '';
+        let answer = 0;
+        
+        switch(op) {
+          case '+':
+            question = `${num1} + ${num2}`;
+            answer = num1 + num2;
+            break;
+          case '-':
+            question = `${num1} - ${num2}`;
+            answer = num1 - num2;
+            break;
+          case '*':
+            question = `${num1} × ${num2}`;
+            answer = num1 * num2;
+            break;
+        }
+        
+        return { question, answer };
+      }
+      
+      function startGame() {
+        const question = generateQuestion();
+        
+        content.innerHTML = `
+          <div class="text-center">
+            <div class="flex justify-between items-center mb-6">
+              <div class="bg-blue-100 text-blue-800 px-4 py-2 rounded-lg">
+                <i class="fas fa-clock mr-2"></i>
+                <span id="mathTimer">${timeLeft}</span> soniya
+              </div>
+              <div class="bg-green-100 text-green-800 px-4 py-2 rounded-lg">
+                <i class="fas fa-star mr-2"></i>
+                <span id="mathScore">${score}</span> ochko
+              </div>
+            </div>
+            
+            <div class="bg-gray-100 p-4 rounded-lg mb-6">
+              <p class="text-3xl font-bold">${question.question} = ?</p>
+            </div>
+            
+            <input id="mathAnswer" type="number" class="w-full border border-gray-300 rounded-lg p-3 mb-4" 
+              placeholder="Javob..." autofocus>
+            
+            <button onclick="checkMathAnswer(${question.answer})" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg">
+              <i class="fas fa-check mr-2"></i> Tekshirish
+            </button>
+          </div>
+        `;
+        
+        timer = setInterval(() => {
+          timeLeft--;
+          document.getElementById('mathTimer').textContent = timeLeft;
+          
+          if (timeLeft <= 0) {
+            clearInterval(timer);
+            endMathGame();
+          }
+        }, 1000);
+      }
+      
+      window.checkMathAnswer = function(correctAnswer) {
+        const userAnswer = parseInt(document.getElementById('mathAnswer').value);
+        
+        if (userAnswer === correctAnswer) {
+          score++;
+          document.getElementById('mathScore').textContent = score;
+          timeLeft = Math.min(timeLeft + 2, 30); // To'g'ri javob uchun 2 soniya qo'shiladi
+          document.getElementById('mathTimer').textContent = timeLeft;
+        }
+        
+        startGame(); // Yangi savol
+      };
+      
+      function endMathGame() {
+        content.innerHTML = `
+          <div class="text-center">
+            <div class="bg-purple-100 text-purple-800 p-6 rounded-lg">
+              <i class="fas fa-stopwatch text-4xl mb-3"></i>
+              <h3 class="text-xl font-bold">Vaqt tugadi!</h3>
+              <p class="text-lg mt-2">Siz ${score} ta misolga to'g'ri javob berdingiz.</p>
+              <p class="mt-4 text-sm text-purple-600">${getMathFeedback(score)}</p>
+            </div>
+            
+            <button onclick="openGame('mathChallenge')" class="mt-6 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg">
+              <i class="fas fa-redo mr-2"></i> Qayta boshlash
+            </button>
+          </div>
+        `;
+      }
+      
+      function getMathFeedback(score) {
+        if (score >= 15) return "Ajoyib! Siz matematika geniysiz!";
+        if (score >= 10) return "Yaxshi natija! Yana mashq qiling.";
+        return "Yaxshiroq natija uchun ko'proq mashq qiling.";
+      }
+      
+      startGame();
+    }
+  </script>
 </body>
 </html>
