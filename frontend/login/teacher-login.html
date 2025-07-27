@@ -1,42 +1,226 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-  <meta charset="UTF-8" />
-  <title>O'qituvchi Kirish</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>O'qituvchi Kirish - Ta'lim Platformasi</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#f0f9ff',
+              100: '#e0f2fe',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+            },
+            secondary: {
+              500: '#10b981',
+              600: '#059669',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          boxShadow: {
+            'soft': '0 4px 20px rgba(0, 0, 0, 0.08)',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .animate-float {
+      animation: float 6s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    .animate-fade-in {
+      animation: fadeIn 0.6s ease-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .input-focus:focus {
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+      border-color: #3b82f6;
+    }
+  </style>
 </head>
-<body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-white">
-  <div class="bg-white shadow-xl rounded-xl p-8 w-full max-w-sm">
-    <h2 class="text-2xl font-bold text-center text-blue-700 mb-6">👨‍🏫 O'qituvchi Kirish</h2>
-    <form id="loginForm" class="space-y-4">
-      <input name="email" type="email" required placeholder="Email" class="w-full border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
-      <input name="password" type="password" required placeholder="Parol" class="w-full border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
-      <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded font-semibold transition">🔐 Kirish</button>
-    </form>
-    <p class="text-center text-sm mt-4 text-gray-500">
-      Hisobingiz yo‘qmi? <a href="../register/teacher-register.html" class="text-blue-600 hover:underline">Ro‘yxatdan o‘tish</a>
-    </p>
+<body class="bg-gradient-to-br from-primary-50 to-white font-sans min-h-screen flex items-center justify-center p-4">
+  <div class="max-w-4xl w-full bg-white rounded-2xl shadow-soft overflow-hidden flex animate-fade-in">
+    <!-- Illustration Section -->
+    <div class="hidden md:flex flex-col justify-center items-center bg-gradient-to-b from-primary-600 to-primary-700 p-8 w-1/2 text-white">
+      <div class="animate-float mb-8">
+        <svg xmlns="http://www.w3.org/2000/svg" width="180" height="180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          <path d="M16 19h6"></path>
+          <path d="M19 16v6"></path>
+        </svg>
+      </div>
+      <h2 class="text-2xl font-bold text-center mb-2">O'qituvchilar Platformasiga Xush Kelibsiz</h2>
+      <p class="text-center text-primary-100">Darslaringizni boshqarish, baholash va o'quvchilar bilan aloqada bo'lish uchun tizimga kiring</p>
+    </div>
+    
+    <!-- Login Form Section -->
+    <div class="w-full md:w-1/2 p-8 md:p-10">
+      <div class="flex justify-center mb-6 md:hidden">
+        <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+      </div>
+      <h1 class="text-2xl font-bold text-center text-gray-800 mb-1">O'qituvchi Kirish</h1>
+      <p class="text-center text-gray-500 mb-8">Hisobingizga kirish uchun ma'lumotlaringizni kiriting</p>
+      
+      <form id="loginForm" class="space-y-5">
+        <div>
+          <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Elektron pochta</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <input 
+              type="email" 
+              id="email" 
+              name="email"
+              required
+              placeholder="email@maktab.edu.uz" 
+              class="input-focus w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none transition duration-200"
+            />
+          </div>
+        </div>
+        
+        <div>
+          <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Parol</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+            </div>
+            <input 
+              type="password" 
+              id="password" 
+              name="password"
+              required
+              placeholder="••••••••" 
+              class="input-focus w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none transition duration-200"
+            />
+          </div>
+        </div>
+        
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <input id="remember" name="remember" type="checkbox" class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded">
+            <label for="remember" class="ml-2 block text-sm text-gray-700">Eslab qolish</label>
+          </div>
+          <a href="#" class="text-sm text-primary-600 hover:text-primary-500">Parolni unutdingizmi?</a>
+        </div>
+        
+        <button 
+          type="submit" 
+          id="loginButton"
+          class="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition duration-200"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+          </svg>
+          Tizimga kirish
+        </button>
+      </form>
+      
+      <div class="mt-6 text-center">
+        <p class="text-sm text-gray-500">
+          Hisobingiz yo'qmi? 
+          <a href="../register/teacher-register.html" class="font-medium text-primary-600 hover:text-primary-500 hover:underline">
+            Ro'yxatdan o'tish
+          </a>
+        </p>
+      </div>
+      
+      <div id="errorMessage" class="hidden mt-4 bg-red-50 border-l-4 border-red-500 p-4 rounded">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <svg class="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <div class="ml-3">
+            <p class="text-sm text-red-700" id="errorText">Email yoki parol noto'g'ri. Iltimos, qayta urinib ko'ring.</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script>
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const form = new FormData(e.target);
-      const data = Object.fromEntries(form.entries());
-      data.role = 'teacher';
+      const form = e.target;
+      const loginButton = document.getElementById('loginButton');
+      const errorMessage = document.getElementById('errorMessage');
+      
+      // Hide error if visible
+      errorMessage.classList.add('hidden');
+      
+      // Show loading state
+      loginButton.innerHTML = `
+        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        Kirilmoqda...
+      `;
+      loginButton.disabled = true;
+      
+      try {
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+        data.role = 'teacher';
 
-      const res = await fetch('https://school-b97p.onrender.com/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      });
+        // Simulate API call (replace with actual fetch)
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
 
-      const result = await res.json();
-      if (result.success) {
-        localStorage.setItem('user', JSON.stringify(result.user));
-        location.href = '/panel/teacher.html';
-      } else {
-        alert('❌ Login xato: ' + result.message);
+        const result = await res.json();
+        
+        if (result.success) {
+          localStorage.setItem('user', JSON.stringify(result.user));
+          location.href = '/panel/teacher.html';
+        } else {
+          document.getElementById('errorText').textContent = result.message || 'Kirishda xatolik yuz berdi';
+          errorMessage.classList.remove('hidden');
+        }
+      } catch (error) {
+        document.getElementById('errorText').textContent = 'Tarmoq xatosi. Iltimos, internet aloqasini tekshiring';
+        errorMessage.classList.remove('hidden');
+      } finally {
+        // Reset button
+        loginButton.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+          </svg>
+          Tizimga kirish
+        `;
+        loginButton.disabled = false;
       }
     });
   </script>
