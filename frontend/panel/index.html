@@ -3,175 +3,480 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Video Panel</title>
+  <title>EduTube - Video Platforma</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f8fafc;
+    }
+    .video-card {
+      transition: all 0.3s ease;
+    }
+    .video-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+    .sidebar-link {
+      transition: all 0.2s ease;
+    }
+    .sidebar-link:hover {
+      transform: translateX(3px);
+    }
+    .modal-animation {
+      animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #c4b5fd;
+      border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #a78bfa;
+    }
+  </style>
 </head>
-<body class="bg-gray-100 text-gray-800">
+<body class="min-h-screen">
 
   <!-- Navbar -->
-  <header class="bg-white shadow-md sticky top-0 z-50">
-    <div class="flex items-center justify-between p-4">
-      <h1 class="text-xl font-bold text-red-600">EduTube</h1>
-      <input type="text" placeholder="Qidirish..." class="w-1/2 border p-2 rounded-lg shadow-sm focus:outline-none" />
-      <button id="openUploadModal" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">Video joylash</button>
+  <header class="bg-white shadow-sm sticky top-0 z-50">
+    <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-2">
+        <i class="fas fa-play-circle text-red-600 text-2xl"></i>
+        <h1 class="text-xl font-bold text-gray-900">EduTube</h1>
+      </div>
+      
+      <div class="hidden md:flex items-center space-x-4">
+        <div class="relative w-96">
+          <input type="text" placeholder="Video qidirish..." 
+            class="w-full border border-gray-300 rounded-full py-2 px-4 pl-10 focus:outline-none focus:ring-2 focus:ring-red-300 focus:border-transparent">
+          <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+        </div>
+        
+        <button id="openUploadModal" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-full flex items-center space-x-2 transition transform hover:scale-105">
+          <i class="fas fa-upload"></i>
+          <span>Yuklash</span>
+        </button>
+        
+        <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center cursor-pointer">
+          <i class="fas fa-user text-gray-600"></i>
+        </div>
+      </div>
+      
+      <!-- Mobile menu button -->
+      <button class="md:hidden text-gray-600">
+        <i class="fas fa-bars text-xl"></i>
+      </button>
     </div>
   </header>
 
-  <!-- Sidebar (desktop) -->
-  <aside class="hidden md:block fixed top-[64px] left-0 w-48 h-full bg-white border-r">
-    <nav class="flex flex-col p-4 space-y-4">
-      <a href="#" class="hover:text-red-500">🏠 Bosh sahifa</a>
-      <a href="#" class="hover:text-red-500">📱 Shorts</a>
-      <a href="#" class="hover:text-red-500">⭐ Sevimlilar</a>
-      <a href="#" class="hover:text-red-500">🕓 Tarix</a>
-      <a href="#" class="hover:text-red-500">⚙️ Sozlamalar</a>
-    </nav>
-  </aside>
+  <!-- Main Content -->
+  <div class="flex">
+    <!-- Sidebar (desktop) -->
+    <aside class="hidden md:block w-64 h-screen bg-white border-r fixed top-[60px] overflow-y-auto">
+      <nav class="flex flex-col p-4 space-y-1">
+        <a href="#" class="sidebar-link flex items-center space-x-3 p-3 rounded-lg bg-red-50 text-red-600 font-medium">
+          <i class="fas fa-home w-5"></i>
+          <span>Bosh sahifa</span>
+        </a>
+        <a href="./shorts.html" class="sidebar-link flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 text-gray-700">
+          <i class="fas fa-bolt w-5"></i>
+          <span>Shorts</span>
+        </a>
+        <a href="#" class="sidebar-link flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 text-gray-700">
+          <i class="fas fa-star w-5"></i>
+          <span>Sevimlilar</span>
+        </a>
+        <a href="#" class="sidebar-link flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 text-gray-700">
+          <i class="fas fa-clock w-5"></i>
+          <span>Tarix</span>
+        </a>
+        
+        <div class="border-t border-gray-200 my-2"></div>
+        
+        <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider px-3 py-2">Obunalar</h3>
+        <a href="#" class="sidebar-link flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 text-gray-700">
+          <div class="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs">
+            <i class="fas fa-book"></i>
+          </div>
+          <span>Matematika</span>
+        </a>
+        <a href="#" class="sidebar-link flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 text-gray-700">
+          <div class="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center text-white text-xs">
+            <i class="fas fa-flask"></i>
+          </div>
+          <span>Fizika</span>
+        </a>
+        <a href="#" class="sidebar-link flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 text-gray-700">
+          <div class="w-5 h-5 rounded-full bg-purple-500 flex items-center justify-center text-white text-xs">
+            <i class="fas fa-code"></i>
+          </div>
+          <span>Dasturlash</span>
+        </a>
+      </nav>
+    </aside>
 
-  <!-- Modal -->
-<div id="uploadModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
-  <div class="bg-white p-6 rounded-lg w-full max-w-md space-y-4 relative max-h-[90vh] overflow-y-auto">
-    <button id="closeUploadModal" class="absolute top-2 right-2 text-gray-500 hover:text-red-600">&times;</button>
-    <h2 class="text-xl font-bold text-center">Video joylash</h2>
-    <form id="uploadForm" enctype="multipart/form-data" class="space-y-3">
-      <input type="text" name="title" placeholder="Sarlavha" required class="border p-2 w-full rounded" />
-      <textarea name="desc" placeholder="Tavsif" required class="border p-2 w-full rounded"></textarea>
-      <input type="text" name="user" placeholder="Foydalanuvchi nomi" required class="border p-2 w-full rounded" />
-      <input type="text" name="avatar" placeholder="Avatar URL (ixtiyoriy)" class="border p-2 w-full rounded" />
-      <input type="file" name="video" accept="video/*" required class="border p-2 w-full rounded" />
-      <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 w-full">Yuklash</button>
-    </form>
+    <!-- Main Content Area -->
+    <main class="flex-1 md:ml-64 mt-[60px] pb-20 md:pb-0">
+      <!-- Categories -->
+      <div class="bg-white px-4 py-3 border-b overflow-x-auto">
+        <div class="flex space-x-2">
+          <button class="px-3 py-1 bg-red-600 text-white rounded-full text-sm whitespace-nowrap">
+            <i class="fas fa-fire mr-1"></i> Trend
+          </button>
+          <button class="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full text-sm whitespace-nowrap">
+            <i class="fas fa-music mr-1"></i> Musiqa
+          </button>
+          <button class="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full text-sm whitespace-nowrap">
+            <i class="fas fa-gamepad mr-1"></i> O'yinlar
+          </button>
+          <button class="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full text-sm whitespace-nowrap">
+            <i class="fas fa-newspaper mr-1"></i> Yangiliklar
+          </button>
+          <button class="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full text-sm whitespace-nowrap">
+            <i class="fas fa-lightbulb mr-1"></i> Ta'lim
+          </button>
+          <button class="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full text-sm whitespace-nowrap">
+            <i class="fas fa-futbol mr-1"></i> Sport
+          </button>
+        </div>
+      </div>
+
+      <!-- Videos Grid -->
+      <div id="videoContainer" class="container mx-auto px-4 py-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <!-- Videolar backenddan yuklanadi -->
+      </div>
+    </main>
   </div>
-</div>
 
-  <!-- Main content -->
-  <main id="videoContainer" class="md:ml-52 p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-    <!-- Videolar backenddan yuklanadi -->
-  </main>
+  <!-- Upload Modal -->
+  <div id="uploadModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl shadow-xl w-full max-w-2xl modal-animation overflow-hidden">
+      <div class="p-6 border-b">
+        <div class="flex justify-between items-center">
+          <h2 class="text-xl font-bold flex items-center">
+            <i class="fas fa-cloud-upload-alt text-red-600 mr-2"></i>
+            Video joylash
+          </h2>
+          <button id="closeUploadModal" class="text-gray-500 hover:text-gray-700">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+      
+      <form id="uploadForm" enctype="multipart/form-data" class="p-6 space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Video sarlavhasi</label>
+          <input type="text" name="title" placeholder="Video nomi" required 
+            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-red-300 focus:border-transparent">
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Tavsif</label>
+          <textarea name="desc" placeholder="Video haqida qisqacha..." rows="3" required 
+            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-red-300 focus:border-transparent"></textarea>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Foydalanuvchi nomi</label>
+            <input type="text" name="user" placeholder="Ismingiz" required 
+              class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-red-300 focus:border-transparent">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Avatar URL (ixtiyoriy)</label>
+            <input type="text" name="avatar" placeholder="https://..." 
+              class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-red-300 focus:border-transparent">
+          </div>
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Video fayli</label>
+          <div class="flex items-center justify-center w-full">
+            <label class="flex flex-col w-full h-32 border-2 border-dashed border-gray-300 hover:border-red-400 rounded-lg cursor-pointer transition">
+              <div class="flex flex-col items-center justify-center pt-7">
+                <i class="fas fa-cloud-upload-alt text-3xl text-gray-400 mb-2"></i>
+                <p class="text-sm text-gray-500">Video faylni tanlang yoki bu yerga tashlang</p>
+              </div>
+              <input type="file" name="video" accept="video/*" required class="hidden" />
+            </label>
+          </div>
+        </div>
+        
+        <div class="flex justify-end space-x-3 pt-4">
+          <button type="button" id="cancelUpload" class="px-6 py-2 text-gray-600 hover:text-gray-800">
+            Bekor qilish
+          </button>
+          <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg flex items-center space-x-2">
+            <i class="fas fa-upload"></i>
+            <span>Yuklash</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- Video Modal -->
-  <div id="videoModal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center hidden z-50">
-    <div class="bg-white rounded-xl w-full max-w-3xl p-6 relative">
-      <button onclick="closeVideo()" class="absolute top-2 right-4 text-xl font-bold">&times;</button>
-      <video id="modalVideo" class="w-full rounded-lg mb-4" controls></video>
-      <h2 id="modalTitle" class="text-lg font-bold mb-2"></h2>
-      <p id="modalDesc" class="text-gray-600 mb-4"></p>
-      <div class="flex items-center justify-between">
-        <button class="text-red-500 hover:underline">❤️ Layk</button>
-        <button class="text-blue-500 hover:underline">💬 Komment</button>
+  <div id="videoModal" class="fixed inset-0 bg-black bg-opacity-80 hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl w-full max-w-4xl modal-animation overflow-hidden">
+      <button onclick="closeVideo()" class="absolute top-4 right-4 text-white bg-black bg-opacity-50 rounded-full w-8 h-8 flex items-center justify-center hover:bg-opacity-70">
+        <i class="fas fa-times"></i>
+      </button>
+      
+      <div class="aspect-w-16 aspect-h-9 bg-black">
+        <video id="modalVideo" class="w-full" controls></video>
+      </div>
+      
+      <div class="p-6">
+        <h2 id="modalTitle" class="text-xl font-bold mb-2"></h2>
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center space-x-3">
+            <img id="modalAvatar" src="" alt="Avatar" class="w-10 h-10 rounded-full">
+            <div>
+              <p id="modalUser" class="font-medium"></p>
+              <p class="text-xs text-gray-500">1.2K obunachilar</p>
+            </div>
+          </div>
+          <button class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-full flex items-center space-x-2">
+            <i class="fas fa-bell"></i>
+            <span>Obuna bo'lish</span>
+          </button>
+        </div>
+        
+        <p id="modalDesc" class="text-gray-700 mb-6"></p>
+        
+        <div class="flex items-center space-x-6 border-t border-b border-gray-200 py-4">
+          <button class="flex items-center space-x-2 text-gray-600 hover:text-red-600">
+            <i class="far fa-thumbs-up text-xl"></i>
+            <span>1.2K</span>
+          </button>
+          <button class="flex items-center space-x-2 text-gray-600 hover:text-blue-600">
+            <i class="far fa-comment-dots text-xl"></i>
+            <span>54</span>
+          </button>
+          <button class="flex items-center space-x-2 text-gray-600 hover:text-green-600">
+            <i class="fas fa-share text-xl"></i>
+            <span>Ulashish</span>
+          </button>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- Mobile Bottom Navbar -->
-  <nav class="fixed md:hidden bottom-0 left-0 right-0 bg-white border-t flex justify-around items-center h-14">
-    <a href="#" class="text-red-500">🏠</a>
-    <a href="#">📱</a>
-    <a href="#">⭐</a>
-    <a href="#">⚙️</a>
+  <nav class="fixed md:hidden bottom-0 left-0 right-0 bg-white border-t flex justify-around items-center h-16 z-40">
+    <a href="#" class="flex flex-col items-center text-red-600">
+      <i class="fas fa-home text-xl"></i>
+      <span class="text-xs mt-1">Bosh</span>
+    </a>
+    <a href="./shorts.html" class="flex flex-col items-center text-gray-600">
+      <i class="fas fa-bolt text-xl"></i>
+      <span class="text-xs mt-1">Shorts</span>
+    </a>
+    <a href="./create.html" class="flex flex-col items-center text-gray-600">
+      <i class="fas fa-plus-circle text-3xl -mt-3 text-gray-400"></i>
+    </a>
+    <a href="#" class="flex flex-col items-center text-gray-600">
+      <i class="fas fa-star text-xl"></i>
+      <span class="text-xs mt-1">Sevimli</span>
+    </a>
+    <a href="#" class="flex flex-col items-center text-gray-600">
+      <i class="fas fa-user text-xl"></i>
+      <span class="text-xs mt-1">Profil</span>
+    </a>
   </nav>
 
-  <div id="uploadModalContent" class="bg-white p-6 rounded-lg w-full max-w-md space-y-4 relative max-h-[90vh] overflow-y-auto">
-
   <script>
-    // Videolarni backenddan yuklash (masalan, /backend/data/videos.json)
+    // Videolarni backenddan yuklash
     async function loadVideos() {
-  const videoList = document.getElementById("videoContainer");
-  videoList.innerHTML = ""; // avvalgi videolarni tozalash
+      const videoList = document.getElementById("videoContainer");
+      videoList.innerHTML = '<div class="col-span-full flex justify-center py-10"><div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600"></div></div>';
 
-  const res = await fetch("https://school-b97p.onrender.com/api/videos");
-  const videos = await res.json();
+      try {
+        const res = await fetch("/api/videos");
+        const videos = await res.json();
 
-  videos.forEach((video) => {
-    const isShort = video.duration && video.duration < 60;
-    const card = document.createElement("div");
-    card.className = "bg-white rounded-lg shadow p-4";
+        videoList.innerHTML = "";
+        
+        videos.forEach((video) => {
+          const isShort = video.duration && video.duration < 60;
+          const card = document.createElement("div");
+          card.className = "video-card bg-white rounded-xl shadow-sm overflow-hidden";
 
-    card.innerHTML = `
-      <video src="${video.src}" controls onclick="openVideo('${video.src}', '${video.title}', '${video.desc}')" class="w-full rounded mb-2"></video>
-      <h2 class="text-lg font-semibold">${video.title}</h2>
-      <p class="text-gray-600 text-sm">${video.desc}</p>
-      <div class="flex items-center mt-2">
-        <img src="${video.avatar}" alt="Avatar" class="w-8 h-8 rounded-full mr-2" />
-        <span class="text-gray-700 font-medium">${video.user}</span>
-        <span class="ml-auto px-2 py-1 text-xs ${isShort ? 'bg-green-200 text-green-800' : 'bg-blue-200 text-blue-800'} rounded-full">
-          ${isShort ? "Short" : "Video"}
-        </span>
-      </div>
-      <div class="mt-2 text-sm text-gray-500">${video.likes || 0} ta like</div>
-    `;
+          card.innerHTML = `
+            <div class="relative">
+              <img src="${video.thumbnail || 'https://via.placeholder.com/320x180'}" alt="${video.title}" 
+                class="w-full h-48 object-cover cursor-pointer" 
+                onclick="openVideo('${video.src}', '${video.title}', '${video.desc}', '${video.user}', '${video.avatar}')">
+              ${isShort ? '<span class="absolute top-2 right-2 bg-red-600 text-white text-xs px-2 py-1 rounded">SHORT</span>' : ''}
+              <span class="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white text-xs px-1 rounded">${formatDuration(video.duration || 0)}</span>
+            </div>
+            <div class="p-4">
+              <div class="flex items-start space-x-3">
+                <img src="${video.avatar || 'https://via.placeholder.com/40'}" alt="Avatar" class="w-10 h-10 rounded-full mt-1">
+                <div>
+                  <h3 class="font-semibold line-clamp-2" title="${video.title}">${video.title}</h3>
+                  <p class="text-sm text-gray-600 mt-1">${video.user}</p>
+                  <div class="flex items-center text-xs text-gray-500 mt-1 space-x-3">
+                    <span>${formatViews(video.views || 0)} ko'rish</span>
+                    <span>•</span>
+                    <span>${formatTimeAgo(video.date || new Date())}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
 
-    videoList.appendChild(card);
-  });
-}
-
-loadVideos();
-
-    function openVideo(src, title, desc) {
-      document.getElementById('modalVideo').src = src;
-      document.getElementById('modalTitle').innerText = title;
-      document.getElementById('modalDesc').innerText = desc;
-      document.getElementById('videoModal').classList.remove('hidden');
+          videoList.appendChild(card);
+        });
+      } catch (error) {
+        videoList.innerHTML = `
+          <div class="col-span-full text-center py-10">
+            <i class="fas fa-exclamation-triangle text-red-500 text-4xl mb-4"></i>
+            <h3 class="text-lg font-medium">Videolarni yuklab bo'lmadi</h3>
+            <p class="text-gray-600 mt-2">Internet aloqasini tekshiring va qayta urunib ko'ring</p>
+            <button onclick="loadVideos()" class="mt-4 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg">
+              <i class="fas fa-sync-alt mr-2"></i> Qayta yuklash
+            </button>
+          </div>
+        `;
+      }
     }
 
+    // Formatlash funksiyalari
+    function formatDuration(seconds) {
+      const mins = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+    }
+
+    function formatViews(views) {
+      if (views >= 1000000) {
+        return (views / 1000000).toFixed(1) + 'M';
+      } else if (views >= 1000) {
+        return (views / 1000).toFixed(1) + 'K';
+      }
+      return views;
+    }
+
+    function formatTimeAgo(date) {
+      const now = new Date();
+      const diff = now - new Date(date);
+      const mins = Math.floor(diff / 60000);
+      const hours = Math.floor(mins / 60);
+      const days = Math.floor(hours / 24);
+      
+      if (days > 0) return `${days} kun oldin`;
+      if (hours > 0) return `${hours} soat oldin`;
+      if (mins > 0) return `${mins} minut oldin`;
+      return "Hozirgina";
+    }
+
+    // Video modalini ochish
+    function openVideo(src, title, desc, user, avatar) {
+      const modal = document.getElementById("videoModal");
+      const video = document.getElementById("modalVideo");
+      
+      video.src = src;
+      video.poster = "https://via.placeholder.com/800x450";
+      document.getElementById("modalTitle").textContent = title;
+      document.getElementById("modalDesc").textContent = desc;
+      document.getElementById("modalUser").textContent = user;
+      document.getElementById("modalAvatar").src = avatar || "https://via.placeholder.com/40";
+      
+      modal.classList.remove("hidden");
+      document.body.style.overflow = "hidden";
+    }
+
+    // Video modalini yopish
     function closeVideo() {
-      document.getElementById('videoModal').classList.add('hidden');
-      document.getElementById('modalVideo').pause();
-      document.getElementById('modalVideo').src = '';
+      const modal = document.getElementById("videoModal");
+      const video = document.getElementById("modalVideo");
+      
+      video.pause();
+      video.src = "";
+      modal.classList.add("hidden");
+      document.body.style.overflow = "auto";
     }
 
+    // Upload modalini boshqarish
     const openBtn = document.getElementById("openUploadModal");
-  const closeBtn = document.getElementById("closeUploadModal");
-  const modal = document.getElementById("uploadModal");
+    const closeBtn = document.getElementById("closeUploadModal");
+    const cancelBtn = document.getElementById("cancelUpload");
+    const modal = document.getElementById("uploadModal");
 
-  openBtn.onclick = () => modal.classList.remove("hidden");
-  closeBtn.onclick = () => modal.classList.add("hidden");
-  window.onclick = (e) => {
-    if (e.target === modal) modal.classList.add("hidden");
-  };
+    openBtn.onclick = () => {
+      modal.classList.remove("hidden");
+      document.body.style.overflow = "hidden";
+    };
+    
+    closeBtn.onclick = () => {
+      modal.classList.add("hidden");
+      document.body.style.overflow = "auto";
+    };
+    
+    cancelBtn.onclick = () => {
+      modal.classList.add("hidden");
+      document.body.style.overflow = "auto";
+    };
 
-  // ESC tugmasi bilan yopish
-window.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") modal.classList.add("hidden");
-});
-
-// Fon bosilganda yopish
-modal.onclick = (e) => {
-  if (!modalContent.contains(e.target)) {
-    modal.classList.add("hidden");
-  }
-};
-
-const modalContent = document.getElementById("uploadModalContent");
-
-modal.addEventListener("click", (e) => {
-  if (!modalContent.contains(e.target)) {
-    modal.classList.add("hidden");
-  }
-});
-
-  // Formni yuborish
-  const uploadForm = document.getElementById("uploadForm");
-  uploadForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const formData = new FormData(uploadForm);
-    const res = await fetch("https://school-b97p.onrender.com/api/upload", {
-      method: "POST",
-      body: formData,
+    // ESC tugmasi bilan yopish
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        modal.classList.add("hidden");
+        document.getElementById("videoModal").classList.add("hidden");
+        document.body.style.overflow = "auto";
+      }
     });
 
-    if (res.ok) {
-      alert("✅ Video muvaffaqiyatli yuklandi!");
-      uploadForm.reset();
-      modal.classList.add("hidden");
-    } else {
-      alert("❌ Yuklashda xatolik yuz berdi!");
-    }
-  });
+    // Formni yuborish
+    const uploadForm = document.getElementById("uploadForm");
+    uploadForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
 
+      const submitBtn = uploadForm.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerHTML;
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Yuklanmoqda...';
+      submitBtn.disabled = true;
+
+      try {
+        const formData = new FormData(uploadForm);
+        const res = await fetch("http://localhost:3000/api/upload", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (res.ok) {
+          alert("✅ Video muvaffaqiyatli yuklandi!");
+          uploadForm.reset();
+          modal.classList.add("hidden");
+          loadVideos(); // Videolarni yangilash
+        } else {
+          throw new Error("Yuklashda xatolik");
+        }
+      } catch (error) {
+        alert("❌ Yuklashda xatolik yuz berdi: " + error.message);
+      } finally {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+        document.body.style.overflow = "auto";
+      }
+    });
+
+    // Sahifa yuklanganda videolarni yuklash
     window.onload = loadVideos;
   </script>
-
 </body>
 </html>
