@@ -1,43 +1,214 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Bachelor Kirish</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f8fafc;
+    }
+    .login-card {
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+    .login-card:hover {
+      box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.15);
+    }
+    .input-field {
+      transition: all 0.3s ease;
+    }
+    .input-field:focus {
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+    }
+    .login-btn {
+      transition: all 0.3s ease;
+    }
+    .login-btn:hover {
+      transform: translateY(-2px);
+    }
+  </style>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
-  <div class="bg-white p-8 rounded shadow-md w-full max-w-md">
-    <h2 class="text-2xl font-bold text-center mb-6">Bachelor Kirish</h2>
-    <form id="loginForm" class="space-y-4">
-      <input name="email" type="email" placeholder="Email" required class="w-full p-2 border rounded" />
-      <input name="password" type="password" placeholder="Parol" required class="w-full p-2 border rounded" />
-      <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded">Kirish</button>
-    </form>
-    <p class="mt-4 text-center text-sm">Hisob yo'qmi? <a href="bachelor-register.html" class="text-blue-600">Ro'yxatdan o'tish</a></p>
+<body class="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50 flex items-center justify-center p-4">
+
+  <div class="login-card bg-white rounded-xl overflow-hidden w-full max-w-md">
+    <!-- Header with gradient -->
+    <div class="bg-gradient-to-r from-green-600 to-emerald-600 p-6 text-white text-center">
+      <div class="flex justify-center mb-3">
+        <div class="bg-white bg-opacity-20 p-3 rounded-full">
+          <i class="fas fa-graduation-cap text-2xl"></i>
+        </div>
+      </div>
+      <h1 class="text-2xl font-bold">Bachelor Kirish</h1>
+      <p class="text-green-100 mt-1">Oliy ta'lim tizimiga xush kelibsiz</p>
+    </div>
+
+    <!-- Login Form -->
+    <div class="p-8">
+      <form id="loginForm" class="space-y-5">
+        <!-- Email Input -->
+        <div>
+          <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email manzilingiz</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <i class="fas fa-envelope text-gray-400"></i>
+            </div>
+            <input 
+              id="email" 
+              name="email" 
+              type="email" 
+              placeholder="email@example.com" 
+              required 
+              class="input-field w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none"
+            >
+          </div>
+        </div>
+
+        <!-- Password Input -->
+        <div>
+          <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Parol</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <i class="fas fa-lock text-gray-400"></i>
+            </div>
+            <input 
+              id="password" 
+              name="password" 
+              type="password" 
+              placeholder="••••••••" 
+              required 
+              class="input-field w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none"
+            >
+            <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+              <button type="button" onclick="togglePasswordVisibility()" class="text-gray-400 hover:text-gray-500">
+                <i class="far fa-eye" id="passwordToggleIcon"></i>
+              </button>
+            </div>
+          </div>
+          <div class="flex justify-end mt-1">
+            <a href="#" class="text-sm text-blue-600 hover:underline">Parolni unutdingizmi?</a>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="login-btn w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white py-3 px-4 rounded-lg shadow-md flex items-center justify-center space-x-2">
+          <i class="fas fa-sign-in-alt"></i>
+          <span>Kirish</span>
+        </button>
+
+        <!-- Error Message -->
+        <div id="errorMessage" class="hidden bg-red-100 border-l-4 border-red-500 text-red-700 p-3 rounded"></div>
+      </form>
+
+      <!-- Divider -->
+      <div class="flex items-center my-6">
+        <div class="flex-grow border-t border-gray-300"></div>
+        <span class="mx-4 text-gray-500">yoki</span>
+        <div class="flex-grow border-t border-gray-300"></div>
+      </div>
+
+      <!-- Social Login -->
+      <div class="space-y-3">
+        <button type="button" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg flex items-center justify-center space-x-2">
+          <i class="fab fa-facebook-f"></i>
+          <span>Facebook bilan kirish</span>
+        </button>
+        <button type="button" class="w-full bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-lg flex items-center justify-center space-x-2">
+          <i class="fab fa-google"></i>
+          <span>Google bilan kirish</span>
+        </button>
+      </div>
+
+      <!-- Registration Link -->
+      <p class="mt-6 text-center text-gray-600">
+        Hisobingiz yo'qmi? 
+        <a href="../register/bachelor-register.html" class="text-emerald-600 hover:text-emerald-700 font-medium hover:underline">Ro'yxatdan o'tish</a>
+      </p>
+    </div>
   </div>
 
   <script>
+    // Parolni ko'rsatish/yashirish
+    function togglePasswordVisibility() {
+      const passwordInput = document.getElementById('password');
+      const icon = document.getElementById('passwordToggleIcon');
+      
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+      } else {
+        passwordInput.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+      }
+    }
+
+    // Formni yuborish
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const form = new FormData(e.target);
-      const data = Object.fromEntries(form.entries());
-      data.role = "bachelor";
-
-      const res = await fetch('https://school-b97p.onrender.com/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-
-      const result = await res.json();
-      if (result.success) {
-        localStorage.setItem('user', JSON.stringify(result.user));
-        localStorage.setItem('userId', result.user.id); // 🔥 bu MUHIM
-        location.href = "../panel/bachelor.html";
-      } else {
-        alert(result.message || "Login xatosi");
+      
+      const form = e.target;
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const errorDiv = document.getElementById('errorMessage');
+      
+      // Yuklash holatini ko'rsatish
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Kirilmoqda...';
+      errorDiv.classList.add('hidden');
+      
+      try {
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+        data.role = "bachelor";
+        
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+        
+        const result = await res.json();
+        
+        if (result.success) {
+          localStorage.setItem('user', JSON.stringify(result.user));
+          localStorage.setItem('userId', result.user.id);
+          
+          // Kirish muvaffaqiyatli animatsiya
+          submitBtn.innerHTML = '<i class="fas fa-check mr-2"></i> Kirildi!';
+          submitBtn.classList.remove('from-green-600', 'to-emerald-600');
+          submitBtn.classList.add('bg-green-500');
+          
+          // Bosh sahifaga yo'naltirish
+          setTimeout(() => {
+            location.href = "../panel/bachelor.html";
+          }, 1000);
+        } else {
+          throw new Error(result.message || "Login xatosi");
+        }
+      } catch (error) {
+        errorDiv.textContent = error.message;
+        errorDiv.classList.remove('hidden');
+        submitBtn.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i> Kirish';
+      } finally {
+        submitBtn.disabled = false;
       }
     });
+
+    // Demo ma'lumotlarni to'ldirish (faqat test uchun)
+    function fillDemoCredentials() {
+      document.getElementById('email').value = 'bachelor@example.com';
+      document.getElementById('password').value = 'demopassword';
+    }
+
+    // Faqat development rejimida demo ma'lumotlarni to'ldirish
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      fillDemoCredentials();
+    }
   </script>
 </body>
 </html>
