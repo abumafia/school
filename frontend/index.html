@@ -1,12 +1,583 @@
 <!DOCTYPE html>
-<html lang="uz">
+<html lang="uz" dir="ltr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Maktab Kirish</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>X-Maktab - Ta'lim Platformasi</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#f0f9ff',
+              100: '#e0f2fe',
+              200: '#bae6fd',
+              300: '#7dd3fc',
+              400: '#38bdf8',
+              500: '#0ea5e9',
+              600: '#0284c7',
+              700: '#0369a1',
+              800: '#075985',
+              900: '#0c4a6e',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap');
+    body {
+      font-family: 'Rubik', sans-serif;
+    }
+    .gradient-bg {
+      background: linear-gradient(135deg, #0ea5e9 0%, #0c4a6e 100%);
+    }
+    .card-hover:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800 antialiased">
+
+  <!-- Navbar -->
+  <nav class="sticky top-0 z-50 bg-white shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16 items-center">
+        <div class="flex items-center">
+          <div class="flex-shrink-0 flex items-center">
+            <i class="fas fa-graduation-cap text-primary-600 text-2xl mr-2"></i>
+            <span class="text-xl font-bold text-primary-700">X-Maktab</span>
+          </div>
+          <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+            <a href="#" class="border-primary-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Bosh sahifa</a>
+            <a href="#" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Kurslar</a>
+            <a href="teachers.html" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">O'qituvchilar</a>
+            <a href="#" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Haqida</a>
+          </div>
+        </div>
+        <div class="hidden sm:ml-6 sm:flex sm:items-center">
+          <div class="relative ml-3">
+            <div>
+              <button id="user-menu-button" class="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                <span class="sr-only">Open user menu</span>
+                <span class="inline-flex items-center justify-center h-8 w-8 rounded-full bg-primary-100">
+                  <span class="text-sm font-medium text-primary-700">K</span>
+                </span>
+                <span class="ml-2 text-gray-700 font-medium hidden md:inline">Kirish</span>
+                <i class="fas fa-chevron-down ml-1 text-gray-500 text-xs hidden md:inline"></i>
+              </button>
+            </div>
+            <div id="user-menu-dropdown" class="hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+              <a href="../register/student-register.html?mode=login" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><i class="fas fa-sign-in-alt mr-2 text-primary-500"></i> Kirish</a>
+              <a href="../register/student-register.html?mode=register" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><i class="fas fa-user-plus mr-2 text-primary-500"></i> Ro'yxatdan o'tish</a>
+              <hr class="my-1">
+              <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><i class="fas fa-question-circle mr-2 text-primary-500"></i> Yordam</a>
+            </div>
+          </div>
+        </div>
+        <div class="-mr-2 flex items-center sm:hidden">
+          <button type="button" id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500">
+            <span class="sr-only">Open main menu</span>
+            <i class="fas fa-bars"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile menu -->
+    <div id="mobile-menu" class="hidden sm:hidden">
+      <div class="pt-2 pb-3 space-y-1">
+        <a href="#" class="bg-primary-50 border-primary-500 text-primary-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Bosh sahifa</a>
+        <a href="#" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Kurslar</a>
+        <a href="#" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">O'qituvchilar</a>
+        <a href="#" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Haqida</a>
+      </div>
+      <div class="pt-4 pb-3 border-t border-gray-200">
+        <div class="space-y-1">
+          <a href="./login/student-login.html?mode=login" class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100"><i class="fas fa-sign-in-alt mr-2 text-primary-500"></i> Kirish</a>
+          <a href="./register/student-register.html?mode=register" class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100"><i class="fas fa-user-plus mr-2 text-primary-500"></i> Ro'yxatdan o'tish</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero section -->
+  <section class="gradient-bg text-white">
+    <div class="max-w-7xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:px-8">
+      <div class="text-center">
+        <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
+          Kelajakni biz bilan quring!
+        </h1>
+        <p class="mt-6 max-w-2xl mx-auto text-xl text-primary-100">
+          X-Maktab platformasi orqali darslar, video saboqlar, bahslar va bilim almashinuvi. O'qituvchilar, talabalar va bakalavrlar uchun mo'ljallangan yagona makon.
+        </p>
+        <div class="mt-10 flex justify-center space-x-4">
+          <a href="./register/student-register.html?mode=register" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-primary-700 bg-white hover:bg-gray-50 transition duration-150 ease-in-out">
+            <i class="fas fa-rocket mr-2"></i> Hoziroq boshlang!
+          </a>
+          <a href="#" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary-700 bg-opacity-60 hover:bg-opacity-70 transition duration-150 ease-in-out">
+            <i class="fas fa-play-circle mr-2"></i> Videoni ko'rish
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section class="bg-white py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="bg-primary-50 rounded-lg p-6 text-center">
+          <dt class="text-3xl font-extrabold text-primary-600">1,200+</dt>
+          <dd class="mt-2 text-gray-600">Faol foydalanuvchilar</dd>
+        </div>
+        <div class="bg-primary-50 rounded-lg p-6 text-center">
+          <dt class="text-3xl font-extrabold text-primary-600">350+</dt>
+          <dd class="mt-2 text-gray-600">O'quv kurslari</dd>
+        </div>
+        <div class="bg-primary-50 rounded-lg p-6 text-center">
+          <dt class="text-3xl font-extrabold text-primary-600">50+</dt>
+          <dd class="mt-2 text-gray-600">Malakali o'qituvchilar</dd>
+        </div>
+        <div class="bg-primary-50 rounded-lg p-6 text-center">
+          <dt class="text-3xl font-extrabold text-primary-600">24/7</dt>
+          <dd class="mt-2 text-gray-600">Qo'llab-quvvatlash</dd>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="lg:text-center">
+        <h2 class="text-base text-primary-600 font-semibold tracking-wide uppercase">Xususiyatlar</h2>
+        <p class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+          Barcha uchun qulay platforma
+        </p>
+        <p class="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
+          Har bir foydalanuvchi turi uchun maxsus yechimlar
+        </p>
+      </div>
+
+      <div class="mt-16">
+        <div class="grid grid-cols-1 gap-12 md:grid-cols-3">
+          <div class="bg-white p-8 rounded-xl shadow-sm card-hover transition duration-300 ease-in-out">
+            <div class="flex items-center justify-center h-12 w-12 rounded-md bg-primary-500 text-white">
+              <i class="fas fa-chalkboard-teacher text-xl"></i>
+            </div>
+            <div class="mt-6">
+              <h3 class="text-lg font-medium text-gray-900">O'qituvchilar uchun</h3>
+              <p class="mt-2 text-base text-gray-500">
+                Dars joylang, o'quvchilar bilan bevosita muloqotda bo'ling, testlar tuzing va natijalarni kuzatib boring.
+              </p>
+            </div>
+            <div class="mt-6">
+              <a href="#" class="text-sm font-medium text-primary-600 hover:text-primary-500">
+                Batafsil <span aria-hidden="true">→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="bg-white p-8 rounded-xl shadow-sm card-hover transition duration-300 ease-in-out">
+            <div class="flex items-center justify-center h-12 w-12 rounded-md bg-primary-500 text-white">
+              <i class="fas fa-user-graduate text-xl"></i>
+            </div>
+            <div class="mt-6">
+              <h3 class="text-lg font-medium text-gray-900">O'quvchilar uchun</h3>
+              <p class="mt-2 text-base text-gray-500">
+                Yangi darslar o'rganing, testlarni ishlang, o'z bilimingizni sinab ko'ring va o'z profilingizni rivojlantiring.
+              </p>
+            </div>
+            <div class="mt-6">
+              <a href="#" class="text-sm font-medium text-primary-600 hover:text-primary-500">
+                Batafsil <span aria-hidden="true">→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="bg-white p-8 rounded-xl shadow-sm card-hover transition duration-300 ease-in-out">
+            <div class="flex items-center justify-center h-12 w-12 rounded-md bg-primary-500 text-white">
+              <i class="fas fa-users text-xl"></i>
+            </div>
+            <div class="mt-6">
+              <h3 class="text-lg font-medium text-gray-900">Bakalavrlar uchun</h3>
+              <p class="mt-2 text-base text-gray-500">
+                Ijtimoiy sahifalarda postlar, bahslar, do'stlar bilan bilim almashuvi va loyihalarda hamkorlik qiling.
+              </p>
+            </div>
+            <div class="mt-6">
+              <a href="#" class="text-sm font-medium text-primary-600 hover:text-primary-500">
+                Batafsil <span aria-hidden="true">→</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Popular courses -->
+  <section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center">
+        <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+          Mashhur kurslar
+        </h2>
+        <p class="mt-4 max-w-2xl text-xl text-gray-500 mx-auto">
+          Eng yaxshi o'qituvchilar tomonidan tayyorlangan kurslar
+        </p>
+      </div>
+
+      <div class="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <!-- Course 1 -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden card-hover transition duration-300 ease-in-out">
+          <div class="h-48 bg-gradient-to-r from-primary-400 to-primary-600 flex items-center justify-center">
+            <i class="fas fa-laptop-code text-white text-6xl"></i>
+          </div>
+          <div class="p-6">
+            <div class="flex items-center">
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-primary-100 text-primary-800">
+                Dasturlash
+              </span>
+              <span class="ml-2 text-sm text-gray-500">24 dars</span>
+            </div>
+            <h3 class="mt-2 text-xl font-semibold text-gray-900">Python dasturlash asoslari</h3>
+            <p class="mt-3 text-base text-gray-500">
+              Noldan boshlab Python dasturlash tilini o'rganing va birinchi dasturingizni yozing.
+            </p>
+            <div class="mt-4 flex items-center">
+              <div class="flex-shrink-0">
+                <img class="h-10 w-10 rounded-full" src="https://randomuser.me/api/portraits/men/32.jpg" alt="O'qituvchi">
+              </div>
+              <div class="ml-3">
+                <p class="text-sm font-medium text-gray-900">Jamshid Xalilov</p>
+                <div class="flex space-x-1 text-sm text-gray-500">
+                  <span>5.0</span>
+                  <span aria-hidden="true">·</span>
+                  <span>120 o'quvchi</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Course 2 -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden card-hover transition duration-300 ease-in-out">
+          <div class="h-48 bg-gradient-to-r from-yellow-400 to-yellow-600 flex items-center justify-center">
+            <i class="fas fa-calculator text-white text-6xl"></i>
+          </div>
+          <div class="p-6">
+            <div class="flex items-center">
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
+                Matematika
+              </span>
+              <span class="ml-2 text-sm text-gray-500">18 dars</span>
+            </div>
+            <h3 class="mt-2 text-xl font-semibold text-gray-900">Oliy matematika</h3>
+            <p class="mt-3 text-base text-gray-500">
+              Universitet talabalari uchun oliy matematikadan to'liq kurs. Amaliy misollar bilan.
+            </p>
+            <div class="mt-4 flex items-center">
+              <div class="flex-shrink-0">
+                <img class="h-10 w-10 rounded-full" src="https://randomuser.me/api/portraits/women/44.jpg" alt="O'qituvchi">
+              </div>
+              <div class="ml-3">
+                <p class="text-sm font-medium text-gray-900">Zarina Qodirova</p>
+                <div class="flex space-x-1 text-sm text-gray-500">
+                  <span>4.9</span>
+                  <span aria-hidden="true">·</span>
+                  <span>95 o'quvchi</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Course 3 -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden card-hover transition duration-300 ease-in-out">
+          <div class="h-48 bg-gradient-to-r from-green-400 to-green-600 flex items-center justify-center">
+            <i class="fas fa-globe text-white text-6xl"></i>
+          </div>
+          <div class="p-6">
+            <div class="flex items-center">
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                Ingliz tili
+              </span>
+              <span class="ml-2 text-sm text-gray-500">30 dars</span>
+            </div>
+            <h3 class="mt-2 text-xl font-semibold text-gray-900">IELTS tayyorgarlik</h3>
+            <p class="mt-3 text-base text-gray-500">
+              IELTS imtihoniga tayyorgarlik. Barcha bo'limlar: Listening, Reading, Writing va Speaking.
+            </p>
+            <div class="mt-4 flex items-center">
+              <div class="flex-shrink-0">
+                <img class="h-10 w-10 rounded-full" src="https://randomuser.me/api/portraits/men/75.jpg" alt="O'qituvchi">
+              </div>
+              <div class="ml-3">
+                <p class="text-sm font-medium text-gray-900">John Smith</p>
+                <div class="flex space-x-1 text-sm text-gray-500">
+                  <span>4.8</span>
+                  <span aria-hidden="true">·</span>
+                  <span>150 o'quvchi</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-12 text-center">
+        <a href="#" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 transition duration-150 ease-in-out">
+          Barcha kurslarni ko'rish <i class="fas fa-arrow-right ml-2"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="gradient-bg text-white py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="lg:text-center">
+        <h2 class="text-base text-primary-200 font-semibold tracking-wide uppercase">Fikrlar</h2>
+        <p class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-white sm:text-4xl">
+          Foydalanuvchilarimiz nima deyishadi
+        </p>
+      </div>
+      <div class="mt-16 grid grid-cols-1 gap-8 md:grid-cols-3">
+        <div class="bg-white bg-opacity-10 p-8 rounded-xl backdrop-filter backdrop-blur-sm">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <img class="h-12 w-12 rounded-full" src="https://randomuser.me/api/portraits/women/32.jpg" alt="Foydalanuvchi">
+            </div>
+            <div class="ml-4">
+              <div class="text-lg font-medium">Dilfuza Rahimova</div>
+              <div class="text-primary-200">11-sinf o'quvchisi</div>
+            </div>
+          </div>
+          <div class="mt-4">
+            <p class="text-primary-100">
+              "X-Maktab platformasi orqali matematikadan tushunmagan mavzularimni qayta ishlash imkoniyatiga ega bo'ldim. O'qituvchilar juda yaxshi tushuntiradilar!"
+            </p>
+          </div>
+          <div class="mt-4 flex">
+            <i class="fas fa-star text-yellow-300"></i>
+            <i class="fas fa-star text-yellow-300"></i>
+            <i class="fas fa-star text-yellow-300"></i>
+            <i class="fas fa-star text-yellow-300"></i>
+            <i class="fas fa-star text-yellow-300"></i>
+          </div>
+        </div>
+
+        <div class="bg-white bg-opacity-10 p-8 rounded-xl backdrop-filter backdrop-blur-sm">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <img class="h-12 w-12 rounded-full" src="https://randomuser.me/api/portraits/men/54.jpg" alt="Foydalanuvchi">
+            </div>
+            <div class="ml-4">
+              <div class="text-lg font-medium">Shoxrux Qodirov</div>
+              <div class="text-primary-200">Universitet talabasi</div>
+            </div>
+          </div>
+          <div class="mt-4">
+            <p class="text-primary-100">
+              "Bakalavrlik davrimda bu platforma juda ko'p yordam berdi. Ayniqsa, ingliz tili kurslari ajoyib tuzilgan. Endi IELTSdan yuqori ball oldim!"
+            </p>
+          </div>
+          <div class="mt-4 flex">
+            <i class="fas fa-star text-yellow-300"></i>
+            <i class="fas fa-star text-yellow-300"></i>
+            <i class="fas fa-star text-yellow-300"></i>
+            <i class="fas fa-star text-yellow-300"></i>
+            <i class="fas fa-star-half-alt text-yellow-300"></i>
+          </div>
+        </div>
+
+        <div class="bg-white bg-opacity-10 p-8 rounded-xl backdrop-filter backdrop-blur-sm">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <img class="h-12 w-12 rounded-full" src="https://randomuser.me/api/portraits/women/68.jpg" alt="Foydalanuvchi">
+            </div>
+            <div class="ml-4">
+              <div class="text-lg font-medium">Gulnora Yusupova</div>
+              <div class="text-primary-200">Matematika o'qituvchisi</div>
+            </div>
+          </div>
+          <div class="mt-4">
+            <p class="text-primary-100">
+              "O'quvchilarim bilan ishlash uchun ajoyib platforma. Dars materiallarimni joylashtirish, testlar tuzish va natijalarni kuzatish juda qulay."
+            </p>
+          </div>
+          <div class="mt-4 flex">
+            <i class="fas fa-star text-yellow-300"></i>
+            <i class="fas fa-star text-yellow-300"></i>
+            <i class="fas fa-star text-yellow-300"></i>
+            <i class="fas fa-star text-yellow-300"></i>
+            <i class="fas fa-star text-yellow-300"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+<!-- CTA -->
+<section class="bg-white py-16">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="bg-primary-50 rounded-2xl px-6 py-16 sm:p-16">
+      <div class="max-w-xl mx-auto lg:max-w-none lg:flex lg:items-center lg:justify-between">
+        <div>
+          <h2 class="text-3xl font-extrabold tracking-tight text-gray-900">
+            O'qishni boshlashga tayyormisiz?
+          </h2>
+          <p class="mt-4 text-lg text-gray-600">
+            X-Maktab platformasida ro'yxatdan o'ting va bilim olishning yangi usulini kashf eting.
+          </p>
+        </div>
+        <div class="mt-8 flex lg:mt-0 lg:flex-shrink-0 relative">
+          <!-- Dropdown Trigger -->
+          <div class="inline-flex rounded-md shadow relative">
+            <button id="registerDropdownBtn" onclick="toggleDropdown()" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 transition duration-150 ease-in-out">
+              <i class="fas fa-user-plus mr-2"></i> Ro'yxatdan o'tish
+              <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+
+            <!-- Dropdown Menu -->
+            <div id="registerDropdown" class="absolute right-0 mt-12 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 hidden z-50">
+              <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                <a href="../register/teacher-register.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">O'qituvchi sifatida</a>
+                <a href="../register/student-register.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">O'quvchi sifatida</a>
+                <a href="../register/bachelor-register.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Bakalavr sifatida</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Info Button -->
+          <div class="ml-3 inline-flex rounded-md shadow">
+            <a href="#" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-primary-600 bg-white hover:bg-gray-50 transition duration-150 ease-in-out">
+              <i class="fas fa-info-circle mr-2"></i> Batafsil ma'lumot
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-gray-300">
+    <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div>
+          <h3 class="text-white text-sm font-semibold tracking-wider uppercase">Platforma</h3>
+          <ul class="mt-4 space-y-2">
+            <li><a href="#" class="text-sm hover:text-white">Xususiyatlar</a></li>
+            <li><a href="#" class="text-sm hover:text-white">Narxlar</a></li>
+            <li><a href="#" class="text-sm hover:text-white">Kurslar</a></li>
+            <li><a href="#" class="text-sm hover:text-white">O'qituvchilar</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-white text-sm font-semibold tracking-wider uppercase">Kompaniya</h3>
+          <ul class="mt-4 space-y-2">
+            <li><a href="#" class="text-sm hover:text-white">Haqida</a></li>
+            <li><a href="#" class="text-sm hover:text-white">Jamoa</a></li>
+            <li><a href="#" class="text-sm hover:text-white">Karyera</a></li>
+            <li><a href="#" class="text-sm hover:text-white">Yangiliklar</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-white text-sm font-semibold tracking-wider uppercase">Yordam</h3>
+          <ul class="mt-4 space-y-2">
+            <li><a href="#" class="text-sm hover:text-white">Qo'llanma</a></li>
+            <li><a href="#" class="text-sm hover:text-white">Qo'llab-quvvatlash</a></li>
+            <li><a href="#" class="text-sm hover:text-white">Shaxsiy ma'lumotlar</a></li>
+            <li><a href="#" class="text-sm hover:text-white">Foydalanish shartlari</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-white text-sm font-semibold tracking-wider uppercase">Ijtimoiy tarmoqlar</h3>
+          <div class="mt-4 flex space-x-6">
+            <a href="https://t.me/hallaym" class="text-gray-400 hover:text-white">
+              <i class="fab fa-telegram text-xl"></i>
+            </a>
+            <a href="https://facebook.com/hallaym" class="text-gray-400 hover:text-white">
+              <i class="fab fa-facebook text-xl"></i>
+            </a>
+            <a href="https://instagram.com/hallaym.uz" class="text-gray-400 hover:text-white">
+              <i class="fab fa-instagram text-xl"></i>
+            </a>
+            <a href="https://youtube.com/hallaym" class="text-gray-400 hover:text-white">
+              <i class="fab fa-youtube text-xl"></i>
+            </a>
+          </div>
+          <div class="mt-6">
+            <h4 class="text-sm font-medium text-white">Obuna bo'ling</h4>
+            <p class="mt-2 text-sm text-gray-400">Yangiliklardan xabardor bo'lish uchun emailingizni kiriting</p>
+            <form class="mt-4 flex">
+              <input type="email" placeholder="Emailingiz" class="px-4 py-2 rounded-l-md w-full text-gray-800 focus:outline-none">
+              <button type="submit" class="bg-primary-500 text-white px-4 py-2 rounded-r-md hover:bg-primary-600 focus:outline-none">
+                <i class="fas fa-paper-plane"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="mt-12 border-t border-gray-700 pt-8 flex flex-col md:flex-row justify-between items-center">
+        <p class="text-sm text-gray-400">© 2025 X-Maktab Platformasi by HALLAYM LLC. Barcha huquqlar himoyalangan.</p>
+        <div class="mt-4 md:mt-0 flex space-x-6">
+          <a href="#" class="text-sm text-gray-400 hover:text-white">Maxfiylik siyosati</a>
+          <a href="#" class="text-sm text-gray-400 hover:text-white">Foydalanish shartlari</a>
+          <a href="#" class="text-sm text-gray-400 hover:text-white">Cookie siyosati</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Mobile menu toggle
+    const mobileBtn = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    if (mobileBtn && mobileMenu) {
+      mobileBtn.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+      });
+    }
+
+    // User dropdown toggle
+    const userBtn = document.getElementById('user-menu-button');
+    const userDropdown = document.getElementById('user-menu-dropdown');
+    if (userBtn && userDropdown) {
+      userBtn.addEventListener('click', () => {
+        userDropdown.classList.toggle('hidden');
+      });
+    }
+
+    // Register dropdown toggle
+    const registerBtn = document.getElementById('registerDropdownBtn');
+    const registerDropdown = document.getElementById('registerDropdown');
+    if (registerBtn && registerDropdown) {
+      registerBtn.addEventListener('click', function (e) {
+        e.stopPropagation(); // dropdown yopilib qolmasligi uchun
+        registerDropdown.classList.toggle('hidden');
+      });
+
+      document.addEventListener('click', function (e) {
+        if (!registerBtn.contains(e.target) && !registerDropdown.contains(e.target)) {
+          registerDropdown.classList.add('hidden');
+        }
+      });
+    }
+  });
+
+  document.addEventListener('DOMContentLoaded', () => {
       const user = JSON.parse(localStorage.getItem('user'));
       if (user) {
         if (user.role === 'teacher') {
@@ -16,35 +587,6 @@
         }
       }
     });
-  </script>
-</head>
-<body class="bg-gradient-to-br from-blue-100 to-indigo-200 flex items-center justify-center min-h-screen font-sans">
-
-  <div class="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-md animate-fadeIn">
-    <div class="text-center mb-6">
-      <img src="https://cdn-icons-png.flaticon.com/512/3135/3135755.png" alt="User Icon" class="w-20 h-20 mx-auto mb-2" />
-      <h2 class="text-3xl font-bold text-gray-800">Xush Kelibsiz!</h2>
-      <p class="text-gray-500">Iltimos, profilingizni tanlang</p>
-    </div>
-
-    <div class="space-y-4">
-      <a href="./login/student-login.html" class="block w-full text-center bg-blue-500 text-white py-2 rounded-lg shadow hover:bg-blue-600 transition transform hover:scale-105">🎓 O'quvchi Kirish</a>
-      <a href="./login/teacher-login.html" class="block w-full text-center bg-green-500 text-white py-2 rounded-lg shadow hover:bg-green-600 transition transform hover:scale-105">👩‍🏫 O'qituvchi Kirish</a>
-      <a href="./login/bachelor-login.html" class="block w-full text-center bg-green-500 text-white py-2 rounded-lg shadow hover:bg-green-600 transition transform hover:scale-105">👩 Bakalavr Kirish</a>
-      <a href="./register/student-register.html" class="block w-full text-center bg-blue-100 text-blue-700 py-2 rounded-lg shadow hover:bg-blue-200 transition">➕ O'quvchi Ro'yxatdan O'tish</a>
-      <a href="./register/teacher-register.html" class="block w-full text-center bg-green-100 text-green-700 py-2 rounded-lg shadow hover:bg-green-200 transition">➕ O'qituvchi Ro'yxatdan O'tish</a>
-      <a href="./register/bachelor-register.html" class="block w-full text-center bg-blue-100 text-blue-700 py-2 rounded-lg shadow hover:bg-blue-200 transition">➕ Bakalavr Ro'yxatdan O'tish</a>
-    </div>
-  </div>
-
-  <style>
-    @keyframes fadeIn {
-      0% { opacity: 0; transform: translateY(20px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
-    .animate-fadeIn {
-      animation: fadeIn 0.6s ease-out;
-    }
-  </style>
+</script>
 </body>
 </html>
