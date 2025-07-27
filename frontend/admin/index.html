@@ -1,153 +1,572 @@
 <!DOCTYPE html>
-<html lang="uz">
+<html lang="uz" dir="ltr">
 <head>
   <meta charset="UTF-8">
-  <title>Admin Panel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel | X-Maktab</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f8fafc;
+    }
+    .dashboard-card {
+      transition: all 0.3s ease;
+      border-left: 4px solid;
+    }
+    .dashboard-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+    .users-card {
+      border-left-color: #3b82f6;
+    }
+    .teachers-card {
+      border-left-color: #10b981;
+    }
+    .lessons-card {
+      border-left-color: #8b5cf6;
+    }
+    .table-row {
+      transition: background-color 0.2s ease;
+    }
+    .table-row:hover {
+      background-color: #f9fafb;
+    }
+    .badge {
+      font-size: 0.75rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: 9999px;
+    }
+    .badge-pending {
+      background-color: #fef3c7;
+      color: #92400e;
+    }
+    .badge-approved {
+      background-color: #d1fae5;
+      color: #065f46;
+    }
+    .animate-pulse {
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+  </style>
 </head>
-<body class="bg-gray-100 min-h-screen p-6">
-  <div class="max-w-5xl mx-auto">
-    <h1 class="text-3xl font-bold text-center mb-6">
-  📊 Admin Panel <span id="admin-name" class="text-blue-600 text-lg ml-4"></span>
-</h1>
+<body class="min-h-screen bg-gray-50">
+  <!-- Admin Navbar -->
+  <nav class="bg-white shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16">
+        <div class="flex items-center">
+          <div class="flex-shrink-0 flex items-center">
+            <i class="fas fa-shield-alt text-indigo-600 text-2xl mr-2"></i>
+            <span class="text-xl font-bold text-gray-900">X-Maktab Admin</span>
+          </div>
+        </div>
+        <div class="hidden sm:ml-6 sm:flex sm:items-center">
+          <div class="relative ml-3">
+            <div>
+              <button id="user-menu-button" class="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <span class="sr-only">Open admin menu</span>
+                <span class="inline-flex items-center justify-center h-8 w-8 rounded-full bg-indigo-100">
+                  <span class="text-sm font-medium text-indigo-700">A</span>
+                </span>
+                <span id="admin-name" class="ml-2 text-gray-700 font-medium">Admin</span>
+                <i class="fas fa-chevron-down ml-1 text-gray-500 text-xs"></i>
+              </button>
+            </div>
+            <div id="user-menu-dropdown" class="hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+              <button id="logoutBtn" class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><i class="fas fa-sign-out-alt mr-2 text-red-500"></i> Chiqish</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-      <div class="bg-white p-4 rounded shadow">
-        <p class="text-gray-600">👥 Foydalanuvchilar soni</p>
-        <h2 id="userCount" class="text-2xl font-bold">0</h2>
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+    <!-- Stats Cards -->
+    <div class="px-4 sm:px-0 grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div class="dashboard-card users-card bg-white p-6 rounded-lg shadow">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-500 truncate">👥 Jami foydalanuvchilar</p>
+            <h3 id="userCount" class="mt-1 text-3xl font-semibold text-gray-900 animate-pulse">0</h3>
+          </div>
+          <div class="bg-blue-100 p-3 rounded-full">
+            <i class="fas fa-users text-blue-600 text-xl"></i>
+          </div>
+        </div>
       </div>
-      <div class="bg-white p-4 rounded shadow">
-        <p class="text-gray-600">👨‍🏫 O‘qituvchilar soni</p>
-        <h2 id="teacherCount" class="text-2xl font-bold">0</h2>
+      
+      <div class="dashboard-card teachers-card bg-white p-6 rounded-lg shadow">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-500 truncate">👨‍🏫 O'qituvchilar</p>
+            <h3 id="teacherCount" class="mt-1 text-3xl font-semibold text-gray-900 animate-pulse">0</h3>
+          </div>
+          <div class="bg-green-100 p-3 rounded-full">
+            <i class="fas fa-chalkboard-teacher text-green-600 text-xl"></i>
+          </div>
+        </div>
       </div>
-      <div class="bg-white p-4 rounded shadow">
-        <p class="text-gray-600">📚 Darslar soni</p>
-        <h2 id="lessonCount" class="text-2xl font-bold">0</h2>
+      
+      <div class="dashboard-card lessons-card bg-white p-6 rounded-lg shadow">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-500 truncate">📚 Jami darslar</p>
+            <h3 id="lessonCount" class="mt-1 text-3xl font-semibold text-gray-900 animate-pulse">0</h3>
+          </div>
+          <div class="bg-purple-100 p-3 rounded-full">
+            <i class="fas fa-book-open text-purple-600 text-xl"></i>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="mt-10">
-  <h2 class="text-lg font-bold">⛏ Coin So‘rovlar</h2>
-  <div id="coin-requests" class="mt-4 space-y-2"></div>
-</div>
-
-    <div class="bg-white p-4 rounded shadow mb-6">
-      <h2 class="text-xl font-bold mb-3">📖 Darslar ro‘yxati</h2>
-      <div id="lessonList" class="space-y-2"></div>
+    <!-- Coin Requests Section -->
+    <div class="px-4 sm:px-0 mb-8">
+      <div class="bg-white overflow-hidden shadow rounded-lg">
+        <div class="px-6 py-5 border-b border-gray-200">
+          <h3 class="text-lg font-medium leading-6 text-gray-900 flex items-center">
+            <i class="fas fa-coins text-yellow-500 mr-2"></i> Coin so'rovlari
+          </h3>
+        </div>
+        <div class="bg-white px-6 py-4">
+          <div id="coin-requests" class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Foydalanuvchi ID</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Miqdor</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Holat</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Harakatlar</th>
+                </tr>
+              </thead>
+              <tbody id="coin-requests-body" class="bg-white divide-y divide-gray-200">
+                <!-- Coin requests will be loaded here -->
+                <tr>
+                  <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500">Yuklanmoqda...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="bg-white p-4 rounded shadow">
-      <h2 class="text-xl font-bold mb-3">👤 Foydalanuvchilar ro‘yxati</h2>
-      <div id="userList" class="space-y-2"></div>
+    <!-- Lessons Section -->
+    <div class="px-4 sm:px-0 mb-8">
+      <div class="bg-white overflow-hidden shadow rounded-lg">
+        <div class="px-6 py-5 border-b border-gray-200">
+          <h3 class="text-lg font-medium leading-6 text-gray-900 flex items-center">
+            <i class="fas fa-book-open text-indigo-500 mr-2"></i> Darslar ro'yxati
+          </h3>
+        </div>
+        <div class="bg-white px-6 py-4">
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nomi</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Muallif</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategoriya</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Harakatlar</th>
+                </tr>
+              </thead>
+              <tbody id="lessonList" class="bg-white divide-y divide-gray-200">
+                <!-- Lessons will be loaded here -->
+                <tr>
+                  <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500">Yuklanmoqda...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Users Section -->
+    <div class="px-4 sm:px-0">
+      <div class="bg-white overflow-hidden shadow rounded-lg">
+        <div class="px-6 py-5 border-b border-gray-200">
+          <h3 class="text-lg font-medium leading-6 text-gray-900 flex items-center">
+            <i class="fas fa-users text-blue-500 mr-2"></i> Foydalanuvchilar ro'yxati
+          </h3>
+        </div>
+        <div class="bg-white px-6 py-4">
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ism</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rol</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Harakatlar</th>
+                </tr>
+              </thead>
+              <tbody id="userList" class="bg-white divide-y divide-gray-200">
+                <!-- Users will be loaded here -->
+                <tr>
+                  <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500">Yuklanmoqda...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Confirmation Modal -->
+  <div id="confirmationModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+      <div class="p-6">
+        <h3 id="modalTitle" class="text-lg font-medium text-gray-900"></h3>
+        <div class="mt-2">
+          <p id="modalMessage" class="text-sm text-gray-500"></p>
+        </div>
+      </div>
+      <div class="bg-gray-50 px-6 py-4 flex justify-end">
+        <button id="cancelModal" type="button" class="mr-3 px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          Bekor qilish
+        </button>
+        <button id="confirmAction" type="button" class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+          Tasdiqlash
+        </button>
+      </div>
     </div>
   </div>
 
   <script>
+    // Check admin authentication
+    const admin = JSON.parse(localStorage.getItem("admin"));
+    if (!admin) {
+      location.href = "../login/admin-login.html";
+    } else {
+      document.getElementById("admin-name").textContent = admin.name || "Admin";
+    }
+
+    // DOM Elements
+    const confirmationModal = document.getElementById('confirmationModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalMessage = document.getElementById('modalMessage');
+    const confirmAction = document.getElementById('confirmAction');
+    const cancelModal = document.getElementById('cancelModal');
+
+    // Event Listeners
+    document.getElementById('logoutBtn').addEventListener('click', logout);
+    cancelModal.addEventListener('click', () => confirmationModal.classList.add('hidden'));
+
+    // Mobile menu toggle
+    document.getElementById('mobile-menu-button')?.addEventListener('click', function() {
+      const menu = document.getElementById('mobile-menu');
+      menu?.classList.toggle('hidden');
+    });
+
+    // User dropdown toggle
+    document.getElementById('user-menu-button')?.addEventListener('click', function() {
+      const dropdown = document.getElementById('user-menu-dropdown');
+      dropdown?.classList.toggle('hidden');
+    });
+
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', function(event) {
+      const userMenuButton = document.getElementById('user-menu-button');
+      const userMenuDropdown = document.getElementById('user-menu-dropdown');
+      
+      if (userMenuButton && !userMenuButton.contains(event.target)) {
+        userMenuDropdown?.classList.add('hidden');
+      }
+    });
+
+    // Functions
+    function logout() {
+      localStorage.removeItem('admin');
+      location.href = '../login/admin-login.html';
+    }
+
     async function loadStats() {
-      const res = await fetch('https://school-b97p.onrender.com/api/admin/stats');
-      const stats = await res.json();
-      document.getElementById('userCount').textContent = stats.totalUsers;
-      document.getElementById('teacherCount').textContent = stats.totalTeachers;
-      document.getElementById('lessonCount').textContent = stats.totalLessons;
+      try {
+        const res = await fetch('http://localhost:3000/api/admin/stats');
+        const stats = await res.json();
+        
+        document.getElementById('userCount').textContent = stats.totalUsers;
+        document.getElementById('userCount').classList.remove('animate-pulse');
+        
+        document.getElementById('teacherCount').textContent = stats.totalTeachers;
+        document.getElementById('teacherCount').classList.remove('animate-pulse');
+        
+        document.getElementById('lessonCount').textContent = stats.totalLessons;
+        document.getElementById('lessonCount').classList.remove('animate-pulse');
+      } catch (error) {
+        console.error("Statistikalarni yuklashda xatolik:", error);
+      }
+    }
+
+    // Coin so'rovlarini yuklash
+    async function loadCoinRequests() {
+      try {
+        const res = await fetch('/api/coin/requests');
+        const requests = await res.json();
+        const container = document.getElementById('coin-requests-body');
+        
+        if (requests.length === 0) {
+          container.innerHTML = `
+            <tr>
+              <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500">Hozircha so'rovlar mavjud emas</td>
+            </tr>
+          `;
+          return;
+        }
+        
+        container.innerHTML = requests.filter(r => r.status === 'pending').map(request => `
+          <tr class="table-row">
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${request.userId}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${request.amount} coin</td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span class="badge badge-pending">Kutilmoqda</span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+              <button onclick="showApproveConfirmation('${request.userId}', ${request.amount})" class="text-indigo-600 hover:text-indigo-900 mr-3">
+                <i class="fas fa-check-circle mr-1"></i> Tasdiqlash
+              </button>
+              <button onclick="showRejectConfirmation('${request.userId}')" class="text-red-600 hover:text-red-900">
+                <i class="fas fa-times-circle mr-1"></i> Rad etish
+              </button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (error) {
+        console.error("Coin so'rovlarini yuklashda xatolik:", error);
+      }
+    }
+
+    function showApproveConfirmation(userId, amount) {
+      modalTitle.textContent = "Coin so'rovini tasdiqlash";
+      modalMessage.textContent = `${userId} foydalanuvchiga ${amount} coin berilsinmi?`;
+      
+      confirmAction.onclick = async () => {
+        confirmAction.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Tasdiqlanmoqda...';
+        confirmAction.disabled = true;
+        
+        try {
+          const res = await fetch('/api/coin/approve', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ userId })
+          });
+          
+          const data = await res.json();
+          if (data.success) {
+            alert('Coin muvaffaqiyatli berildi!');
+            loadCoinRequests();
+          } else {
+            alert('Xatolik yuz berdi: ' + (data.message || ''));
+          }
+        } catch (error) {
+          console.error("Xatolik:", error);
+          alert('Xatolik yuz berdi!');
+        } finally {
+          confirmationModal.classList.add('hidden');
+          confirmAction.innerHTML = 'Tasdiqlash';
+          confirmAction.disabled = false;
+        }
+      };
+      
+      confirmationModal.classList.remove('hidden');
+    }
+
+    function showRejectConfirmation(userId) {
+      modalTitle.textContent = "Coin so'rovini rad etish";
+      modalMessage.textContent = `${userId} foydalanuvchining coin so'rovi rad etilsinmi?`;
+      
+      confirmAction.onclick = async () => {
+        confirmAction.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Amalga oshirilmoqda...';
+        confirmAction.disabled = true;
+        
+        try {
+          const res = await fetch('/api/coin/reject', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ userId })
+          });
+          
+          const data = await res.json();
+          if (data.success) {
+            alert('So\'rov rad etildi!');
+            loadCoinRequests();
+          } else {
+            alert('Xatolik yuz berdi: ' + (data.message || ''));
+          }
+        } catch (error) {
+          console.error("Xatolik:", error);
+          alert('Xatolik yuz berdi!');
+        } finally {
+          confirmationModal.classList.add('hidden');
+          confirmAction.innerHTML = 'Tasdiqlash';
+          confirmAction.disabled = false;
+        }
+      };
+      
+      confirmationModal.classList.remove('hidden');
     }
 
     async function loadLessons() {
-      const res = await fetch('https://school-b97p.onrender.com/api/admin/lessons');
-      const lessons = await res.json();
-      const container = document.getElementById('lessonList');
-      container.innerHTML = '';
-      lessons.forEach(lesson => {
-        const div = document.createElement('div');
-        div.className = 'border p-2 rounded flex justify-between items-center';
-        div.innerHTML = `
-          <span>${lesson.title}</span>
-          <button class="text-red-600" onclick="deleteLesson('${lesson.id}')">🗑 O‘chirish</button>
-        `;
-        container.appendChild(div);
-      });
+      try {
+        const res = await fetch('http://localhost:3000/api/admin/lessons');
+        const lessons = await res.json();
+        const container = document.getElementById('lessonList');
+        
+        if (lessons.length === 0) {
+          container.innerHTML = `
+            <tr>
+              <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500">Hozircha darslar mavjud emas</td>
+            </tr>
+          `;
+          return;
+        }
+        
+        container.innerHTML = lessons.map(lesson => `
+          <tr class="table-row">
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="text-sm font-medium text-gray-900">${lesson.title}</div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+  <a href="../profile/profile.html?user=${lesson.teacherId}" class="text-blue-600 hover:underline">
+    ${lesson.teacherId || 'Noma\'lum'}
+  </a>
+</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${lesson.category || 'Umumiy'}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+              <button onclick="showDeleteLessonConfirmation('${lesson.id}', '${lesson.title}')" class="text-red-600 hover:text-red-900">
+                <i class="fas fa-trash-alt mr-1"></i> O'chirish
+              </button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (error) {
+        console.error("Darslarni yuklashda xatolik:", error);
+      }
     }
 
-    // Coin so‘rovlarini olish
-fetch('https://school-b97p.onrender.com/api/coin/requests')
-  .then(res => res.json())
-  .then(requests => {
-    const container = document.getElementById('coin-requests');
-    container.innerHTML = '';
-    requests.filter(r => r.status === 'pending').forEach(r => {
-      const div = document.createElement('div');
-      div.className = 'border p-2 rounded flex justify-between items-center';
-      div.innerHTML = `
-        <span><b>ID:</b> ${r.userId} | <b>Coin:</b> ${r.amount}</span>
-        <button class="bg-green-600 text-white px-2 py-1 rounded hover:bg-green-700" onclick="approveCoin('${r.userId}')">Tasdiqlash</button>
-      `;
-      container.appendChild(div);
-    });
-  });
-
-function approveCoin(userId) {
-  fetch('https://school-b97p.onrender.com/api/coin/approve', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({ userId })
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (data.success) {
-      alert('Coin berildi!');
-      location.reload();
-    } else {
-      alert('Xatolik!');
+    function showDeleteLessonConfirmation(lessonId, lessonTitle) {
+      modalTitle.textContent = "Darsni o'chirish";
+      modalMessage.textContent = `"${lessonTitle}" darsini rostdan ham o'chirmoqchimisiz?`;
+      
+      confirmAction.onclick = async () => {
+        confirmAction.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> O\'chirilmoqda...';
+        confirmAction.disabled = true;
+        
+        try {
+          await fetch(`http://localhost:3000/api/admin/delete-lesson/${lessonId}`, { 
+            method: 'DELETE' 
+          });
+          
+          loadLessons();
+          loadStats();
+          alert('Dars muvaffaqiyatli o\'chirildi!');
+        } catch (error) {
+          console.error("Xatolik:", error);
+          alert('Dars o\'chirishda xatolik yuz berdi!');
+        } finally {
+          confirmationModal.classList.add('hidden');
+          confirmAction.innerHTML = 'Tasdiqlash';
+          confirmAction.disabled = false;
+        }
+      };
+      
+      confirmationModal.classList.remove('hidden');
     }
-  });
-}
 
     async function loadUsers() {
-      const res = await fetch('https://school-b97p.onrender.com/api/admin/users');
-      const users = await res.json();
-      const container = document.getElementById('userList');
-      container.innerHTML = '';
-      users.forEach(user => {
-        const div = document.createElement('div');
-        div.className = 'border p-2 rounded flex justify-between items-center';
-        div.innerHTML = `
-          <span>${user.name} (${user.role})</span>
-          <button class="text-red-600" onclick="deleteUser('${user.id}')">🗑 O‘chirish</button>
-        `;
-        container.appendChild(div);
-      });
-    }
-
-    async function deleteLesson(id) {
-      if (confirm("Rostdan ham bu darsni o‘chirmoqchimisiz?")) {
-        await fetch(`https://school-b97p.onrender.com/api/admin/delete-lesson/${id}`, { method: 'DELETE' });
-        loadLessons();
-        loadStats();
+      try {
+        const res = await fetch('http://localhost:3000/api/admin/users');
+        const users = await res.json();
+        const container = document.getElementById('userList');
+        
+        if (users.length === 0) {
+          container.innerHTML = `
+            <tr>
+              <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500">Hozircha foydalanuvchilar mavjud emas</td>
+            </tr>
+          `;
+          return;
+        }
+        
+        container.innerHTML = users.map(user => `
+          <tr class="table-row">
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="flex items-center">
+                <div class="flex-shrink-0 h-10 w-10">
+                  <span class="inline-flex items-center justify-center h-10 w-10 rounded-full bg-indigo-100">
+                    <span class="text-sm font-medium text-indigo-700">${user.name?.charAt(0) || 'U'}</span>
+                  </span>
+                </div>
+                <div class="ml-4">
+                  <div class="text-sm font-medium text-gray-900">${user.name || 'Noma\'lum'}</div>
+                  <div class="text-sm text-gray-500">${user.email || ''}</div>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.email || 'Noma\'lum'}</td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                ${user.role === 'admin' ? 'bg-purple-100 text-purple-800' : 
+                  user.role === 'teacher' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'}">
+                ${user.role || 'user'}
+              </span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+              <button onclick="showDeleteUserConfirmation('${user.id}', '${user.name || user.email}')" class="text-red-600 hover:text-red-900">
+                <i class="fas fa-trash-alt mr-1"></i> O'chirish
+              </button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (error) {
+        console.error("Foydalanuvchilarni yuklashda xatolik:", error);
       }
     }
 
-    async function deleteUser(id) {
-      if (confirm("Bu foydalanuvchini o‘chirmoqchimisiz?")) {
-        await fetch(`https://school-b97p.onrender.com/api/admin/delete-user/${id}`, { method: 'DELETE' });
-        loadUsers();
-        loadStats();
-      }
+    function showDeleteUserConfirmation(userId, userName) {
+      modalTitle.textContent = "Foydalanuvchini o'chirish";
+      modalMessage.textContent = `"${userName}" foydalanuvchisini rostdan ham o'chirmoqchimisiz?`;
+      
+      confirmAction.onclick = async () => {
+        confirmAction.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> O\'chirilmoqda...';
+        confirmAction.disabled = true;
+        
+        try {
+          await fetch(`http://localhost:3000/api/admin/delete-user/${userId}`, { 
+            method: 'DELETE' 
+          });
+          
+          loadUsers();
+          loadStats();
+          alert('Foydalanuvchi muvaffaqiyatli o\'chirildi!');
+        } catch (error) {
+          console.error("Xatolik:", error);
+          alert('Foydalanuvchini o\'chirishda xatolik yuz berdi!');
+        } finally {
+          confirmationModal.classList.add('hidden');
+          confirmAction.innerHTML = 'Tasdiqlash';
+          confirmAction.disabled = false;
+        }
+      };
+      
+      confirmationModal.classList.remove('hidden');
     }
 
-    const admin = JSON.parse(localStorage.getItem("admin"));
-if (!admin) {
-  location.href = "../login/admin-login.html";
-} else {
-  document.getElementById("admin-name").textContent = " | Admin: " + (admin.name || "Admin");
-}
-
-// GET /api/coin/requests -> [{id, userId, amount, status}]
-fetch('https://school-b97p.onrender.com/api/coin/requests')
-  .then(res => res.json())
-  .then(requests => {
-    // jadvalga chiqarish va har biriga "Tasdiqlash" tugmasi qo‘yish
-  });
-
+    // Initial load
     loadStats();
+    loadCoinRequests();
     loadLessons();
     loadUsers();
   </script>
