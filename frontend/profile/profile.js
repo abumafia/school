@@ -169,7 +169,7 @@ function sendMessage() {
     const formData = new FormData();
     formData.append('file', file);
 
-    fetch('/api/chat/upload', {
+    fetch('https://school-b97p.onrender.com/api/chat/upload', {
       method: 'POST',
       body: formData
     })
