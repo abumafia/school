@@ -1,74 +1,265 @@
 <!DOCTYPE html>
-<html lang="uz">
+<html lang="uz" dir="ltr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Talaba Kirish</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Talaba Kirish | X-Maktab</title>
   <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-blue-300">
-  <div class="bg-white shadow-xl rounded-2xl p-8 w-full max-w-sm animate-fade-in">
-    <div class="text-center mb-6">
-      <img src="https://cdn-icons-png.flaticon.com/512/3135/3135768.png" alt="Student Icon" class="w-16 h-16 mx-auto mb-2" />
-      <h1 class="text-2xl font-extrabold text-gray-800">Talaba Kirish</h1>
-      <p class="text-sm text-gray-500">Hisobingizga kiring</p>
-    </div>
-
-    <form id="loginForm" class="space-y-4">
-      <input
-        name="email"
-        type="email"
-        placeholder="📧 Email"
-        class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-400 focus:outline-none"
-        required
-      />
-      <input
-        name="password"
-        type="password"
-        placeholder="🔐 Parol"
-        class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-400 focus:outline-none"
-        required
-      />
-      <button
-        type="submit"
-        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-xl transition-all duration-200"
-      >
-        Kirish
-      </button>
-    </form>
-
-    <p class="text-center text-sm text-gray-400 mt-6">Hisobingiz yo‘qmi? <a href="../register/student-register.html" class="text-blue-600 hover:underline">Ro‘yxatdan o‘tish</a></p>
-  </div>
-
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#f0f9ff',
+              100: '#e0f2fe',
+              200: '#bae6fd',
+              300: '#7dd3fc',
+              400: '#38bdf8',
+              500: '#0ea5e9',
+              600: '#0284c7',
+              700: '#0369a1',
+              800: '#075985',
+              900: '#0c4a6e',
+            }
+          },
+          fontFamily: {
+            sans: ['Rubik', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap');
+    body {
+      font-family: 'Rubik', sans-serif;
+      background-image: url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+    .login-container {
+      backdrop-filter: blur(10px);
+      background-color: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+    }
+    .input-focus:focus {
+      box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.3);
+    }
+    .btn-hover:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
     @keyframes fade-in {
-      from { opacity: 0; transform: translateY(10px); }
+      from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
     .animate-fade-in {
-      animation: fade-in 0.5s ease-out;
+      animation: fade-in 0.6s cubic-bezier(0.22, 1, 0.36, 1);
     }
   </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+  <div class="login-container w-full max-w-md rounded-2xl overflow-hidden shadow-xl animate-fade-in">
+    <!-- Header section -->
+    <div class="bg-gradient-to-r from-primary-600 to-primary-800 p-8 text-center">
+      <div class="flex justify-center mb-3">
+        <div class="bg-white p-3 rounded-full shadow-lg">
+          <i class="fas fa-user-graduate text-primary-600 text-3xl"></i>
+        </div>
+      </div>
+      <h1 class="text-2xl font-bold text-white">Talaba Kirish</h1>
+      <p class="text-primary-100 mt-1">X-Maktab platformasiga xush kelibsiz!</p>
+    </div>
+
+    <!-- Form section -->
+    <div class="p-8">
+      <form id="loginForm" class="space-y-5">
+        <!-- Email field -->
+        <div>
+          <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email manzil</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <i class="fas fa-envelope text-gray-400"></i>
+            </div>
+            <input 
+              id="email" 
+              name="email" 
+              type="email" 
+              required 
+              class="pl-10 w-full px-4 py-3 border border-gray-300 rounded-lg input-focus focus:ring-primary-500 focus:border-primary-500" 
+              placeholder="example@mail.com"
+            >
+          </div>
+        </div>
+
+        <!-- Password field -->
+        <div>
+          <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Parol</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <i class="fas fa-lock text-gray-400"></i>
+            </div>
+            <input 
+              id="password" 
+              name="password" 
+              type="password" 
+              required 
+              class="pl-10 w-full px-4 py-3 border border-gray-300 rounded-lg input-focus focus:ring-primary-500 focus:border-primary-500" 
+              placeholder="Kamida 6 ta belgi"
+            >
+            <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+              <button type="button" class="text-gray-400 hover:text-gray-500 focus:outline-none" onclick="togglePasswordVisibility('password')">
+                <i class="fas fa-eye" id="passwordEyeIcon"></i>
+              </button>
+            </div>
+          </div>
+          <div class="mt-2 text-right">
+            <a href="/auth/forgot-password.html" class="text-sm text-primary-600 hover:underline">Parolni unutdingizmi?</a>
+          </div>
+        </div>
+
+        <!-- Remember me checkbox -->
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <input id="remember" name="remember" type="checkbox" class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded">
+            <label for="remember" class="ml-2 block text-sm text-gray-700">Eslab qolish</label>
+          </div>
+        </div>
+
+        <!-- Submit button -->
+        <button 
+          type="submit" 
+          id="loginButton"
+          class="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-white bg-primary-600 hover:bg-primary-700 font-medium btn-hover transition-all duration-200"
+        >
+          <i class="fas fa-sign-in-alt mr-2"></i> Kirish
+        </button>
+
+        <!-- Social login options -->
+        <div class="relative mt-6">
+          <div class="absolute inset-0 flex items-center">
+            <div class="w-full border-t border-gray-300"></div>
+          </div>
+          <div class="relative flex justify-center text-sm">
+            <span class="px-2 bg-white text-gray-500">Yoki ijtimoiy tarmoqlar orqali</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 mt-6">
+          <a href="#" class="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+            <i class="fab fa-google text-red-500 mr-2"></i> Google
+          </a>
+          <a href="#" class="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-lg shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+            <i class="fab fa-facebook text-blue-600 mr-2"></i> Facebook
+          </a>
+        </div>
+
+        <!-- Register link -->
+        <div class="text-center text-sm mt-6">
+          <p class="text-gray-600">
+            Hisobingiz yo'qmi?
+            <a href="../register/student-register.html" class="font-medium text-primary-600 hover:underline">Ro'yxatdan o'tish</a>
+          </p>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <script>
-    document.getElementById('loginForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const form = new FormData(e.target);
-      const data = Object.fromEntries(form.entries());
-      data.role = 'student';
-
-      const res = await fetch('https://school-b97p.onrender.com/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      });
-
-      const result = await res.json();
-      if (result.success) {
-        localStorage.setItem('user', JSON.stringify(result.user));
-        location.href = '/panel/student.html';
+    // Toggle password visibility
+    function togglePasswordVisibility(fieldId) {
+      const field = document.getElementById(fieldId);
+      const icon = document.getElementById(fieldId + 'EyeIcon');
+      
+      if (field.type === 'password') {
+        field.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
       } else {
-        alert('❌ Login xato: ' + result.message);
+        field.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+      }
+    }
+
+    // Form submission
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const formData = {
+        email: document.getElementById('email').value,
+        password: document.getElementById('password').value,
+        remember: document.getElementById('remember').checked,
+        role: 'student'
+      };
+
+      try {
+        // Show loading state
+        const loginBtn = document.getElementById('loginButton');
+        loginBtn.disabled = true;
+        loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Kirish...';
+        
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        });
+
+        const result = await res.json();
+        
+        if (res.ok) {
+          // Show success message
+          loginBtn.innerHTML = '<i class="fas fa-check mr-2"></i> Muvaffaqiyatli!';
+          loginBtn.classList.remove('bg-primary-600', 'hover:bg-primary-700');
+          loginBtn.classList.add('bg-green-500', 'hover:bg-green-600');
+          
+          // Store user data if remember me is checked
+          if (formData.remember) {
+            localStorage.setItem('user', JSON.stringify(result.user));
+          } else {
+            sessionStorage.setItem('user', JSON.stringify(result.user));
+          }
+          
+          // Redirect after delay
+          setTimeout(() => {
+            window.location.href = "/panel/student.html";
+          }, 1000);
+        } else {
+          throw new Error(result.message || 'Kirishda xatolik yuz berdi');
+        }
+      } catch (error) {
+        // Show error message
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'mt-4 p-3 bg-red-50 text-red-600 rounded-lg text-sm flex items-center';
+        errorDiv.innerHTML = `
+          <i class="fas fa-exclamation-circle mr-2"></i>
+          ${error.message}
+        `;
+        
+        const existingError = document.querySelector('.error-message');
+        if (existingError) existingError.remove();
+        
+        errorDiv.classList.add('error-message');
+        document.getElementById('loginForm').prepend(errorDiv);
+        
+        // Reset button
+        const loginBtn = document.getElementById('loginButton');
+        loginBtn.disabled = false;
+        loginBtn.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i> Kirish';
+      }
+    });
+
+    // Check for remembered user
+    document.addEventListener('DOMContentLoaded', function() {
+      const rememberedEmail = localStorage.getItem('rememberedEmail');
+      const rememberCheckbox = document.getElementById('remember');
+      
+      if (rememberedEmail) {
+        document.getElementById('email').value = rememberedEmail;
+        rememberCheckbox.checked = true;
       }
     });
   </script>
