@@ -1,63 +1,187 @@
 <!DOCTYPE html>
-<html lang="uz">
+<html lang="uz" dir="ltr">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🎓 O‘quvchi Paneli</title>
+  <title>🎓 O'quvchi Paneli | X-Maktab</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     body {
       font-family: 'Inter', sans-serif;
+      background-color: #f8fafc;
     }
-    .card:hover {
-      transform: scale(1.02);
-      transition: transform 0.2s ease;
+    .gradient-bg {
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
+    }
+    .card-hover:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      transition: all 0.3s ease;
+    }
+    .smooth-transition {
+      transition: all 0.3s ease;
+    }
+    .like-animation {
+      animation: like-pulse 0.5s ease;
+    }
+    @keyframes like-pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
     }
   </style>
 </head>
-<body class="bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 min-h-screen">
-
+<body class="min-h-screen">
   <!-- Navbar -->
-  <nav class="bg-white shadow-lg px-6 py-4 flex justify-between items-center">
-    <h1 class="text-2xl font-bold text-purple-700">🎓 O‘quvchi Paneli</h1>
-    <div class="flex items-center gap-4">
-      <button id="logoutBtn" class="text-red-500 hover:underline">Chiqish</button>
-      <button id="profileBtn" class="text-blue-700 hover:underline">👤 Profil</button>    </div>
+  <nav class="bg-white shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16">
+        <div class="flex items-center">
+          <div class="flex-shrink-0 flex items-center">
+            <i class="fas fa-graduation-cap text-indigo-600 text-2xl mr-2"></i>
+            <span class="text-xl font-bold text-gray-900">X-Maktab</span>
+          </div>
+          <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+            <a href="#" class="border-indigo-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Asosiy</a>
+            <a href="./social.html" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">SfS</a>
+            <a href="../games/games.html" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">O'yinlar</a>
+          </div>
+        </div>
+        <div class="hidden sm:ml-6 sm:flex sm:items-center">
+          <div class="relative ml-3">
+            <div>
+              <button id="user-menu-button" class="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <span class="sr-only">Open user menu</span>
+                <span class="inline-flex items-center justify-center h-8 w-8 rounded-full bg-indigo-100">
+                  <span class="text-sm font-medium text-indigo-700">O</span>
+                </span>
+                <span class="ml-2 text-gray-700 font-medium">Profil</span>
+                <i class="fas fa-chevron-down ml-1 text-gray-500 text-xs"></i>
+              </button>
+            </div>
+            <div id="user-menu-dropdown" class="hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+              <a href="../profile/profile.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><i class="fas fa-user mr-2 text-indigo-500"></i> Profil</a>
+              <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><i class="fas fa-cog mr-2 text-indigo-500"></i> Sozlamalar</a>
+              <hr class="my-1">
+              <button id="logoutBtn" class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><i class="fas fa-sign-out-alt mr-2 text-red-500"></i> Chiqish</button>
+            </div>
+          </div>
+        </div>
+        <div class="-mr-2 flex items-center sm:hidden">
+          <button type="button" id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
+            <span class="sr-only">Open main menu</span>
+            <i class="fas fa-bars"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile menu -->
+    <div id="mobile-menu" class="hidden sm:hidden">
+      <div class="pt-2 pb-3 space-y-1">
+        <a href="#" class="bg-indigo-50 border-indigo-500 text-indigo-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Asosiy</a>
+        <a href="./social.html" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">SfS</a>
+        <a href="../games/games.html" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">O'yinlar</a>
+      </div>
+      <div class="pt-4 pb-3 border-t border-gray-200">
+        <div class="flex items-center px-4">
+          <div class="flex-shrink-0">
+            <span class="inline-flex items-center justify-center h-10 w-10 rounded-full bg-indigo-100">
+              <span class="text-sm font-medium text-indigo-700">O</span>
+            </span>
+          </div>
+          <div class="ml-3">
+            <div class="text-base font-medium text-gray-800">O'quvchi</div>
+            <div class="text-sm font-medium text-gray-500">student@example.com</div>
+          </div>
+        </div>
+        <div class="mt-3 space-y-1">
+          <a href="../profile/profile.html" class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100"><i class="fas fa-user mr-2 text-indigo-500"></i> Profil</a>
+          <a href="#" class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100"><i class="fas fa-cog mr-2 text-indigo-500"></i> Sozlamalar</a>
+          <button id="logoutBtnMobile" class="w-full text-left block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100"><i class="fas fa-sign-out-alt mr-2 text-red-500"></i> Chiqish</button>
+        </div>
+      </div>
+    </div>
   </nav>
 
-  <!-- Top Action -->
-  <div class="max-w-5xl mx-auto mt-8 px-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-    <a href="./social.html"
-      class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl shadow-md text-center transition w-full sm:w-auto text-lg">
-      SfS
-    </a>
-    <input id="searchInput" type="text" placeholder="🔍 Dars nomi yoki tavsif bo‘yicha qidirish..."
-      class="w-full sm:w-2/3 p-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-300" />
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+    <!-- Search and Actions -->
+    <div class="px-4 sm:px-0 mb-8">
+      <div class="bg-white rounded-lg shadow p-4">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div class="relative flex-grow">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <i class="fas fa-search text-gray-400"></i>
+            </div>
+            <input id="searchInput" type="text" placeholder="Dars nomi yoki tavsif bo'yicha qidirish..." class="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+          </div>
+          <div class="flex gap-3">
+            <a href="./social.html" class="flex items-center justify-center px-4 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow smooth-transition">
+              <i class="fas fa-users mr-2"></i> SfS
+            </a>
+            <a href="../games/games.html" class="flex items-center justify-center px-4 py-3 bg-pink-600 hover:bg-pink-700 text-white rounded-lg shadow smooth-transition">
+              <i class="fas fa-gamepad mr-2"></i> O'yinlar
+            </a>
+            <a href="./index.html" class="flex items-center justify-center px-4 py-3 bg-pink-600 hover:bg-pink-700 text-white rounded-lg shadow smooth-transition">
+              <i class="fas fa-video mr-2"></i> Videolar
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
 
-    <a href="../games/games.html"
-      class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl shadow-md text-center transition w-full sm:w-auto text-lg">
-      🎮 O‘yinlar
-    </a>
-  </div>
-
-  <!-- Lessons Section -->
-  <div class="max-w-5xl mx-auto px-4 mt-10">
-    <h2 class="text-3xl font-bold text-center mb-8 text-gray-800">📚 Darslar</h2>
-    <div id="lessonContainer" class="space-y-6"></div>
-  </div>
+    <!-- Lessons Section -->
+    <div class="px-4 sm:px-0">
+      <div class="bg-white rounded-lg shadow overflow-hidden">
+        <div class="p-6 border-b border-gray-200">
+          <h2 class="text-2xl font-bold text-gray-800 flex items-center">
+            <i class="fas fa-book-open mr-3 text-indigo-600"></i> Darslar
+          </h2>
+        </div>
+        <div id="lessonContainer" class="divide-y divide-gray-200"></div>
+      </div>
+    </div>
+  </main>
 
   <!-- Like Modal -->
-  <div id="likeModal" class="hidden fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-    <div class="bg-white rounded-xl p-6 w-full max-w-md shadow-lg">
-      <h2 class="text-xl font-bold mb-4">❤️ Layk bosganlar</h2>
-      <div id="likeList" class="space-y-2 text-gray-700"></div>
-      <button id="closeLikeModal" class="mt-6 bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded shadow">Yopish</button>
+  <div id="likeModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl shadow-xl w-full max-w-md max-h-[80vh] overflow-hidden">
+      <div class="p-6 border-b border-gray-200">
+        <h3 class="text-xl font-bold text-gray-800 flex items-center">
+          <i class="fas fa-heart mr-2 text-red-500"></i> Layk bosganlar
+        </h3>
+      </div>
+      <div id="likeList" class="p-6 overflow-y-auto space-y-3"></div>
+      <div class="p-4 border-t border-gray-200 text-right">
+        <button id="closeLikeModal" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 smooth-transition">
+          Yopish
+        </button>
+      </div>
     </div>
   </div>
 
-  <!-- Script -->
+  <!-- Comment Like Modal -->
+  <div id="commentLikeModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl shadow-xl w-full max-w-md max-h-[80vh] overflow-hidden">
+      <div class="p-6 border-b border-gray-200">
+        <h3 class="text-xl font-bold text-gray-800 flex items-center">
+          <i class="fas fa-heart mr-2 text-red-500"></i> Izohga layk bosganlar
+        </h3>
+      </div>
+      <div id="commentLikeList" class="p-6 overflow-y-auto space-y-3"></div>
+      <div class="p-4 border-t border-gray-200 text-right">
+        <button id="closeCommentLikeModal" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 smooth-transition">
+          Yopish
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script>
+    // Check authentication
     const user = JSON.parse(localStorage.getItem('user'));
     if (!user || user.role !== 'student') {
       alert("Avval student sifatida tizimga kiring.");
@@ -66,82 +190,276 @@
 
     const userId = user.id;
 
-    document.getElementById('profileBtn').addEventListener('click', () => {
-      location.href = `../profile/profile.html?user=${userId}`;
+    // DOM Elements
+    const lessonContainer = document.getElementById('lessonContainer');
+    const searchInput = document.getElementById('searchInput');
+    const likeModal = document.getElementById('likeModal');
+    const likeList = document.getElementById('likeList');
+    const commentLikeModal = document.getElementById('commentLikeModal');
+    const commentLikeList = document.getElementById('commentLikeList');
+
+    // Event Listeners
+    document.getElementById('logoutBtn').addEventListener('click', logout);
+    document.getElementById('logoutBtnMobile').addEventListener('click', logout);
+    document.getElementById('closeLikeModal').addEventListener('click', () => likeModal.classList.add('hidden'));
+    document.getElementById('closeCommentLikeModal').addEventListener('click', () => commentLikeModal.classList.add('hidden'));
+    searchInput.addEventListener('input', () => loadLessons(searchInput.value));
+
+    // Mobile menu toggle
+    document.getElementById('mobile-menu-button').addEventListener('click', function() {
+      const menu = document.getElementById('mobile-menu');
+      menu.classList.toggle('hidden');
     });
 
-    const container = document.getElementById('lessonContainer');
+    // User dropdown toggle
+    document.getElementById('user-menu-button').addEventListener('click', function() {
+      const dropdown = document.getElementById('user-menu-dropdown');
+      dropdown.classList.toggle('hidden');
+    });
+
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', function(event) {
+      const userMenuButton = document.getElementById('user-menu-button');
+      const userMenuDropdown = document.getElementById('user-menu-dropdown');
+      
+      if (!userMenuButton.contains(event.target)) {
+        userMenuDropdown.classList.add('hidden');
+      }
+    });
+
+    // Functions
+    function logout() {
+      localStorage.removeItem('user');
+      location.href = '../login/student-login.html';
+    }
 
     async function loadLessons(search = "") {
-  const res = await fetch('https://school-b97p.onrender.com/api/lessons');
-  let lessons = await res.json();
+      try {
+        const res = await fetch('http://localhost:3000/api/lessons');
+        let lessons = await res.json();
+        
+        // Sort by newest first
+        lessons = lessons.reverse();
+        
+        // Filter by search term
+        const filtered = lessons.filter(lesson =>
+          lesson.title.toLowerCase().includes(search.toLowerCase()) ||
+          lesson.description.toLowerCase().includes(search.toLowerCase())
+        );
+        
+        renderLessons(filtered);
+      } catch (error) {
+        console.error("Darslarni yuklashda xatolik:", error);
+        lessonContainer.innerHTML = `
+          <div class="p-6 text-center text-red-500">
+            <i class="fas fa-exclamation-triangle text-2xl mb-2"></i>
+            <p>Darslarni yuklashda xatolik yuz berdi. Iltimos, keyinroq urunib ko'ring.</p>
+          </div>
+        `;
+      }
+    }
 
-  // Eng yangilarni yuqorida ko‘rsatish uchun teskari tartibga o‘tkazamiz
-  lessons = lessons.reverse();
+    function renderLessons(lessons) {
+      if (lessons.length === 0) {
+        lessonContainer.innerHTML = `
+          <div class="p-6 text-center text-gray-500">
+            <i class="fas fa-book-open text-2xl mb-2"></i>
+            <p>Hech qanday dars topilmadi</p>
+          </div>
+        `;
+        return;
+      }
 
-  const filtered = lessons.filter(lesson =>
-    lesson.title.toLowerCase().includes(search.toLowerCase())
-  );
+      lessonContainer.innerHTML = '';
+      lessons.forEach(lesson => {
+        const liked = lesson.likes.includes(userId);
+        const card = document.createElement('div');
+        card.className = "p-6 hover:bg-gray-50 smooth-transition";
+        
+        card.innerHTML = `
+          <div class="flex justify-between items-start mb-2">
+            <h3 class="text-lg font-bold text-indigo-700">${lesson.title}</h3>
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+              ${lesson.category || 'Umumiy'}
+            </span>
+          </div>
+          
+          <p class="text-gray-600 mb-4">${lesson.description}</p>
+          
+          <div class="bg-gray-50 rounded-lg p-4 mb-4">
+            <p class="text-gray-700">${lesson.content}</p>
+          </div>
+          
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+              <button class="likeBtn flex items-center ${liked ? 'text-red-500' : 'text-gray-500'} smooth-transition" data-id="${lesson.id}">
+                <i class="fas fa-heart mr-1"></i>
+                <span class="like-count text-sm underline cursor-pointer" data-id="${lesson.id}">${lesson.likes.length}</span>
+              </button>
+              
+              <button class="commentToggle flex items-center text-gray-500 hover:text-indigo-600 smooth-transition" data-id="${lesson.id}">
+                <i class="fas fa-comment mr-1"></i>
+                <span class="text-sm">${lesson.comments.length}</span>
+              </button>
+            </div>
+            
+            <div class="text-sm text-gray-500">
+              <i class="far fa-clock mr-1"></i>
+              ${new Date(lesson.date || Date.now()).toLocaleDateString()}
+            </div>
+          </div>
+          
+          <div class="hidden commentBox mt-4 pt-4 border-t border-gray-200" id="commentBox-${lesson.id}">
+            <div class="flex mb-4">
+              <div class="flex-shrink-0 mr-3">
+                <span class="inline-flex items-center justify-center h-8 w-8 rounded-full bg-indigo-100">
+                  <span class="text-xs font-medium text-indigo-700">${user.name ? user.name.charAt(0) : 'U'}</span>
+                </span>
+              </div>
+              <div class="flex-grow">
+                <input class="commentInput w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500" placeholder="Izoh yozing..." />
+              </div>
+            </div>
+            
+            <button class="sendComment w-full sm:w-auto px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg smooth-transition" data-id="${lesson.id}">
+              <i class="fas fa-paper-plane mr-2"></i> Yuborish
+            </button>
+            
+            <div class="mt-6 space-y-4" id="commentsContainer-${lesson.id}">
+              ${renderComments(lesson.comments, lesson.id)}
+            </div>
+          </div>
+        `;
+        
+        lessonContainer.appendChild(card);
+      });
 
-  container.innerHTML = '';
-  filtered.forEach(lesson => {
-    const liked = lesson.likes.includes(userId);
-    const card = document.createElement('div');
-    card.className = "bg-white card p-6 rounded-xl shadow-lg";
+      // Add event listeners to dynamic elements
+      addEventListeners();
+    }
 
-    card.innerHTML = `
-      <h3 class="text-xl font-semibold text-purple-700 mb-2">${lesson.title}</h3>
-      <p class="text-gray-500 italic mb-2">📂 Kategoriya: <span class="text-indigo-700 font-medium">${lesson.category || 'Umumiy'}</span></p>
-      <p class="text-gray-700 mb-2">${lesson.description}</p>
-      <p class="text-sm text-gray-500">${lesson.content}</p>
-      <div class="flex items-center gap-4 mt-4">
-        <button class="likeBtn text-${liked ? 'red' : 'gray'}-600 font-semibold" data-id="${lesson.id}">
-          ❤️ Like (<span class="like-count text-blue-600 underline cursor-pointer" data-id="${lesson.id}">${lesson.likes.length}</span>)
-        </button>
-        <button class="commentToggle text-blue-600 font-semibold" data-id="${lesson.id}">💬 Izoh</button>
-      </div>
-      <div class="hidden commentBox mt-4" id="commentBox-${lesson.id}">
-  <input class="border w-full p-2 rounded-lg commentInput" placeholder="Izoh..." />
-  <button class="sendComment bg-blue-600 text-white px-4 py-1 rounded mt-2" data-id="${lesson.id}">Yuborish</button>
-  <div class="text-sm text-gray-600 mt-3 space-y-3">
-    ${lesson.comments.map((c, index) => `
-      <div class="bg-gray-100 p-2 rounded-lg shadow">
-        <p class="text-sm mb-1">🧑 <a href="../profile/profile.html?user=${c.userId}" class="text-blue-600 hover:underline">${c.userId}</a>: ${c.text}</p>
-        <div class="flex items-center gap-4 text-xs">
-          <button class="comment-like text-red-600 hover:underline" data-lesson="${lesson.id}" data-comment="${index}">❤️ Like (${(c.likes || []).length})</button>
-          <button class="comment-like-view text-blue-600 hover:underline" data-lesson="${lesson.id}" data-comment="${index}">👀 Kimlar Like bosgan?</button>
-          <button class="reply-btn text-green-600 hover:underline" data-lesson="${lesson.id}" data-comment="${index}">↩️ Javob yozish</button>
+    function renderComments(comments, lessonId) {
+      if (!comments || comments.length === 0) {
+        return `
+          <div class="text-center text-gray-500 py-4">
+            <i class="far fa-comment-dots text-2xl mb-2"></i>
+            <p>Hozircha izohlar mavjud emas</p>
+          </div>
+        `;
+      }
+
+      return comments.map((comment, index) => {
+        const commentLiked = (comment.likes || []).includes(userId);
+        
+        return `
+          <div class="flex" id="comment-${lessonId}-${index}">
+            <div class="flex-shrink-0 mr-3">
+              <span class="inline-flex items-center justify-center h-8 w-8 rounded-full bg-indigo-100">
+                <span class="text-xs font-medium text-indigo-700">${comment.userId.charAt(0)}</span>
+              </span>
+            </div>
+            <div class="flex-grow">
+              <div class="bg-gray-50 rounded-lg p-3">
+                <div class="flex items-center justify-between mb-1">
+                  <a href="../profile/profile.html?user=${comment.userId}" class="text-sm font-medium text-indigo-600 hover:underline">${comment.userId}</a>
+                  <span class="text-xs text-gray-500">${new Date(comment.date || Date.now()).toLocaleString()}</span>
+                </div>
+                <p class="text-gray-700 mb-2">${comment.text}</p>
+                
+                <div class="flex items-center space-x-4 text-xs">
+                  <button class="comment-like ${commentLiked ? 'text-red-500' : 'text-gray-500'} smooth-transition" data-lesson="${lessonId}" data-comment="${index}">
+                    <i class="fas fa-heart mr-1"></i> ${(comment.likes || []).length}
+                  </button>
+                  
+                  <button class="comment-like-view text-indigo-500 hover:underline" data-lesson="${lessonId}" data-comment="${index}">
+                    <i class="fas fa-users mr-1"></i> Kimlar?
+                  </button>
+                  
+                  <button class="reply-btn text-gray-500 hover:text-indigo-600 smooth-transition" data-lesson="${lessonId}" data-comment="${index}">
+                    <i class="fas fa-reply mr-1"></i> Javob
+                  </button>
+                </div>
+              </div>
+              
+              <!-- Replies -->
+              ${renderReplies(comment.replies || [], lessonId, index)}
+              
+              <!-- Reply form (hidden by default) -->
+              <div class="hidden reply-form mt-2 ml-8" id="reply-form-${lessonId}-${index}">
+                <div class="flex">
+                  <div class="flex-shrink-0 mr-3">
+                    <span class="inline-flex items-center justify-center h-6 w-6 rounded-full bg-indigo-100">
+                      <span class="text-xs font-medium text-indigo-700">${user.name ? user.name.charAt(0) : 'U'}</span>
+                    </span>
+                  </div>
+                  <div class="flex-grow">
+                    <input class="reply-text w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500" placeholder="Javob yozing..." />
+                  </div>
+                </div>
+                <div class="mt-2 flex justify-end">
+                  <button class="send-reply px-3 py-1 bg-indigo-600 hover:bg-indigo-700 text-white text-sm rounded-lg smooth-transition" data-lesson="${lessonId}" data-comment="${index}">
+                    <i class="fas fa-paper-plane mr-1"></i> Yuborish
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderReplies(replies, lessonId, commentIndex) {
+      if (!replies || replies.length === 0) return '';
+      
+      return `
+        <div class="mt-2 ml-8 space-y-2">
+          ${replies.map(reply => `
+            <div class="flex">
+              <div class="flex-shrink-0 mr-3">
+                <span class="inline-flex items-center justify-center h-6 w-6 rounded-full bg-indigo-100">
+                  <span class="text-xs font-medium text-indigo-700">${reply.userId.charAt(0)}</span>
+                </span>
+              </div>
+              <div class="flex-grow">
+                <div class="bg-gray-100 rounded-lg p-2">
+                  <div class="flex items-center justify-between mb-1">
+                    <a href="../profile/profile.html?user=${reply.userId}" class="text-xs font-medium text-indigo-600 hover:underline">${reply.userId}</a>
+                    <span class="text-xs text-gray-500">${new Date(reply.date || Date.now()).toLocaleTimeString()}</span>
+                  </div>
+                  <p class="text-xs text-gray-700">${reply.text}</p>
+                </div>
+              </div>
+            </div>
+          `).join('')}
         </div>
-        <div class="replies mt-2 ml-4 space-y-1 text-gray-600">
-          ${(c.replies || []).map(r => `
-            <div class="border-l-2 pl-2">
-              🧑 <a href="../profile/profile.html?user=${r.userId}" class="text-blue-600 hover:underline">${r.userId}</a>: ${r.text}
-            </div>`).join('')}
-        </div>
-        <div class="reply-input hidden mt-2">
-          <input class="border w-full p-1 rounded reply-text" placeholder="Javob yozing..." />
-          <button class="send-reply bg-green-600 text-white px-2 py-1 rounded mt-1" data-lesson="${lesson.id}" data-comment="${index}">Yuborish</button>
-        </div>
-      </div>
-    `).join('')}
-  </div>
-</div>
-    `;
-    container.appendChild(card);
-  });
+      `;
+    }
 
+    function addEventListeners() {
+      // Like buttons
       document.querySelectorAll('.likeBtn').forEach(btn => {
         btn.addEventListener('click', async () => {
           const lessonId = btn.dataset.id;
-          await fetch(`https://school-b97p.onrender.com/api/lessons/${lessonId}/like`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userId })
-          });
-          loadLessons(search);
+          const icon = btn.querySelector('i');
+          
+          // Optimistic UI update
+          icon.classList.add('like-animation');
+          setTimeout(() => icon.classList.remove('like-animation'), 500);
+          
+          try {
+            await fetch(`http://localhost:3000/api/lessons/${lessonId}/like`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ userId })
+            });
+            loadLessons(searchInput.value);
+          } catch (error) {
+            console.error("Like qilishda xatolik:", error);
+          }
         });
       });
 
+      // Comment toggle buttons
       document.querySelectorAll('.commentToggle').forEach(btn => {
         btn.addEventListener('click', () => {
           const box = document.getElementById(`commentBox-${btn.dataset.id}`);
@@ -149,104 +467,141 @@
         });
       });
 
+      // Send comment buttons
       document.querySelectorAll('.sendComment').forEach(btn => {
         btn.addEventListener('click', async () => {
-          const id = btn.dataset.id;
-          const input = document.querySelector(`#commentBox-${id} .commentInput`);
+          const lessonId = btn.dataset.id;
+          const input = document.querySelector(`#commentBox-${lessonId} .commentInput`);
           const text = input.value.trim();
+          
           if (!text) return;
-          await fetch(`https://school-b97p.onrender.com/api/lessons/${id}/comment`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userId, text })
-          });
-          input.value = '';
-          loadLessons(search);
+          
+          btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Yuborilmoqda...';
+          btn.disabled = true;
+          
+          try {
+            await fetch(`http://localhost:3000/api/lessons/${lessonId}/comment`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ userId, text })
+            });
+            input.value = '';
+            loadLessons(searchInput.value);
+          } catch (error) {
+            console.error("Izoh yuborishda xatolik:", error);
+            btn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i> Yuborish';
+            btn.disabled = false;
+          }
+        });
+      });
+
+      // Like count click (show likers)
+      document.querySelectorAll('.like-count').forEach(el => {
+        el.addEventListener('click', async () => {
+          const lessonId = el.dataset.id;
+          const res = await fetch('http://localhost:3000/api/lessons');
+          const lessons = await res.json();
+          const lesson = lessons.find(l => l.id === lessonId);
+          
+          likeList.innerHTML = lesson.likes.map(id =>
+            `<a href="../profile/profile.html?user=${id}" class="flex items-center p-2 hover:bg-gray-100 rounded-lg smooth-transition">
+              <span class="inline-flex items-center justify-center h-8 w-8 rounded-full bg-indigo-100 mr-3">
+                <span class="text-sm font-medium text-indigo-700">${id.charAt(0)}</span>
+              </span>
+              <span class="text-gray-700">${id}</span>
+            </a>`
+          ).join('');
+          
+          likeModal.classList.remove('hidden');
+        });
+      });
+
+      // Comment like buttons
+      document.querySelectorAll('.comment-like').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const lessonId = btn.dataset.lesson;
+          const commentIndex = btn.dataset.comment;
+          const icon = btn.querySelector('i');
+          
+          icon.classList.add('like-animation');
+          setTimeout(() => icon.classList.remove('like-animation'), 500);
+          
+          try {
+            await fetch(`http://localhost:3000/api/lessons/${lessonId}/comment-like`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ userId, commentIndex })
+            });
+            loadLessons(searchInput.value);
+          } catch (error) {
+            console.error("Izohga like qilishda xatolik:", error);
+          }
+        });
+      });
+
+      // Comment like viewers
+      document.querySelectorAll('.comment-like-view').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const lessonId = btn.dataset.lesson;
+          const commentIndex = btn.dataset.comment;
+          const res = await fetch('http://localhost:3000/api/lessons');
+          const lessons = await res.json();
+          const lesson = lessons.find(l => l.id === lessonId);
+          const likes = lesson.comments[commentIndex].likes || [];
+          
+          commentLikeList.innerHTML = likes.map(id =>
+            `<a href="../profile/profile.html?user=${id}" class="flex items-center p-2 hover:bg-gray-100 rounded-lg smooth-transition">
+              <span class="inline-flex items-center justify-center h-8 w-8 rounded-full bg-indigo-100 mr-3">
+                <span class="text-sm font-medium text-indigo-700">${id.charAt(0)}</span>
+              </span>
+              <span class="text-gray-700">${id}</span>
+            </a>`
+          ).join('');
+          
+          commentLikeModal.classList.remove('hidden');
+        });
+      });
+
+      // Reply buttons
+      document.querySelectorAll('.reply-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const lessonId = btn.dataset.lesson;
+          const commentIndex = btn.dataset.comment;
+          const form = document.getElementById(`reply-form-${lessonId}-${commentIndex}`);
+          form.classList.toggle('hidden');
+        });
+      });
+
+      // Send reply buttons
+      document.querySelectorAll('.send-reply').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const lessonId = btn.dataset.lesson;
+          const commentIndex = btn.dataset.comment;
+          const input = document.querySelector(`#reply-form-${lessonId}-${commentIndex} .reply-text`);
+          const text = input.value.trim();
+          
+          if (!text) return;
+          
+          btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Yuborilmoqda...';
+          btn.disabled = true;
+          
+          try {
+            await fetch(`http://localhost:3000/api/lessons/${lessonId}/reply`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ userId, commentIndex, text })
+            });
+            loadLessons(searchInput.value);
+          } catch (error) {
+            console.error("Javob yuborishda xatolik:", error);
+            btn.innerHTML = '<i class="fas fa-paper-plane mr-1"></i> Yuborish';
+            btn.disabled = false;
+          }
         });
       });
     }
 
-    document.getElementById("logoutBtn").addEventListener("click", () => {
-  localStorage.removeItem('user');
-  location.href = '../login/student-login.html';
-});
-
-    // Modal
-    document.addEventListener('click', async (e) => {
-      if (e.target.matches('.like-count')) {
-        const lessonId = e.target.dataset.id;
-        const res = await fetch('https://school-b97p.onrender.com/api/lessons');
-        const lessons = await res.json();
-        const lesson = lessons.find(l => l.id === lessonId);
-        const likeList = document.getElementById('likeList');
-        likeList.innerHTML = lesson.likes.map(id =>
-          `<a href="../profile/profile.html?user=${id}" class="block text-blue-600 hover:underline">👤 ${id}</a>`
-        ).join('');
-        document.getElementById('likeModal').classList.remove('hidden');
-      }
-
-      if (e.target.id === 'closeLikeModal') {
-        document.getElementById('likeModal').classList.add('hidden');
-      }
-    });
-
-    document.getElementById('searchInput').addEventListener('input', e => {
-      loadLessons(e.target.value);
-    });
-
-    // Comment Like bosish
-document.addEventListener('click', async (e) => {
-  if (e.target.matches('.comment-like')) {
-    const lessonId = e.target.dataset.lesson;
-    const commentIndex = e.target.dataset.comment;
-    await fetch(`https://school-b97p.onrender.com/api/lessons/${lessonId}/comment-like`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId, commentIndex })
-    });
-    loadLessons();
-  }
-
-  // Kimlar Like bosgan? - Modal oynada ko‘rsatish
-  if (e.target.matches('.comment-like-view')) {
-    const lessonId = e.target.dataset.lesson;
-    const commentIndex = e.target.dataset.comment;
-    const res = await fetch('https://school-b97p.onrender.com/api/lessons');
-    const lessons = await res.json();
-    const lesson = lessons.find(l => l.id === lessonId);
-    const likes = lesson.comments[commentIndex].likes || [];
-    
-    const likeList = document.getElementById('likeList');
-    likeList.innerHTML = likes.map(id =>
-      `<a href="../profile/profile.html?user=${id}" class="block text-blue-600 hover:underline">👤 ${id}</a>`
-    ).join('');
-    document.getElementById('likeModal').classList.remove('hidden');
-  }
-
-  // Javob yozish inputni ko‘rsatish
-  if (e.target.matches('.reply-btn')) {
-    const parent = e.target.closest('.bg-gray-100');
-    const input = parent.querySelector('.reply-input');
-    input.classList.toggle('hidden');
-  }
-
-  // Javob yuborish
-  if (e.target.matches('.send-reply')) {
-    const lessonId = e.target.dataset.lesson;
-    const commentIndex = e.target.dataset.comment;
-    const parent = e.target.closest('.reply-input');
-    const replyText = parent.querySelector('.reply-text').value.trim();
-    if (!replyText) return;
-
-    await fetch(`https://school-b97p.onrender.com/api/lessons/${lessonId}/reply`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId, commentIndex, text: replyText })
-    });
-    loadLessons();
-  }
-});
-
+    // Initial load
     loadLessons();
   </script>
 </body>
