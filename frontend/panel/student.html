@@ -235,7 +235,7 @@
 
     async function loadLessons(search = "") {
       try {
-        const res = await fetch('http://localhost:3000/api/lessons');
+        const res = await fetch('https://school-b97p.onrender.com/api/lessons');
         let lessons = await res.json();
         
         // Sort by newest first
@@ -447,7 +447,7 @@
           setTimeout(() => icon.classList.remove('like-animation'), 500);
           
           try {
-            await fetch(`http://localhost:3000/api/lessons/${lessonId}/like`, {
+            await fetch(`https://school-b97p.onrender.com/api/lessons/${lessonId}/like`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ userId })
@@ -480,7 +480,7 @@
           btn.disabled = true;
           
           try {
-            await fetch(`http://localhost:3000/api/lessons/${lessonId}/comment`, {
+            await fetch(`https://school-b97p.onrender.com/api/lessons/${lessonId}/comment`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ userId, text })
@@ -499,7 +499,7 @@
       document.querySelectorAll('.like-count').forEach(el => {
         el.addEventListener('click', async () => {
           const lessonId = el.dataset.id;
-          const res = await fetch('http://localhost:3000/api/lessons');
+          const res = await fetch('https://school-b97p.onrender.com/api/lessons');
           const lessons = await res.json();
           const lesson = lessons.find(l => l.id === lessonId);
           
@@ -527,7 +527,7 @@
           setTimeout(() => icon.classList.remove('like-animation'), 500);
           
           try {
-            await fetch(`http://localhost:3000/api/lessons/${lessonId}/comment-like`, {
+            await fetch(`https://school-b97p.onrender.com/api/lessons/${lessonId}/comment-like`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ userId, commentIndex })
@@ -544,7 +544,7 @@
         btn.addEventListener('click', async () => {
           const lessonId = btn.dataset.lesson;
           const commentIndex = btn.dataset.comment;
-          const res = await fetch('http://localhost:3000/api/lessons');
+          const res = await fetch('https://school-b97p.onrender.com/api/lessons');
           const lessons = await res.json();
           const lesson = lessons.find(l => l.id === lessonId);
           const likes = lesson.comments[commentIndex].likes || [];
@@ -586,7 +586,7 @@
           btn.disabled = true;
           
           try {
-            await fetch(`http://localhost:3000/api/lessons/${lessonId}/reply`, {
+            await fetch(`https://school-b97p.onrender.com/api/lessons/${lessonId}/reply`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ userId, commentIndex, text })
