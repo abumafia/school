@@ -504,7 +504,7 @@
         };
         
         // Backendga yuborish
-        xhr.open('POST', '/api/videos/upload', true);
+        xhr.open('POST', 'https://school-b97p.onrender.com/api/videos/upload', true);
         xhr.onload = () => {
           if (xhr.status === 200) {
             const response = JSON.parse(xhr.responseText);
