@@ -305,7 +305,7 @@
       videoList.innerHTML = '<div class="col-span-full flex justify-center py-10"><div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600"></div></div>';
 
       try {
-        const res = await fetch("/api/videos");
+        const res = await fetch("https://school-b97p.onrender.com/api/videos");
         const videos = await res.json();
 
         videoList.innerHTML = "";
@@ -453,7 +453,7 @@
 
       try {
         const formData = new FormData(uploadForm);
-        const res = await fetch("http://localhost:3000/api/upload", {
+        const res = await fetch("https://school-b97p.onrender.com/api/upload", {
           method: "POST",
           body: formData,
         });
