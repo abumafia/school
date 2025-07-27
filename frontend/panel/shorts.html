@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduTube Shorts</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #000;
+      color: white;
+    }
+    .shorts-container {
+      scroll-snap-type: y mandatory;
+      overflow-y: scroll;
+      height: 100vh;
+    }
+    .short-video {
+      scroll-snap-align: start;
+      height: 100vh;
+    }
+    .progress-bar {
+      height: 3px;
+      background-color: rgba(255, 255, 255, 0.3);
+      width: 100%;
+    }
+    .progress {
+      height: 100%;
+      background-color: white;
+      width: 0%;
+      transition: width 0.1s linear;
+    }
+    .action-btn {
+      transition: transform 0.2s ease;
+    }
+    .action-btn:hover {
+      transform: scale(1.1);
+    }
+    ::-webkit-scrollbar {
+      display: none;
+    }
+  </style>
+</head>
+<body class="relative">
+
+  <!-- Navbar -->
+  <header class="bg-black fixed top-0 left-0 right-0 z-50">
+    <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+      <button onclick="window.history.back()" class="text-white">
+        <i class="fas fa-arrow-left text-xl"></i>
+      </button>
+      <h1 class="text-xl font-bold">Shorts</h1>
+      <div class="w-8"></div> <!-- For balance -->
+    </div>
+  </header>
+
+  <!-- Shorts Container -->
+  <div id="shortsContainer" class="shorts-container pt-12 pb-20">
+    <!-- Shorts videolar bu yerga yuklanadi -->
+  </div>
+
+  <!-- Bottom Navigation -->
+  <nav class="fixed bottom-0 left-0 right-0 bg-black flex justify-around items-center h-16 z-50 border-t border-gray-800">
+    <a href="/" class="flex flex-col items-center text-gray-400 hover:text-white">
+      <i class="fas fa-home text-xl"></i>
+      <span class="text-xs mt-1">Bosh</span>
+    </a>
+    <a href="./shorts.html" class="flex flex-col items-center text-white">
+      <i class="fas fa-bolt text-xl"></i>
+      <span class="text-xs mt-1">Shorts</span>
+    </a>
+    <a href="create.html" class="flex flex-col items-center text-gray-400 hover:text-white">
+      <i class="fas fa-plus text-xl"></i>
+      <span class="text-xs mt-1">Yaratish</span>
+    </a>
+    <a href="/subscriptions" class="flex flex-col items-center text-gray-400 hover:text-white">
+      <i class="fas fa-star text-xl"></i>
+      <span class="text-xs mt-1">Obunalar</span>
+    </a>
+    <a href="/profile" class="flex flex-col items-center text-gray-400 hover:text-white">
+      <i class="fas fa-user text-xl"></i>
+      <span class="text-xs mt-1">Profil</span>
+    </a>
+  </nav>
+
+  <script>
+    // Shorts videolarini yuklash
+    async function loadShorts() {
+      const container = document.getElementById("shortsContainer");
+      container.innerHTML = '<div class="flex justify-center items-center h-full"><div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600"></div></div>';
+
+      try {
+        const response = await fetch('/api/videos?type=short');
+        const shorts = await response.json();
+
+        container.innerHTML = '';
+        
+        shorts.forEach((short, index) => {
+          const shortElement = document.createElement("div");
+          shortElement.className = "short-video relative flex flex-col";
+          shortElement.id = `short-${short.id}`;
+          
+          shortElement.innerHTML = `
+            <div class="progress-bar">
+              <div class="progress" id="progress-${short.id}"></div>
+            </div>
+            
+            <div class="flex-1 flex">
+              <!-- Video -->
+              <div class="flex-1 flex items-center justify-center">
+                <video 
+                  id="video-${short.id}" 
+                  src="${short.src}" 
+                  class="h-full w-full object-cover"
+                  onclick="togglePlayPause('${short.id}')"
+                  ontimeupdate="updateProgress('${short.id}')"
+                ></video>
+              </div>
+              
+              <!-- Right actions -->
+              <div class="w-16 flex flex-col items-center justify-end pb-10 space-y-5">
+                <div class="flex flex-col items-center">
+                  <button class="action-btn text-white" onclick="toggleLike('${short.id}')">
+                    <i class="far fa-heart text-2xl"></i>
+                  </button>
+                  <span id="likes-${short.id}" class="text-xs mt-1">${short.likes}</span>
+                </div>
+                
+                <div class="flex flex-col items-center">
+                  <button class="action-btn text-white" onclick="showComments('${short.id}')">
+                    <i class="far fa-comment-dots text-2xl"></i>
+                  </button>
+                  <span id="comments-${short.id}" class="text-xs mt-1">${short.comments}</span>
+                </div>
+                
+                <div class="flex flex-col items-center">
+                  <button class="action-btn text-white" onclick="shareShort('${short.id}')">
+                    <i class="fas fa-share text-2xl"></i>
+                  </button>
+                  <span class="text-xs mt-1">Ulashish</span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Video info -->
+            <div class="absolute bottom-20 left-4 right-20 p-2">
+              <h3 class="font-bold text-lg line-clamp-2">${short.title}</h3>
+              <div class="flex items-center mt-2">
+                <img src="${short.avatar}" alt="${short.user}" class="w-8 h-8 rounded-full mr-2">
+                <div>
+                  <p class="text-sm font-medium">${short.user}</p>
+                  <p class="text-xs text-gray-300">${formatViews(short.views)} ko'rish</p>
+                </div>
+              </div>
+            </div>
+          `;
+          
+          container.appendChild(shortElement);
+          
+          // Scroll qilinganda video o'ynash
+          const observer = new IntersectionObserver(
+            (entries) => {
+              entries.forEach(entry => {
+                const video = document.getElementById(`video-${short.id}`);
+                if (entry.isIntersecting) {
+                  video.play().catch(e => console.log("Auto-play prevented:", e));
+                } else {
+                  video.pause();
+                }
+              });
+            },
+            { threshold: 0.7 }
+          );
+          
+          observer.observe(shortElement);
+        });
+      } catch (error) {
+        container.innerHTML = `
+          <div class="flex flex-col items-center justify-center h-full text-center p-4">
+            <i class="fas fa-exclamation-triangle text-red-500 text-4xl mb-4"></i>
+            <h3 class="text-lg font-medium">Shorts videolarini yuklab bo'lmadi</h3>
+            <p class="text-gray-400 mt-2 mb-4">Internet aloqasini tekshiring va qayta urunib ko'ring</p>
+            <button onclick="loadShorts()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg">
+              <i class="fas fa-sync-alt mr-2"></i> Qayta yuklash
+            </button>
+          </div>
+        `;
+      }
+    }
+
+    // Ko'rishlar sonini formatlash
+    function formatViews(views) {
+      if (views >= 1000000) {
+        return (views / 1000000).toFixed(1) + 'M';
+      } else if (views >= 1000) {
+        return (views / 1000).toFixed(1) + 'K';
+      }
+      return views;
+    }
+
+    // Progress bari yangilanishi
+    function updateProgress(videoId) {
+      const video = document.getElementById(`video-${videoId}`);
+      const progress = document.getElementById(`progress-${videoId}`);
+      const percentage = (video.currentTime / video.duration) * 100;
+      progress.style.width = `${percentage}%`;
+    }
+
+    // Play/Pause tugmasi
+    function togglePlayPause(videoId) {
+      const video = document.getElementById(`video-${videoId}`);
+      if (video.paused) {
+        video.play();
+      } else {
+        video.pause();
+      }
+    }
+
+    // Layk bosish
+    async function toggleLike(videoId) {
+      const likeBtn = document.querySelector(`#short-${videoId} .fa-heart`);
+      const likesCount = document.getElementById(`likes-${videoId}`);
+      
+      try {
+        const response = await fetch(`/api/videos/${videoId}/like`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            userId: localStorage.getItem('userId')
+          })
+        });
+        
+        const result = await response.json();
+        
+        if (result.liked) {
+          likeBtn.classList.remove('far');
+          likeBtn.classList.add('fas', 'text-red-500');
+          likesCount.textContent = parseInt(likesCount.textContent) + 1;
+        } else {
+          likeBtn.classList.remove('fas', 'text-red-500');
+          likeBtn.classList.add('far');
+          likesCount.textContent = parseInt(likesCount.textContent) - 1;
+        }
+      } catch (error) {
+        console.error("Like error:", error);
+      }
+    }
+
+    // Kommentariyalarni ko'rsatish
+    function showComments(videoId) {
+      // Bu yerda komment modalini ochish kerak
+      alert(`Komentariyalar ${videoId} uchun`);
+    }
+
+    // Shorts ulashish
+    function shareShort(videoId) {
+      // Bu yerda ulashish funksiyasi
+      if (navigator.share) {
+        navigator.share({
+          title: 'EduTube Shorts',
+          text: 'Bu shortni ko\'ring!',
+          url: `/shorts/${videoId}`,
+        }).catch(console.error);
+      } else {
+        alert("Ulashish funksiyasi brauzeringizda qo'llab-quvvatlanmaydi");
+      }
+    }
+
+    // Sahifa yuklanganda shorts videolarini yuklash
+    window.onload = loadShorts;
+
+    // Chiqish tugmasi
+    document.addEventListener('DOMContentLoaded', function() {
+      const user = JSON.parse(localStorage.getItem('user'));
+      if (!user) {
+        window.location.href = '/login';
+      }
+    });
+  </script>
+</body>
+</html>
