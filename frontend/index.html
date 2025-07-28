@@ -540,6 +540,338 @@
     </div>
   </footer>
 
+  <!-- Chatbot Widget -->
+<div class="fixed bottom-6 right-6 z-50">
+  <!-- Chatbot Button with Animation -->
+  <button id="chatbotToggle" class="relative w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center animate-bounce hover:animate-none">
+    <!-- Pulsing wave effect (hidden by default) -->
+    <div id="chatbotPulse" class="absolute inset-0 rounded-full bg-blue-400 opacity-0 scale-100 animate-ping"></div>
+    
+    <!-- Chatbot icon -->
+    <i class="fas fa-robot text-xl relative z-10"></i>
+    
+    <!-- Notification badge (hidden by default) -->
+    <span id="chatbotNotification" class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-xs flex items-center justify-center text-white hidden animate-pulse"></span>
+  </button>
+</div>
+
+<style>
+  /* Custom animations */
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  @keyframes shake {
+    0% { transform: rotate(0deg); }
+    25% { transform: rotate(5deg); }
+    50% { transform: rotate(-5deg); }
+    75% { transform: rotate(5deg); }
+    100% { transform: rotate(0deg); }
+  }
+  @keyframes pulse {
+    0% { transform: scale(0.95); opacity: 0.7; }
+    70% { transform: scale(1.1); opacity: 0.3; }
+    100% { transform: scale(0.95); opacity: 0.7; }
+  }
+  
+  .animate-bounce {
+    animation: bounce 2s infinite;
+  }
+  .animate-shake {
+    animation: shake 0.5s ease-in-out;
+  }
+  .animate-pulse {
+    animation: pulse 2s infinite;
+  }
+  .animate-ping {
+    animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+  @keyframes ping {
+    75%, 100% {
+      transform: scale(1.5);
+      opacity: 0;
+    }
+  }
+</style>
+
+<script>
+  // Function to show new message notification
+  function showNewMessageNotification() {
+    const btn = document.getElementById('chatbotToggle');
+    const pulse = document.getElementById('chatbotPulse');
+    const badge = document.getElementById('chatbotNotification');
+    
+    // Show notification badge
+    badge.classList.remove('hidden');
+    
+    // Add pulse effect
+    pulse.classList.remove('opacity-0');
+    setTimeout(() => {
+      pulse.classList.add('opacity-0');
+    }, 1000);
+    
+    // Add shake animation
+    btn.classList.add('animate-shake');
+    setTimeout(() => {
+      btn.classList.remove('animate-shake');
+    }, 1000);
+  }
+  
+  // Simulate new message after 3 seconds for demo
+  setTimeout(showNewMessageNotification, 3000);
+  
+  // Toggle chat window
+  document.getElementById('chatbotToggle').addEventListener('click', function() {
+    // Hide notification when clicked
+    document.getElementById('chatbotNotification').classList.add('hidden');
+    
+    // Your chat toggle logic here
+    console.log('Chat toggled!');
+  });
+</script>
+
+<!-- Font Awesome (for robot icon) -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  
+  <!-- Chatbot Modal -->
+  <div id="chatbotModal" class="hidden fixed bottom-24 right-6 w-96 h-[32rem] bg-white rounded-xl shadow-xl flex flex-col border border-gray-200">
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-blue-600 to-purple-700 text-white p-4 rounded-t-xl flex justify-between items-center">
+      <div class="flex items-center gap-2">
+        <i class="fas fa-robot"></i>
+        <h3 class="font-semibold">Maktab Yordamchisi</h3>
+      </div>
+      <button id="chatbotClose" class="text-white hover:text-gray-200">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    
+    <!-- Messages Container -->
+    <div id="chatbotMessages" class="flex-1 p-4 overflow-y-auto bg-gray-50 space-y-3">
+      <!-- Messages will appear here -->
+      <div class="flex justify-start">
+        <div class="max-w-xs bg-white p-3 rounded-lg rounded-tl-none shadow">
+          <p>Salom! Men sizning virtual yordamchingizman. Sizga qanday yordam bera olaman?</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Input Area -->
+    <div class="p-3 border-t border-gray-200 bg-white">
+      <form id="chatbotForm" class="flex gap-2">
+        <input id="chatbotInput" type="text" placeholder="Xabar yozing..." 
+               class="flex-1 border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <button type="submit" class="w-10 h-10 rounded-full bg-blue-600 text-white hover:bg-blue-700 flex items-center justify-center">
+          <i class="fas fa-paper-plane"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+// Chatbot functionality
+document.addEventListener('DOMContentLoaded', function() {
+  const chatbotToggle = document.getElementById('chatbotToggle');
+  const chatbotModal = document.getElementById('chatbotModal');
+  const chatbotClose = document.getElementById('chatbotClose');
+  const chatbotMessages = document.getElementById('chatbotMessages');
+  const chatbotForm = document.getElementById('chatbotForm');
+  const chatbotInput = document.getElementById('chatbotInput');
+  
+  // Current user data
+  const currentUser = {
+    id: localStorage.getItem('userId') || `guest_${Math.random().toString(36).substr(2, 9)}`,
+    name: null,
+    age: null,
+    role: null
+  };
+  
+  // Open/close chatbot
+  chatbotToggle.addEventListener('click', () => chatbotModal.classList.toggle('hidden'));
+  chatbotClose.addEventListener('click', () => chatbotModal.classList.add('hidden'));
+  
+  // Form submission
+  chatbotForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const message = chatbotInput.value.trim();
+    if (!message) return;
+    
+    // Add user message
+    addMessage(message, 'user');
+    chatbotInput.value = '';
+    
+    // Show typing indicator
+    showTyping();
+    
+    try {
+      // Get bot response
+      const response = await fetch('/backend/data/chatbot.json');
+      const data = await response.json();
+      
+      // Find matching response
+      const botResponse = findResponse(message, data);
+      
+      // Process special forms
+      if (botResponse.form) {
+        showForm(botResponse.form);
+      } else {
+        // Add bot message
+        setTimeout(() => {
+          removeTyping();
+          addMessage(botResponse.text, 'bot');
+          
+          // If we're collecting user data, ask next question
+          if (botResponse.collect) {
+            askForData(botResponse.collect);
+          }
+        }, 1000);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      removeTyping();
+      addMessage("Kechirasiz, xatolik yuz berdi. Iltimos, keyinroq urinib ko'ring.", 'bot');
+    }
+  });
+  
+  // Helper functions
+  function addMessage(text, sender) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `flex ${sender === 'user' ? 'justify-end' : 'justify-start'}`;
+    
+    const messageContent = document.createElement('div');
+    messageContent.className = `max-w-xs p-3 rounded-lg shadow ${
+      sender === 'user' 
+        ? 'bg-blue-600 text-white rounded-br-none' 
+        : 'bg-white text-gray-800 rounded-tl-none'
+    }`;
+    messageContent.innerHTML = `<p>${text}</p>`;
+    
+    messageDiv.appendChild(messageContent);
+    chatbotMessages.appendChild(messageDiv);
+    chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+  }
+  
+  function showTyping() {
+    const typingDiv = document.createElement('div');
+    typingDiv.className = 'flex justify-start';
+    typingDiv.id = 'typingIndicator';
+    
+    const typingContent = document.createElement('div');
+    typingContent.className = 'bg-white p-2 rounded-lg rounded-tl-none shadow flex gap-1';
+    typingContent.innerHTML = `
+      <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+      <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+      <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
+    `;
+    
+    typingDiv.appendChild(typingContent);
+    chatbotMessages.appendChild(typingDiv);
+    chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+  }
+  
+  function removeTyping() {
+    const typingIndicator = document.getElementById('typingIndicator');
+    if (typingIndicator) typingIndicator.remove();
+  }
+  
+  function findResponse(message, data) {
+    const lowerMessage = message.toLowerCase();
+    
+    // Check for exact matches first
+    for (const item of data.responses) {
+      if (item.questions.some(q => lowerMessage.includes(q.toLowerCase()))) {
+        return item;
+      }
+    }
+    
+    // Default response
+    return {
+      text: "Kechirasiz, tushunmadim. Iltimos, batafsilroq yozing yoki quyidagi savollardan birini tanlang: " +
+            data.common_questions.join(", ")
+    };
+  }
+  
+  function showForm(formType) {
+    removeTyping();
+    
+    let formHTML = '';
+    if (formType === 'user_info') {
+      formHTML = `
+        <div class="bg-white p-4 rounded-lg shadow mt-2">
+          <h4 class="font-medium mb-3">Ma'lumotlaringizni kiriting</h4>
+          <div class="space-y-3">
+            <div>
+              <label class="block text-sm text-gray-600 mb-1">Ismingiz</label>
+              <input type="text" id="userName" class="w-full border border-gray-300 rounded px-3 py-2">
+            </div>
+            <div>
+              <label class="block text-sm text-gray-600 mb-1">Yoshingiz</label>
+              <input type="number" id="userAge" class="w-full border border-gray-300 rounded px-3 py-2">
+            </div>
+            <div>
+              <label class="block text-sm text-gray-600 mb-1">Siz kim sifatida murojaat qilyapsiz?</label>
+              <select id="userRole" class="w-full border border-gray-300 rounded px-3 py-2">
+                <option value="student">O'quvchi</option>
+                <option value="teacher">O'qituvchi</option>
+                <option value="parent">Ota-ona</option>
+              </select>
+            </div>
+            <button id="submitUserInfo" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+              Yuborish
+            </button>
+          </div>
+        </div>
+      `;
+    }
+    // Add more form types here...
+    
+    const formDiv = document.createElement('div');
+    formDiv.className = 'flex justify-start';
+    formDiv.innerHTML = formHTML;
+    chatbotMessages.appendChild(formDiv);
+    
+    // Handle form submission
+    if (formType === 'user_info') {
+      document.getElementById('submitUserInfo').addEventListener('click', () => {
+        currentUser.name = document.getElementById('userName').value;
+        currentUser.age = document.getElementById('userAge').value;
+        currentUser.role = document.getElementById('userRole').value;
+        
+        addMessage(`Ma'lumotlar saqlandi: ${currentUser.name}, ${currentUser.age} yosh, ${currentUser.role}`, 'user');
+        
+        // Remove the form
+        formDiv.remove();
+        
+        // Continue conversation
+        addMessage("Rahmat! Endi sizga qanday yordam bera olaman?", 'bot');
+      });
+    }
+  }
+  
+  function askForData(dataType) {
+    let question = '';
+    switch(dataType) {
+      case 'name':
+        question = "Iltimos, ismingizni kiriting:";
+        break;
+      case 'age':
+        question = "Yoshingiz nechida?";
+        break;
+      case 'problem':
+        question = "Muammoingizni batafsilroq tasvirlab bering:";
+        break;
+      default:
+        question = "Qo'shimcha ma'lumot bera olasizmi?";
+    }
+    
+    setTimeout(() => {
+      addMessage(question, 'bot');
+    }, 500);
+  }
+});
+</script>
+
   <script>
   document.addEventListener('DOMContentLoaded', function () {
     // Mobile menu toggle
