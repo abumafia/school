@@ -3,190 +3,397 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Talaba Profil</title>
+  <title>Talaba Profil | X-Maktab</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #4361ee;
+      --secondary: #3a0ca3;
+      --accent: #7209b7;
+      --success: #4cc9f0;
+      --light: #f8f9fa;
+      --dark: #212529;
+    }
+    
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+      min-height: 100vh;
+    }
+    
+    .glass-effect {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+    }
+    
+    .gradient-bg {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
+    }
+    
+    .card-hover {
+      transition: all 0.3s ease;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    
+    .card-hover:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 25px -5px rgba(67, 97, 238, 0.25);
+    }
+    
+    .smooth-transition {
+      transition: all 0.3s ease;
+    }
+    
+    .floating-btn {
+      box-shadow: 0 10px 25px -5px rgba(67, 97, 238, 0.5);
+    }
+    
+    .text-gradient {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+  </style>
 </head>
-<body class="bg-gradient-to-br from-indigo-100 to-purple-100 min-h-screen py-10 font-sans">
-
-  <!-- Container -->
-  <div class="max-w-4xl mx-auto bg-white rounded-3xl shadow-2xl p-8 space-y-10">
-    <!-- Profil Header -->
-    <div class="flex justify-between items-center border-b pb-4">
-      <h2 class="text-3xl font-bold text-purple-700">👤 Profil Ma'lumotlari</h2>
-      <button onclick="openCoinModal()"><p class="text-lg font-bold text-yellow-500">💰 Coinlar: <span id="coin-count">0</span></p></button>
-      <button id="logoutBtn" class="text-red-500 left hover:underline">🚪 Chiqish</button>
-      <button id="editBtn" class="text-blue-600 hover:underline hidden">✏️ Tahrirlash</button>
+<body class="min-h-screen py-8 px-4">
+  <!-- Main Container -->
+  <div class="max-w-4xl mx-auto glass-effect rounded-3xl shadow-xl overflow-hidden">
+    <!-- Profile Header -->
+    <div class="gradient-bg text-white p-8 relative">
+      <div class="absolute top-6 right-6 flex items-center space-x-4">
+        <div class="bg-white bg-opacity-20 rounded-full px-4 py-2 flex items-center">
+          <i class="fas fa-coins text-yellow-300 mr-2"></i>
+          <span class="font-bold" id="coin-count">0</span>
+          <button onclick="openCoinModal()" class="ml-2 text-white opacity-80 hover:opacity-100">
+            <i class="fas fa-plus-circle"></i>
+          </button>
+        </div>
+        <button id="logoutBtn" class="bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full px-4 py-2 smooth-transition flex items-center">
+          <i class="fas fa-sign-out-alt mr-2"></i> Chiqish
+        </button>
+      </div>
+      
+      <div class="flex flex-col items-center mt-10">
+        <div class="w-24 h-24 rounded-full bg-white bg-opacity-20 flex items-center justify-center mb-4 border-4 border-white border-opacity-30">
+          <span class="text-3xl font-bold">
+            <span id="avatarInitials">U</span>
+          </span>
+        </div>
+        <h1 class="text-3xl font-bold text-center">
+          <span id="fullName">Ism Familiya</span>
+        </h1>
+        <p class="text-white text-opacity-80 mt-2" id="roleDisplay">Talaba</p>
+      </div>
     </div>
 
-    <!-- Modal -->
-<div id="coinModal" class="fixed inset-0 bg-black bg-opacity-40 hidden flex items-center justify-center">
-  <div class="bg-white p-6 rounded shadow w-96">
-    <h2 class="text-xl font-semibold mb-2">Coin so‘rov</h2>
-    <input type="number" id="coin-amount" placeholder="Nechta coin?" class="border p-2 w-full mb-4" />
-    <button onclick="sendCoinRequest()" id="request-coin-btn" class="bg-blue-500 text-white px-4 py-2 rounded">Yuborish</button>
-    <button onclick="closeCoinModal()" class="ml-2 text-red-500">Bekor qilish</button>
+    <!-- Profile Content -->
+    <div class="p-8">
+      <!-- Action Buttons -->
+      <div class="flex justify-center space-x-4 mb-8">
+        <button id="editBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-full smooth-transition flex items-center">
+          <i class="fas fa-edit mr-2"></i> Profilni tahrirlash
+        </button>
+        <button id="openChatBtn" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-full smooth-transition flex items-center">
+          <i class="fas fa-comment mr-2"></i> Xabar yuborish
+        </button>
+      </div>
+
+      <!-- Profile Information -->
+      <div class="grid md:grid-cols-2 gap-6 mb-8">
+        <div class="bg-white bg-opacity-50 rounded-2xl p-6 card-hover">
+          <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+            <i class="fas fa-user-circle mr-2 text-indigo-600"></i> Shaxsiy ma'lumotlar
+          </h2>
+          <div class="space-y-4">
+            <div>
+              <p class="text-sm text-gray-500">Ism</p>
+              <p id="name" class="text-lg font-medium text-gray-800"></p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500">Familiya</p>
+              <p id="surname" class="text-lg font-medium text-gray-800"></p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500">Email</p>
+              <p id="email" class="text-lg font-medium text-gray-800"></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white bg-opacity-50 rounded-2xl p-6 card-hover">
+          <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+            <i class="fas fa-graduation-cap mr-2 text-indigo-600"></i> Ta'lim ma'lumotlari
+          </h2>
+          <div class="space-y-4">
+            <div>
+              <p class="text-sm text-gray-500">Maktab</p>
+              <p id="school" class="text-lg font-medium text-gray-800"></p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500">Rol</p>
+              <p id="role" class="text-lg font-medium text-gray-800"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bio Section -->
+      <div class="bg-white bg-opacity-50 rounded-2xl p-6 card-hover">
+        <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+          <i class="fas fa-info-circle mr-2 text-indigo-600"></i> Bio
+        </h2>
+        <p id="bio" class="text-gray-800"></p>
+      </div>
+    </div>
   </div>
-</div>
-    <!-- Profil Ko'rinishi -->
-    <div id="profileInfo" class="grid sm:grid-cols-2 gap-6 text-gray-800 text-lg">
-      <p><strong>Ism:</strong> <span id="name" class="ml-1 font-medium text-gray-900"></span></p>
-      <p><strong>Familiya:</strong> <span id="surname" class="ml-1 font-medium text-gray-900"></span></p>
-      <p><strong>Maktab:</strong> <span id="school" class="ml-1 font-medium text-gray-900"></span></p>
-      <p><strong>Roli:</strong> <span id="role" class="ml-1 font-medium text-gray-900"></span></p>
-      <p><strong>Email:</strong> <span id="email" class="ml-1 font-medium text-gray-900"></span></p>
-      <p class="sm:col-span-2"><strong>Bio:</strong> <span id="bio" class="ml-1 font-medium text-gray-900"></span></p>
-    </div>
 
-    <!-- Edit Modal -->
-    <div id="editModal" class="hidden">
-      <form id="editForm" class="grid sm:grid-cols-2 gap-4 mt-4">
-        <input name="name" placeholder="Ism" class="border border-gray-300 rounded-xl px-4 py-2" />
-        <input name="surname" placeholder="Familiya" class="border border-gray-300 rounded-xl px-4 py-2" />
-        <input name="school" placeholder="Maktab" class="border border-gray-300 rounded-xl px-4 py-2" />
-        <input name="email" placeholder="Email" class="border border-gray-300 rounded-xl px-4 py-2" />
-        <input name="bio" placeholder="Bio" class="border border-gray-300 rounded-xl px-4 py-2 sm:col-span-2" />
-        <div class="flex gap-4 justify-end sm:col-span-2">
-          <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg">💾 Saqlash</button>
-          <button type="button" id="cancelEdit" class="text-gray-600 hover:underline">❌ Bekor qilish</button>
+  <!-- Coin Modal -->
+  <div id="coinModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50 p-4">
+    <div class="glass-effect rounded-2xl p-6 w-full max-w-md">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-bold text-gray-800">Coin so'rov</h2>
+        <button onclick="closeCoinModal()" class="text-gray-500 hover:text-gray-700">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <p class="text-gray-600 mb-4">Qancha coin so'ramoqchisiz?</p>
+      <input type="number" id="coin-amount" placeholder="Coin miqdori" class="border border-gray-300 rounded-xl px-4 py-3 w-full mb-4 focus:ring-2 focus:ring-indigo-500 focus:border-transparent" min="1" />
+      <div class="flex justify-end space-x-3">
+        <button onclick="closeCoinModal()" class="px-4 py-2 text-gray-600 hover:text-gray-800 smooth-transition">Bekor qilish</button>
+        <button onclick="sendCoinRequest()" id="request-coin-btn" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl smooth-transition">Yuborish</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Modal -->
+  <div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50 p-4">
+    <div class="glass-effect rounded-2xl p-6 w-full max-w-md">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-bold text-gray-800">Profilni tahrirlash</h2>
+        <button id="cancelEdit" class="text-gray-500 hover:text-gray-700">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <form id="editForm" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Ism</label>
+          <input name="name" placeholder="Ism" class="border border-gray-300 rounded-xl px-4 py-3 w-full focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Familiya</label>
+          <input name="surname" placeholder="Familiya" class="border border-gray-300 rounded-xl px-4 py-3 w-full focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Maktab</label>
+          <input name="school" placeholder="Maktab" class="border border-gray-300 rounded-xl px-4 py-3 w-full focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+          <input name="email" placeholder="Email" class="border border-gray-300 rounded-xl px-4 py-3 w-full focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Bio</label>
+          <textarea name="bio" placeholder="Bio" rows="3" class="border border-gray-300 rounded-xl px-4 py-3 w-full focus:ring-2 focus:ring-indigo-500 focus:border-transparent"></textarea>
+        </div>
+        <div class="flex justify-end space-x-3 pt-2">
+          <button type="button" id="cancelEditBtn" class="px-4 py-2 text-gray-600 hover:text-gray-800 smooth-transition">Bekor qilish</button>
+          <button type="submit" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl smooth-transition">Saqlash</button>
         </div>
       </form>
     </div>
-
-<!-- Chat trigger (profil sahifasidagi foydalanuvchi uchun) -->
-<button id="openChatBtn" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded">✉️ Xabar yozish</button>
-
-<!-- Chat Modal -->
-<div id="chatModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
-  <div class="bg-white w-full max-w-md rounded-lg shadow-lg p-4 relative">
-    <button id="closeChatBtn" class="absolute top-2 right-2 text-gray-500 hover:text-red-600">&times;</button>
-    <h2 class="text-lg font-bold mb-2">Shaxsiy chat</h2>
-
-    <div id="chatBox" class="h-64 overflow-y-auto border p-2 mb-2 bg-gray-100 rounded"></div>
-
-    <input type="text" id="messageInput" placeholder="Xabar yozing..." class="w-full border p-2 rounded mb-2" />
-    <input type="file" id="fileInput" class="w-full mb-2" />
-    <button onclick="sendMessage()" class="w-full bg-blue-500 text-white py-2 rounded">📨 Yuborish</button>
   </div>
-</div>
 
-  <script src="profile.js"></script>
+  <!-- Chat Modal -->
+  <div id="chatModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50 p-4">
+    <div class="glass-effect rounded-2xl w-full max-w-md overflow-hidden">
+      <div class="gradient-bg text-white p-4 flex justify-between items-center">
+        <h2 class="text-lg font-bold">Shaxsiy xabarlar</h2>
+        <button id="closeChatBtn" class="text-white">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <div id="chatBox" class="h-64 overflow-y-auto p-4 bg-white bg-opacity-50 space-y-3"></div>
+
+      <div class="p-4 border-t border-gray-200">
+        <input type="text" id="messageInput" placeholder="Xabar yozing..." class="border border-gray-300 rounded-xl px-4 py-3 w-full mb-2 focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+        <div class="flex items-center">
+          <label for="fileInput" class="cursor-pointer text-gray-600 hover:text-indigo-600 p-2">
+            <i class="fas fa-paperclip"></i>
+            <input type="file" id="fileInput" class="hidden" />
+          </label>
+          <button onclick="sendMessage()" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-xl smooth-transition">
+            <i class="fas fa-paper-plane mr-2"></i> Yuborish
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script>
-const currentUser = JSON.parse(localStorage.getItem("user"));
-if (!currentUser) {
-  window.location.href = "/frontend/login/student-login.html";
-}
+    // Initialize with current user data
+    const currentUser = JSON.parse(localStorage.getItem("user"));
+    if (!currentUser) {
+      window.location.href = "/frontend/login/student-login.html";
+    }
 
-const viewedUserId = new URLSearchParams(location.search).get("user") || currentUser.id;
-let targetUserId = viewedUserId;
+    const viewedUserId = new URLSearchParams(location.search).get("user") || currentUser.id;
+    let targetUserId = viewedUserId;
 
-const chatModal = document.getElementById("chatModal");
-const openChatBtn = document.getElementById("openChatBtn");
-const closeChatBtn = document.getElementById("closeChatBtn");
-
-openChatBtn.addEventListener("click", () => {
-  chatModal.classList.remove("hidden");
-});
-closeChatBtn.addEventListener("click", () => {
-  chatModal.classList.add("hidden");
-});
-chatModal.addEventListener("click", (e) => {
-  if (e.target === chatModal) chatModal.classList.add("hidden");
-});
-
-const socket = io('https://school-b97p.onrender.com');
-socket.emit('register', currentUser.id);
-
-function sendMessage() {
-  const file = document.getElementById('fileInput').files[0];
-  const text = document.getElementById('messageInput').value;
-
-  if (file) {
-    const formData = new FormData();
-    formData.append('file', file);
-
-    fetch('https://school-b97p.onrender.com/api/chat/upload', {
-      method: 'POST',
-      body: formData
-    })
-    .then(res => res.json())
-    .then(data => {
-      socket.emit('privateMessage', {
-        from: currentUser.id,
-        to: targetUserId,
-        content: data.url,
-        type: file.type.startsWith('audio') ? 'audio' :
-              file.type.startsWith('video') ? 'video' :
-              file.type.startsWith('image') ? 'image' : 'file'
-      });
-    });
-  } else if (text.trim()) {
-    socket.emit('privateMessage', {
-      from: currentUser.id,
-      to: targetUserId,
-      content: text,
-      type: 'text'
-    });
-    document.getElementById('messageInput').value = '';
-  }
-}
-
-const logoutBtn = document.getElementById('logoutBtn');
-if (logoutBtn) {
-  logoutBtn.addEventListener('click', () => {
-    const user = JSON.parse(localStorage.getItem('user'));
-    if (user && user.role) {
-      switch (user.role) {
-        case 'student':
-          location.href = '../login/student-login.html';
-          break;
-        case 'teacher':
-          location.href = '../login/teacher-login.html';
-          break;
-        case 'bachelor':
-          location.href = '../login/bachelor-login.html';
-          break;
-        case 'admin':
-          location.href = '../login/admin-login.html';
-          break;
-        default:
-          location.href = '../index.html';
+    // DOM Elements
+    const coinModal = document.getElementById('coinModal');
+    const editModal = document.getElementById('editModal');
+    const chatModal = document.getElementById('chatModal');
+    
+    // Initialize user data
+    function loadUserData() {
+      document.getElementById('name').textContent = currentUser.name || '';
+      document.getElementById('surname').textContent = currentUser.surname || '';
+      document.getElementById('school').textContent = currentUser.school || '';
+      document.getElementById('role').textContent = currentUser.role || '';
+      document.getElementById('email').textContent = currentUser.email || '';
+      document.getElementById('bio').textContent = currentUser.bio || 'Bio mavjud emas';
+      document.getElementById('fullName').textContent = `${currentUser.name || ''} ${currentUser.surname || ''}`;
+      document.getElementById('roleDisplay').textContent = currentUser.role || 'Foydalanuvchi';
+      document.getElementById('avatarInitials').textContent = (currentUser.name ? currentUser.name.charAt(0) : 'U') + (currentUser.surname ? currentUser.surname.charAt(0) : '');
+      
+      // Set coin count if available
+      if (currentUser.coin !== undefined) {
+        document.getElementById('coin-count').textContent = currentUser.coin;
       }
-    } else {
-      location.href = '../index.html';
     }
-    localStorage.removeItem('user');
-  });
-}
 
-socket.on('message', (msg) => {
-  const div = document.createElement('div');
-  div.classList.add("mb-1", "p-2", "rounded", "bg-white", "shadow");
-
-  if (msg.type === 'text') div.innerText = msg.content;
-  else if (msg.type === 'image') div.innerHTML = `<img src="${msg.content}" class="w-32" />`;
-  else if (msg.type === 'audio') div.innerHTML = `<audio controls src="${msg.content}"></audio>`;
-  else if (msg.type === 'video') div.innerHTML = `<video controls class="w-48" src="${msg.content}"></video>`;
-  else div.innerHTML = `<a href="${msg.content}" download>📥 Faylni yuklab olish</a>`;
-
-  document.getElementById('chatBox').appendChild(div);
-});
-
-const user = JSON.parse(localStorage.getItem("loggedInUser"));
-  if (user && user.coin !== undefined) {
-    document.getElementById("coin-count").innerText = user.coin;
-  }
-
-  fetch('https://school-b97p.onrender.com/api/users')
-  .then(res => res.json())
-  .then(users => {
-    const currentUserId = localStorage.getItem('userId');
-    const user = users.find(u => u.id === currentUserId);
-    if (user) {
-      document.getElementById('coin-count').innerText = user.coin;
+    // Modal functions
+    function openCoinModal() {
+      coinModal.classList.remove('hidden');
     }
-  });
-</script>
+
+    function closeCoinModal() {
+      coinModal.classList.add('hidden');
+    }
+
+    function sendCoinRequest() {
+      const amount = document.getElementById('coin-amount').value;
+      if (amount && amount > 0) {
+        alert(`${amount} coin so'rovi yuborildi!`);
+        closeCoinModal();
+      } else {
+        alert('Iltimos, toʻgʻri miqdorni kiriting');
+      }
+    }
+
+    // Event listeners
+    document.getElementById('editBtn').addEventListener('click', () => {
+      editModal.classList.remove('hidden');
+      
+      // Pre-fill form with current data
+      document.querySelector('input[name="name"]').value = currentUser.name || '';
+      document.querySelector('input[name="surname"]').value = currentUser.surname || '';
+      document.querySelector('input[name="school"]').value = currentUser.school || '';
+      document.querySelector('input[name="email"]').value = currentUser.email || '';
+      document.querySelector('textarea[name="bio"]').value = currentUser.bio || '';
+    });
+
+    document.getElementById('cancelEdit').addEventListener('click', () => {
+      editModal.classList.add('hidden');
+    });
+
+    document.getElementById('cancelEditBtn').addEventListener('click', () => {
+      editModal.classList.add('hidden');
+    });
+
+    document.getElementById('editForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      // Here you would typically send the updated data to your backend
+      alert('Profil maʼlumotlari yangilandi!');
+      editModal.classList.add('hidden');
+    });
+
+    document.getElementById('openChatBtn').addEventListener('click', () => {
+      chatModal.classList.remove('hidden');
+    });
+
+    document.getElementById('closeChatBtn').addEventListener('click', () => {
+      chatModal.classList.add('hidden');
+    });
+
+    chatModal.addEventListener('click', (e) => {
+      if (e.target === chatModal) chatModal.classList.add('hidden');
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      localStorage.removeItem('user');
+      window.location.href = '../login/student-login.html';
+    });
+
+    // Initialize Socket.io
+    const socket = io('https://school-b97p.onrender.com');
+    socket.emit('register', currentUser.id);
+
+    function sendMessage() {
+      const file = document.getElementById('fileInput').files[0];
+      const text = document.getElementById('messageInput').value;
+
+      if (file) {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        fetch('https://school-b97p.onrender.com/api/chat/upload', {
+          method: 'POST',
+          body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+          socket.emit('privateMessage', {
+            from: currentUser.id,
+            to: targetUserId,
+            content: data.url,
+            type: file.type.startsWith('audio') ? 'audio' :
+                  file.type.startsWith('video') ? 'video' :
+                  file.type.startsWith('image') ? 'image' : 'file'
+          });
+        });
+      } else if (text.trim()) {
+        socket.emit('privateMessage', {
+          from: currentUser.id,
+          to: targetUserId,
+          content: text,
+          type: 'text'
+        });
+        document.getElementById('messageInput').value = '';
+      }
+    }
+
+    socket.on('message', (msg) => {
+      const div = document.createElement('div');
+      div.classList.add("p-3", "rounded-xl", "max-w-xs", "bg-white", "shadow-sm");
+
+      if (msg.type === 'text') {
+        div.textContent = msg.content;
+      } else if (msg.type === 'image') {
+        div.innerHTML = `<img src="${msg.content}" class="w-full rounded-lg" />`;
+      } else if (msg.type === 'audio') {
+        div.innerHTML = `<audio controls src="${msg.content}" class="w-full"></audio>`;
+      } else if (msg.type === 'video') {
+        div.innerHTML = `<video controls class="w-full rounded-lg" src="${msg.content}"></video>`;
+      } else {
+        div.innerHTML = `<a href="${msg.content}" download class="text-indigo-600 hover:underline">📎 Faylni yuklab olish</a>`;
+      }
+
+      document.getElementById('chatBox').appendChild(div);
+      document.getElementById('chatBox').scrollTop = document.getElementById('chatBox').scrollHeight;
+    });
+
+    // Load user data on page load
+    document.addEventListener('DOMContentLoaded', loadUserData);
+  </script>
 </body>
 </html>
