@@ -68,6 +68,7 @@
   <div class="max-w-4xl mx-auto glass-effect rounded-3xl shadow-xl overflow-hidden">
     <!-- Profile Header -->
     <div class="gradient-bg text-white p-8 relative">
+      <!-- Navigation and Actions -->
       <div class="absolute top-6 right-6 flex items-center space-x-4">
         <div class="bg-white bg-opacity-20 rounded-full px-4 py-2 flex items-center">
           <i class="fas fa-coins text-yellow-300 mr-2"></i>
@@ -76,28 +77,31 @@
             <i class="fas fa-plus-circle"></i>
           </button>
         </div>
+        <button onclick="goBack()" class="bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full px-4 py-2 smooth-transition flex items-center">
+          <i class="fas fa-arrow-left mr-2"></i> Orqaga
+        </button>
         <button id="logoutBtn" class="bg-white bg-opacity-20 hover:bg-opacity-30 rounded-full px-4 py-2 smooth-transition flex items-center">
           <i class="fas fa-sign-out-alt mr-2"></i> Chiqish
         </button>
       </div>
       
+      <!-- Profile Info -->
       <div class="flex flex-col items-center mt-10">
         <div class="w-24 h-24 rounded-full bg-white bg-opacity-20 flex items-center justify-center mb-4 border-4 border-white border-opacity-30">
-          <span class="text-3xl font-bold">
-            <span id="avatarInitials">U</span>
-          </span>
+          <span class="text-3xl font-bold" id="avatarInitials">U</span>
         </div>
         <h1 class="text-3xl font-bold text-center">
           <span id="fullName">Ism Familiya</span>
         </h1>
         <p class="text-white text-opacity-80 mt-2" id="roleDisplay">Talaba</p>
+        <p class="text-white text-opacity-80 mt-1 text-sm" id="profileOwnerNote"></p>
       </div>
     </div>
 
     <!-- Profile Content -->
     <div class="p-8">
-      <!-- Action Buttons -->
-      <div class="flex justify-center space-x-4 mb-8">
+      <!-- Action Buttons (only show for own profile) -->
+      <div id="actionButtons" class="flex justify-center space-x-4 mb-8 hidden">
         <button id="editBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-full smooth-transition flex items-center">
           <i class="fas fa-edit mr-2"></i> Profilni tahrirlash
         </button>
@@ -140,6 +144,10 @@
             <div>
               <p class="text-sm text-gray-500">Rol</p>
               <p id="role" class="text-lg font-medium text-gray-800"></p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500">Foydalanuvchi ID</p>
+              <p id="userId" class="text-lg font-medium text-gray-800"></p>
             </div>
           </div>
         </div>
@@ -245,29 +253,70 @@
       window.location.href = "/frontend/login/student-login.html";
     }
 
-    const viewedUserId = new URLSearchParams(location.search).get("user") || currentUser.id;
+    // Get user ID from URL parameters or use current user ID
+    const urlParams = new URLSearchParams(window.location.search);
+    const viewedUserId = urlParams.get('user') || currentUser.id;
     let targetUserId = viewedUserId;
+    let isOwnProfile = viewedUserId === currentUser.id;
 
     // DOM Elements
     const coinModal = document.getElementById('coinModal');
     const editModal = document.getElementById('editModal');
     const chatModal = document.getElementById('chatModal');
+    const actionButtons = document.getElementById('actionButtons');
+    const profileOwnerNote = document.getElementById('profileOwnerNote');
     
-    // Initialize user data
-    function loadUserData() {
-      document.getElementById('name').textContent = currentUser.name || '';
-      document.getElementById('surname').textContent = currentUser.surname || '';
-      document.getElementById('school').textContent = currentUser.school || '';
-      document.getElementById('role').textContent = currentUser.role || '';
-      document.getElementById('email').textContent = currentUser.email || '';
-      document.getElementById('bio').textContent = currentUser.bio || 'Bio mavjud emas';
-      document.getElementById('fullName').textContent = `${currentUser.name || ''} ${currentUser.surname || ''}`;
-      document.getElementById('roleDisplay').textContent = currentUser.role || 'Foydalanuvchi';
-      document.getElementById('avatarInitials').textContent = (currentUser.name ? currentUser.name.charAt(0) : 'U') + (currentUser.surname ? currentUser.surname.charAt(0) : '');
+    // Load user data based on ID
+    function loadUserData(userId) {
+      // In a real app, you would fetch user data from your backend API
+      // For now, we'll simulate fetching user data
+      fetch(`https://school-b97p.onrender.com/api/users/${userId}`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Foydalanuvchi topilmadi');
+          }
+          return response.json();
+        })
+        .then(user => {
+          displayUserData(user);
+        })
+        .catch(error => {
+          console.error('Xatolik:', error);
+          // Fallback to current user data if the requested user is not found
+          if (userId !== currentUser.id) {
+            loadUserData(currentUser.id);
+          }
+        });
+    }
+
+    // Display user data in the UI
+    function displayUserData(user) {
+      document.getElementById('name').textContent = user.name || 'Noma\'lum';
+      document.getElementById('surname').textContent = user.surname || 'Noma\'lum';
+      document.getElementById('school').textContent = user.school || 'Noma\'lum';
+      document.getElementById('role').textContent = user.role || 'Noma\'lum';
+      document.getElementById('email').textContent = user.email || 'Noma\'lum';
+      document.getElementById('bio').textContent = user.bio || 'Bio mavjud emas';
+      document.getElementById('fullName').textContent = `${user.name || ''} ${user.surname || ''}`;
+      document.getElementById('roleDisplay').textContent = user.role || 'Foydalanuvchi';
+      document.getElementById('userId').textContent = user.id || 'Noma\'lum';
+      
+      // Set avatar initials
+      const initials = (user.name ? user.name.charAt(0) : '') + (user.surname ? user.surname.charAt(0) : '');
+      document.getElementById('avatarInitials').textContent = initials || 'U';
       
       // Set coin count if available
-      if (currentUser.coin !== undefined) {
-        document.getElementById('coin-count').textContent = currentUser.coin;
+      if (user.coin !== undefined) {
+        document.getElementById('coin-count').textContent = user.coin;
+      }
+      
+      // Show/hide action buttons based on profile ownership
+      if (isOwnProfile) {
+        actionButtons.classList.remove('hidden');
+        profileOwnerNote.textContent = 'Bu sizning profilingiz';
+      } else {
+        actionButtons.classList.add('hidden');
+        profileOwnerNote.textContent = 'Boshqa foydalanuvchi profili';
       }
     }
 
@@ -288,6 +337,11 @@
       } else {
         alert('Iltimos, toʻgʻri miqdorni kiriting');
       }
+    }
+
+    // Navigation function
+    function goBack() {
+      window.history.back();
     }
 
     // Event listeners
@@ -315,6 +369,9 @@
       // Here you would typically send the updated data to your backend
       alert('Profil maʼlumotlari yangilandi!');
       editModal.classList.add('hidden');
+      
+      // Reload the page to see changes
+      location.reload();
     });
 
     document.getElementById('openChatBtn').addEventListener('click', () => {
@@ -393,7 +450,9 @@
     });
 
     // Load user data on page load
-    document.addEventListener('DOMContentLoaded', loadUserData);
+    document.addEventListener('DOMContentLoaded', () => {
+      loadUserData(viewedUserId);
+    });
   </script>
 </body>
 </html>
