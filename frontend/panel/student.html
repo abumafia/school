@@ -5,150 +5,306 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>🎓 O'quvchi Paneli | X-Maktab</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <style>
+    :root {
+      --primary: #4361ee;
+      --secondary: #3a0ca3;
+      --accent: #7209b7;
+      --success: #4cc9f0;
+      --light: #f8f9fa;
+      --dark: #212529;
+    }
+    
     body {
-      font-family: 'Inter', sans-serif;
-      background-color: #f8fafc;
+      font-family: 'Outfit', sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+      min-height: 100vh;
     }
+    
+    .glass-effect {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+    }
+    
     .gradient-bg {
-      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
     }
-    .card-hover:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    
+    .card-hover {
       transition: all 0.3s ease;
+      border-radius: 16px;
+      overflow: hidden;
     }
+    
+    .card-hover:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 25px 50px -12px rgba(67, 97, 238, 0.25);
+    }
+    
     .smooth-transition {
       transition: all 0.3s ease;
     }
+    
     .like-animation {
       animation: like-pulse 0.5s ease;
     }
+    
     @keyframes like-pulse {
       0% { transform: scale(1); }
       50% { transform: scale(1.2); }
       100% { transform: scale(1); }
     }
+    
+    .floating-btn {
+      box-shadow: 0 10px 25px -5px rgba(67, 97, 238, 0.5);
+    }
+    
+    .neumorphism {
+      border-radius: 16px;
+      background: #e4e8f0;
+      box-shadow: 8px 8px 16px #d1d5dc, -8px -8px 16px #f7fbff;
+    }
+    
+    .text-gradient {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .sidebar {
+      width: 280px;
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+      z-index: 50;
+    }
+    
+    .sidebar.open {
+      transform: translateX(0);
+    }
+    
+    .overlay {
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .overlay.open {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    @media (min-width: 1024px) {
+      .sidebar {
+        transform: translateX(0);
+        position: static;
+        height: auto;
+      }
+      
+      .overlay {
+        display: none;
+      }
+    }
   </style>
 </head>
-<body class="min-h-screen">
-  <!-- Navbar -->
-  <nav class="bg-white shadow-sm">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between h-16">
-        <div class="flex items-center">
-          <div class="flex-shrink-0 flex items-center">
-            <i class="fas fa-graduation-cap text-indigo-600 text-2xl mr-2"></i>
-            <span class="text-xl font-bold text-gray-900">X-Maktab</span>
-          </div>
-          <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
-            <a href="#" class="border-indigo-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Asosiy</a>
-            <a href="./social.html" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">SfS</a>
-            <a href="../games/games.html" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">O'yinlar</a>
-          </div>
-        </div>
-        <div class="hidden sm:ml-6 sm:flex sm:items-center">
-          <div class="relative ml-3">
-            <div>
-              <button id="user-menu-button" class="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                <span class="sr-only">Open user menu</span>
-                <span class="inline-flex items-center justify-center h-8 w-8 rounded-full bg-indigo-100">
-                  <span class="text-sm font-medium text-indigo-700">O</span>
-                </span>
-                <span class="ml-2 text-gray-700 font-medium">Profil</span>
-                <i class="fas fa-chevron-down ml-1 text-gray-500 text-xs"></i>
-              </button>
-            </div>
-            <div id="user-menu-dropdown" class="hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
-              <a href="../profile/profile.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><i class="fas fa-user mr-2 text-indigo-500"></i> Profil</a>
-              <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><i class="fas fa-cog mr-2 text-indigo-500"></i> Sozlamalar</a>
-              <hr class="my-1">
-              <button id="logoutBtn" class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><i class="fas fa-sign-out-alt mr-2 text-red-500"></i> Chiqish</button>
-            </div>
-          </div>
-        </div>
-        <div class="-mr-2 flex items-center sm:hidden">
-          <button type="button" id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
-            <span class="sr-only">Open main menu</span>
-            <i class="fas fa-bars"></i>
-          </button>
-        </div>
-      </div>
-    </div>
+<body class="min-h-screen flex">
+  <!-- Overlay for mobile -->
+  <div class="overlay fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"></div>
 
-    <!-- Mobile menu -->
-    <div id="mobile-menu" class="hidden sm:hidden">
-      <div class="pt-2 pb-3 space-y-1">
-        <a href="#" class="bg-indigo-50 border-indigo-500 text-indigo-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">Asosiy</a>
-        <a href="./social.html" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">SfS</a>
-        <a href="../games/games.html" class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium">O'yinlar</a>
+  <!-- Sidebar -->
+  <aside class="sidebar fixed top-0 left-0 h-full glass-effect pt-6 pb-10 px-4 z-50 lg:relative lg:translate-x-0">
+    <div class="flex flex-col h-full">
+      <!-- Logo -->
+      <div class="flex items-center justify-center mb-10 px-4">
+        <div class="w-12 h-12 rounded-full gradient-bg flex items-center justify-center text-white text-2xl mr-3">
+          <i class="fas fa-graduation-cap"></i>
+        </div>
+        <span class="text-xl font-bold text-gradient">X-Maktab</span>
       </div>
-      <div class="pt-4 pb-3 border-t border-gray-200">
-        <div class="flex items-center px-4">
-          <div class="flex-shrink-0">
-            <span class="inline-flex items-center justify-center h-10 w-10 rounded-full bg-indigo-100">
-              <span class="text-sm font-medium text-indigo-700">O</span>
+      
+      <!-- Navigation -->
+      <nav class="flex-1">
+        <ul class="space-y-2">
+          <li>
+            <a href="#" class="flex items-center px-4 py-3 rounded-xl bg-indigo-100 text-indigo-700 font-medium">
+              <i class="fas fa-home mr-4 text-indigo-600"></i>
+              Asosiy
+            </a>
+          </li>
+          <li>
+            <a href="./social.html" class="flex items-center px-4 py-3 rounded-xl text-gray-600 hover:bg-indigo-50 hover:text-indigo-700 smooth-transition">
+              <i class="fas fa-users mr-4"></i>
+              SfS
+            </a>
+          </li>
+          <li>
+            <a href="../games/games.html" class="flex items-center px-4 py-3 rounded-xl text-gray-600 hover:bg-indigo-50 hover:text-indigo-700 smooth-transition">
+              <i class="fas fa-gamepad mr-4"></i>
+              O'yinlar
+            </a>
+          </li>
+          <li>
+            <a href="./index.html" class="flex items-center px-4 py-3 rounded-xl text-gray-600 hover:bg-indigo-50 hover:text-indigo-700 smooth-transition">
+              <i class="fas fa-video mr-4"></i>
+              Videolar
+            </a>
+          </li>
+        </ul>
+        
+        <div class="mt-10 px-2">
+          <div class="text-xs uppercase text-gray-500 font-semibold mb-3 px-2">Profil</div>
+          <ul class="space-y-2">
+            <li>
+              <a href="../profile/profile.html" class="flex items-center px-4 py-3 rounded-xl text-gray-600 hover:bg-indigo-50 hover:text-indigo-700 smooth-transition">
+                <i class="fas fa-user mr-4"></i>
+                Profil
+              </a>
+            </li>
+            <li>
+              <a href="#" class="flex items-center px-4 py-3 rounded-xl text-gray-600 hover:bg-indigo-50 hover:text-indigo-700 smooth-transition">
+                <i class="fas fa-cog mr-4"></i>
+                Sozlamalar
+              </a>
+            </li>
+            <li>
+              <button id="logoutBtnSidebar" class="w-full flex items-center px-4 py-3 rounded-xl text-gray-600 hover:bg-red-50 hover:text-red-600 smooth-transition">
+                <i class="fas fa-sign-out-alt mr-4"></i>
+                Chiqish
+              </button>
+            </li>
+          </ul>
+        </div>
+      </nav>
+      
+      <!-- User profile -->
+      <div class="mt-auto px-2 pt-6 border-t border-gray-200">
+        <div class="flex items-center px-2 py-3 rounded-xl bg-indigo-50">
+          <div class="flex-shrink-0 mr-3">
+            <span class="inline-flex items-center justify-center h-10 w-10 rounded-full gradient-bg text-white font-medium">
+              ${user?.name ? user.name.charAt(0) : 'O'}
             </span>
           </div>
-          <div class="ml-3">
-            <div class="text-base font-medium text-gray-800">O'quvchi</div>
-            <div class="text-sm font-medium text-gray-500">student@example.com</div>
+          <div class="truncate">
+            <div class="text-sm font-medium text-gray-900 truncate">O'quvchi</div>
+            <div class="text-xs text-gray-500 truncate">${user?.email || 'student@example.com'}</div>
           </div>
-        </div>
-        <div class="mt-3 space-y-1">
-          <a href="../profile/profile.html" class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100"><i class="fas fa-user mr-2 text-indigo-500"></i> Profil</a>
-          <a href="#" class="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100"><i class="fas fa-cog mr-2 text-indigo-500"></i> Sozlamalar</a>
-          <button id="logoutBtnMobile" class="w-full text-left block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100"><i class="fas fa-sign-out-alt mr-2 text-red-500"></i> Chiqish</button>
         </div>
       </div>
     </div>
-  </nav>
+  </aside>
 
   <!-- Main Content -->
-  <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-    <!-- Search and Actions -->
-    <div class="px-4 sm:px-0 mb-8">
-      <div class="bg-white rounded-lg shadow p-4">
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div class="relative flex-grow">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <i class="fas fa-search text-gray-400"></i>
-            </div>
-            <input id="searchInput" type="text" placeholder="Dars nomi yoki tavsif bo'yicha qidirish..." class="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-          </div>
-          <div class="flex gap-3">
-            <a href="./social.html" class="flex items-center justify-center px-4 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow smooth-transition">
-              <i class="fas fa-users mr-2"></i> SfS
-            </a>
-            <a href="../games/games.html" class="flex items-center justify-center px-4 py-3 bg-pink-600 hover:bg-pink-700 text-white rounded-lg shadow smooth-transition">
-              <i class="fas fa-gamepad mr-2"></i> O'yinlar
-            </a>
-            <a href="./index.html" class="flex items-center justify-center px-4 py-3 bg-pink-600 hover:bg-pink-700 text-white rounded-lg shadow smooth-transition">
-              <i class="fas fa-video mr-2"></i> Videolar
-            </a>
+  <main class="flex-1 lg:ml-0">
+    <!-- Top Header -->
+    <header class="glass-effect rounded-b-2xl lg:rounded-none sticky top-0 z-30">
+      <div class="flex items-center justify-between p-4">
+        <div class="flex items-center">
+          <button id="sidebarToggle" class="lg:hidden p-2 rounded-lg text-gray-700 hover:bg-indigo-100 smooth-transition mr-2">
+            <i class="fas fa-bars text-lg"></i>
+          </button>
+          <h1 class="text-xl font-bold text-gray-800">O'quvchi Paneli</h1>
+        </div>
+        
+        <div class="flex items-center space-x-4">
+          <!-- Notification -->
+          <button class="relative p-2 rounded-full text-gray-600 hover:bg-indigo-100 smooth-transition">
+            <i class="fas fa-bell"></i>
+            <span class="absolute top-0 right-0 w-3 h-3 bg-red-500 rounded-full border-2 border-white"></span>
+          </button>
+          
+          <!-- Messages -->
+          <button class="relative p-2 rounded-full text-gray-600 hover:bg-indigo-100 smooth-transition">
+            <i class="fas fa-envelope"></i>
+            <span class="absolute top-0 right-0 w-3 h-3 bg-indigo-500 rounded-full border-2 border-white"></span>
+          </button>
+          
+          <!-- User menu for desktop -->
+          <div class="hidden lg:block relative ml-3">
+            <button id="user-menu-button" class="flex items-center text-sm rounded-full focus:outline-none">
+              <span class="inline-flex items-center justify-center h-10 w-10 rounded-full gradient-bg text-white font-medium">
+                ${user?.name ? user.name.charAt(0) : 'O'}
+              </span>
+            </button>
           </div>
         </div>
       </div>
-    </div>
+    </header>
 
-    <!-- Lessons Section -->
-    <div class="px-4 sm:px-0">
-      <div class="bg-white rounded-lg shadow overflow-hidden">
-        <div class="p-6 border-b border-gray-200">
-          <h2 class="text-2xl font-bold text-gray-800 flex items-center">
-            <i class="fas fa-book-open mr-3 text-indigo-600"></i> Darslar
-          </h2>
+    <!-- Content -->
+    <div class="p-4 lg:p-6">
+      <!-- Welcome Card -->
+      <div class="mb-8 gradient-bg rounded-2xl p-6 text-white shadow-xl" data-aos="fade-up">
+        <div class="flex flex-col md:flex-row md:items-center justify-between">
+          <div>
+            <h2 class="text-2xl font-bold mb-2">Xush kelibsiz, O'quvchi!</h2>
+            <p class="opacity-90">Bugun qaysi darslarni o'rganamiz?</p>
+          </div>
+          <div class="mt-4 md:mt-0">
+            <div class="flex items-center bg-white bg-opacity-20 rounded-lg px-4 py-2">
+              <i class="far fa-calendar-alt mr-2"></i>
+              <span id="currentDate"></span>
+            </div>
+          </div>
         </div>
-        <div id="lessonContainer" class="divide-y divide-gray-200"></div>
+      </div>
+
+      <!-- Search and Actions -->
+      <div class="mb-8">
+        <div class="glass-effect rounded-2xl p-5 shadow-sm">
+          <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div class="relative flex-grow">
+              <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <i class="fas fa-search text-gray-400"></i>
+              </div>
+              <input id="searchInput" type="text" placeholder="Dars nomi yoki tavsif bo'yicha qidirish..." 
+                class="pl-12 w-full p-4 border-0 rounded-xl bg-white bg-opacity-50 focus:ring-2 focus:ring-indigo-500 focus:bg-white smooth-transition">
+            </div>
+            <div class="flex gap-3 flex-wrap">
+              <a href="./social.html" class="flex items-center justify-center px-5 py-3 gradient-bg hover:opacity-90 text-white rounded-xl shadow-lg floating-btn smooth-transition">
+                <i class="fas fa-users mr-2"></i> SfS
+              </a>
+              <a href="../games/games.html" class="flex items-center justify-center px-5 py-3 bg-gradient-to-r from-pink-500 to-pink-700 hover:opacity-90 text-white rounded-xl shadow-lg floating-btn smooth-transition">
+                <i class="fas fa-gamepad mr-2"></i> O'yinlar
+              </a>
+              <a href="./index.html" class="flex items-center justify-center px-5 py-3 bg-gradient-to-r from-purple-500 to-purple-700 hover:opacity-90 text-white rounded-xl shadow-lg floating-btn smooth-transition">
+                <i class="fas fa-video mr-2"></i> Videolar
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lessons Section -->
+      <div>
+        <div class="glass-effect rounded-2xl shadow overflow-hidden">
+          <div class="p-6 border-b border-gray-200 bg-white bg-opacity-70">
+            <h2 class="text-2xl font-bold text-gray-800 flex items-center">
+              <i class="fas fa-book-open mr-3 text-indigo-600"></i> Darslar
+            </h2>
+          </div>
+          <div id="lessonContainer" class="divide-y divide-gray-200 divide-opacity-50"></div>
+        </div>
       </div>
     </div>
   </main>
 
+  <!-- Floating action button for mobile -->
+  <div class="fixed bottom-6 right-6 z-40 lg:hidden">
+    <button id="mobileMenuButton" class="w-14 h-14 rounded-full gradient-bg text-white text-xl shadow-lg floating-btn flex items-center justify-center">
+      <i class="fas fa-bars"></i>
+    </button>
+  </div>
+
   <!-- Like Modal -->
   <div id="likeModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-xl shadow-xl w-full max-w-md max-h-[80vh] overflow-hidden">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md max-h-[80vh] overflow-hidden glass-effect">
       <div class="p-6 border-b border-gray-200">
         <h3 class="text-xl font-bold text-gray-800 flex items-center">
           <i class="fas fa-heart mr-2 text-red-500"></i> Layk bosganlar
@@ -165,7 +321,7 @@
 
   <!-- Comment Like Modal -->
   <div id="commentLikeModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-xl shadow-xl w-full max-w-md max-h-[80vh] overflow-hidden">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md max-h-[80vh] overflow-hidden glass-effect">
       <div class="p-6 border-b border-gray-200">
         <h3 class="text-xl font-bold text-gray-800 flex items-center">
           <i class="fas fa-heart mr-2 text-red-500"></i> Izohga layk bosganlar
@@ -181,6 +337,19 @@
   </div>
 
   <script>
+    // Initialize animations
+    document.addEventListener('DOMContentLoaded', function() {
+      AOS.init({
+        duration: 800,
+        once: true,
+        offset: 50
+      });
+      
+      // Set current date
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById('currentDate').textContent = new Date().toLocaleDateString('uz-UZ', options);
+    });
+
     // Check authentication
     const user = JSON.parse(localStorage.getItem('user'));
     if (!user || user.role !== 'student') {
@@ -197,24 +366,33 @@
     const likeList = document.getElementById('likeList');
     const commentLikeModal = document.getElementById('commentLikeModal');
     const commentLikeList = document.getElementById('commentLikeList');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebar = document.querySelector('.sidebar');
+    const overlay = document.querySelector('.overlay');
+    const mobileMenuButton = document.getElementById('mobileMenuButton');
 
     // Event Listeners
-    document.getElementById('logoutBtn').addEventListener('click', logout);
-    document.getElementById('logoutBtnMobile').addEventListener('click', logout);
+    document.getElementById('logoutBtnSidebar').addEventListener('click', logout);
     document.getElementById('closeLikeModal').addEventListener('click', () => likeModal.classList.add('hidden'));
     document.getElementById('closeCommentLikeModal').addEventListener('click', () => commentLikeModal.classList.add('hidden'));
     searchInput.addEventListener('input', () => loadLessons(searchInput.value));
-
-    // Mobile menu toggle
-    document.getElementById('mobile-menu-button').addEventListener('click', function() {
-      const menu = document.getElementById('mobile-menu');
-      menu.classList.toggle('hidden');
+    
+    // Sidebar toggle
+    sidebarToggle.addEventListener('click', function() {
+      sidebar.classList.toggle('open');
+      overlay.classList.toggle('open');
     });
-
-    // User dropdown toggle
-    document.getElementById('user-menu-button').addEventListener('click', function() {
-      const dropdown = document.getElementById('user-menu-dropdown');
-      dropdown.classList.toggle('hidden');
+    
+    // Mobile menu button
+    mobileMenuButton.addEventListener('click', function() {
+      sidebar.classList.toggle('open');
+      overlay.classList.toggle('open');
+    });
+    
+    // Close sidebar when clicking on overlay
+    overlay.addEventListener('click', function() {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('open');
     });
 
     // Close dropdowns when clicking outside
@@ -222,7 +400,7 @@
       const userMenuButton = document.getElementById('user-menu-button');
       const userMenuDropdown = document.getElementById('user-menu-dropdown');
       
-      if (!userMenuButton.contains(event.target)) {
+      if (userMenuDropdown && !userMenuButton.contains(event.target)) {
         userMenuDropdown.classList.add('hidden');
       }
     });
@@ -271,22 +449,24 @@
       }
 
       lessonContainer.innerHTML = '';
-      lessons.forEach(lesson => {
+      lessons.forEach((lesson, index) => {
         const liked = lesson.likes.includes(userId);
         const card = document.createElement('div');
-        card.className = "p-6 hover:bg-gray-50 smooth-transition";
+        card.className = "p-6 hover:bg-white hover:bg-opacity-50 smooth-transition";
+        card.setAttribute('data-aos', 'fade-up');
+        card.setAttribute('data-aos-delay', index * 100);
         
         card.innerHTML = `
-          <div class="flex justify-between items-start mb-2">
+          <div class="flex justify-between items-start mb-4">
             <h3 class="text-lg font-bold text-indigo-700">${lesson.title}</h3>
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
               ${lesson.category || 'Umumiy'}
             </span>
           </div>
           
           <p class="text-gray-600 mb-4">${lesson.description}</p>
           
-          <div class="bg-gray-50 rounded-lg p-4 mb-4">
+          <div class="bg-white bg-opacity-50 rounded-xl p-4 mb-4 neumorphism">
             <p class="text-gray-700">${lesson.content}</p>
           </div>
           
@@ -309,19 +489,19 @@
             </div>
           </div>
           
-          <div class="hidden commentBox mt-4 pt-4 border-t border-gray-200" id="commentBox-${lesson.id}">
+          <div class="hidden commentBox mt-4 pt-4 border-t border-gray-200 border-opacity-50" id="commentBox-${lesson.id}">
             <div class="flex mb-4">
               <div class="flex-shrink-0 mr-3">
-                <span class="inline-flex items-center justify-center h-8 w-8 rounded-full bg-indigo-100">
-                  <span class="text-xs font-medium text-indigo-700">${user.name ? user.name.charAt(0) : 'U'}</span>
+                <span class="inline-flex items-center justify-center h-8 w-8 rounded-full gradient-bg text-white text-xs font-medium">
+                  ${user.name ? user.name.charAt(0) : 'U'}
                 </span>
               </div>
               <div class="flex-grow">
-                <input class="commentInput w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500" placeholder="Izoh yozing..." />
+                <input class="commentInput w-full p-3 border-0 rounded-xl bg-white bg-opacity-50 focus:bg-white focus:ring-2 focus:ring-indigo-500 smooth-transition" placeholder="Izoh yozing..." />
               </div>
             </div>
             
-            <button class="sendComment w-full sm:w-auto px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg smooth-transition" data-id="${lesson.id}">
+            <button class="sendComment w-full sm:w-auto px-4 py-2 gradient-bg hover:opacity-90 text-white rounded-xl shadow smooth-transition" data-id="${lesson.id}">
               <i class="fas fa-paper-plane mr-2"></i> Yuborish
             </button>
             
@@ -354,12 +534,12 @@
         return `
           <div class="flex" id="comment-${lessonId}-${index}">
             <div class="flex-shrink-0 mr-3">
-              <span class="inline-flex items-center justify-center h-8 w-8 rounded-full bg-indigo-100">
-                <span class="text-xs font-medium text-indigo-700">${comment.userId.charAt(0)}</span>
+              <span class="inline-flex items-center justify-center h-8 w-8 rounded-full gradient-bg text-white text-xs font-medium">
+                ${comment.userId.charAt(0)}
               </span>
             </div>
             <div class="flex-grow">
-              <div class="bg-gray-50 rounded-lg p-3">
+              <div class="bg-white bg-opacity-50 rounded-xl p-4 neumorphism">
                 <div class="flex items-center justify-between mb-1">
                   <a href="../profile/profile.html?user=${comment.userId}" class="text-sm font-medium text-indigo-600 hover:underline">${comment.userId}</a>
                   <span class="text-xs text-gray-500">${new Date(comment.date || Date.now()).toLocaleString()}</span>
@@ -388,16 +568,16 @@
               <div class="hidden reply-form mt-2 ml-8" id="reply-form-${lessonId}-${index}">
                 <div class="flex">
                   <div class="flex-shrink-0 mr-3">
-                    <span class="inline-flex items-center justify-center h-6 w-6 rounded-full bg-indigo-100">
-                      <span class="text-xs font-medium text-indigo-700">${user.name ? user.name.charAt(0) : 'U'}</span>
+                    <span class="inline-flex items-center justify-center h-6 w-6 rounded-full gradient-bg text-white text-xs font-medium">
+                      ${user.name ? user.name.charAt(0) : 'U'}
                     </span>
                   </div>
                   <div class="flex-grow">
-                    <input class="reply-text w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500" placeholder="Javob yozing..." />
+                    <input class="reply-text w-full p-2 border-0 rounded-xl bg-white bg-opacity-50 focus:bg-white focus:ring-2 focus:ring-indigo-500 smooth-transition" placeholder="Javob yozing..." />
                   </div>
                 </div>
                 <div class="mt-2 flex justify-end">
-                  <button class="send-reply px-3 py-1 bg-indigo-600 hover:bg-indigo-700 text-white text-sm rounded-lg smooth-transition" data-lesson="${lessonId}" data-comment="${index}">
+                  <button class="send-reply px-3 py-2 gradient-bg hover:opacity-90 text-white text-sm rounded-lg smooth-transition" data-lesson="${lessonId}" data-comment="${index}">
                     <i class="fas fa-paper-plane mr-1"></i> Yuborish
                   </button>
                 </div>
@@ -416,8 +596,8 @@
           ${replies.map(reply => `
             <div class="flex">
               <div class="flex-shrink-0 mr-3">
-                <span class="inline-flex items-center justify-center h-6 w-6 rounded-full bg-indigo-100">
-                  <span class="text-xs font-medium text-indigo-700">${reply.userId.charAt(0)}</span>
+                <span class="inline-flex items-center justify-center h-6 w-6 rounded-full gradient-bg text-white text-xs font-medium">
+                  ${reply.userId.charAt(0)}
                 </span>
               </div>
               <div class="flex-grow">
@@ -505,8 +685,8 @@
           
           likeList.innerHTML = lesson.likes.map(id =>
             `<a href="../profile/profile.html?user=${id}" class="flex items-center p-2 hover:bg-gray-100 rounded-lg smooth-transition">
-              <span class="inline-flex items-center justify-center h-8 w-8 rounded-full bg-indigo-100 mr-3">
-                <span class="text-sm font-medium text-indigo-700">${id.charAt(0)}</span>
+              <span class="inline-flex items-center justify-center h-8 w-8 rounded-full gradient-bg text-white mr-3">
+                <span class="text-sm font-medium">${id.charAt(0)}</span>
               </span>
               <span class="text-gray-700">${id}</span>
             </a>`
@@ -551,8 +731,8 @@
           
           commentLikeList.innerHTML = likes.map(id =>
             `<a href="../profile/profile.html?user=${id}" class="flex items-center p-2 hover:bg-gray-100 rounded-lg smooth-transition">
-              <span class="inline-flex items-center justify-center h-8 w-8 rounded-full bg-indigo-100 mr-3">
-                <span class="text-sm font-medium text-indigo-700">${id.charAt(0)}</span>
+              <span class="inline-flex items-center justify-center h-8 w-8 rounded-full gradient-bg text-white mr-3">
+                <span class="text-sm font-medium">${id.charAt(0)}</span>
               </span>
               <span class="text-gray-700">${id}</span>
             </a>`
