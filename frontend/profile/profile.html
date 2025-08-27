@@ -119,15 +119,15 @@
           <div class="space-y-4">
             <div>
               <p class="text-sm text-gray-500">Ism</p>
-              <p id="name" class="text-lg font-medium text-gray-800"></p>
+              <p id="name" class="text-lg font-medium text-gray-800">Yuklanmoqda...</p>
             </div>
             <div>
               <p class="text-sm text-gray-500">Familiya</p>
-              <p id="surname" class="text-lg font-medium text-gray-800"></p>
+              <p id="surname" class="text-lg font-medium text-gray-800">Yuklanmoqda...</p>
             </div>
             <div>
               <p class="text-sm text-gray-500">Email</p>
-              <p id="email" class="text-lg font-medium text-gray-800"></p>
+              <p id="email" class="text-lg font-medium text-gray-800">Yuklanmoqda...</p>
             </div>
           </div>
         </div>
@@ -139,15 +139,15 @@
           <div class="space-y-4">
             <div>
               <p class="text-sm text-gray-500">Maktab</p>
-              <p id="school" class="text-lg font-medium text-gray-800"></p>
+              <p id="school" class="text-lg font-medium text-gray-800">Yuklanmoqda...</p>
             </div>
             <div>
               <p class="text-sm text-gray-500">Rol</p>
-              <p id="role" class="text-lg font-medium text-gray-800"></p>
+              <p id="role" class="text-lg font-medium text-gray-800">Yuklanmoqda...</p>
             </div>
             <div>
               <p class="text-sm text-gray-500">Foydalanuvchi ID</p>
-              <p id="userId" class="text-lg font-medium text-gray-800"></p>
+              <p id="userId" class="text-lg font-medium text-gray-800">Yuklanmoqda...</p>
             </div>
           </div>
         </div>
@@ -158,7 +158,7 @@
         <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
           <i class="fas fa-info-circle mr-2 text-indigo-600"></i> Bio
         </h2>
-        <p id="bio" class="text-gray-800"></p>
+        <p id="bio" class="text-gray-800">Yuklanmoqda...</p>
       </div>
     </div>
   </div>
@@ -268,25 +268,41 @@
     
     // Load user data based on ID
     function loadUserData(userId) {
-      // In a real app, you would fetch user data from your backend API
-      // For now, we'll simulate fetching user data
-      fetch(`https://school-b97p.onrender.com/api/users/${userId}`)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Foydalanuvchi topilmadi');
-          }
-          return response.json();
-        })
-        .then(user => {
-          displayUserData(user);
-        })
-        .catch(error => {
-          console.error('Xatolik:', error);
-          // Fallback to current user data if the requested user is not found
-          if (userId !== currentUser.id) {
-            loadUserData(currentUser.id);
-          }
-        });
+      // First try to get from localStorage
+      const users = JSON.parse(localStorage.getItem('allUsers') || '[]');
+      let user = users.find(u => u.id === userId);
+      
+      if (user) {
+        displayUserData(user);
+      } else {
+        // If not found in localStorage, try to fetch from API
+        fetch('https://school-b97p.onrender.com/api/users')
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('APIga ulanishda xatolik');
+            }
+            return response.json();
+          })
+          .then(users => {
+            // Save to localStorage for future use
+            localStorage.setItem('allUsers', JSON.stringify(users));
+            
+            user = users.find(u => u.id === userId);
+            if (user) {
+              displayUserData(user);
+            } else {
+              // If user not found, show current user's profile
+              displayUserData(currentUser);
+              profileOwnerNote.textContent = 'Foydalanuvchi topilmadi, sizning profilingiz koʻrsatilmoqda';
+            }
+          })
+          .catch(error => {
+            console.error('Xatolik:', error);
+            // Fallback to current user data if API fails
+            displayUserData(currentUser);
+            profileOwnerNote.textContent = 'Serverga ulanishda xatolik, sizning profilingiz koʻrsatilmoqda';
+          });
+      }
     }
 
     // Display user data in the UI
