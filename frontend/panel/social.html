@@ -56,6 +56,21 @@
       -ms-overflow-style: none;
       scrollbar-width: none;
     }
+    .like-animation {
+      animation: like-pulse 0.5s ease;
+    }
+    @keyframes like-pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+    .glass-effect {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+    }
   </style>
 </head>
 <body class="bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 min-h-screen font-sans">
@@ -84,7 +99,7 @@
   <!-- Main Content -->
   <main class="max-w-6xl mx-auto px-4 py-8">
     <!-- Action Bar -->
-    <div class="bg-white rounded-xl shadow-soft p-6 mb-8 animate-fade-in">
+    <div class="glass-effect rounded-xl shadow-soft p-6 mb-8 animate-fade-in">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <a href="./create-post.html" class="bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white px-6 py-3 rounded-lg shadow-md text-center transition flex items-center justify-center gap-2">
           <i class="fas fa-plus"></i>
@@ -114,8 +129,8 @@
   </main>
 
   <!-- Like Modal -->
-  <div id="likeModal" class="fixed inset-0 bg-black bg-opacity-40 hidden flex items-center justify-center z-50">
-    <div class="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden">
+  <div id="likeModal" class="fixed inset-0 bg-black bg-opacity-40 hidden flex items-center justify-center z-50 p-4">
+    <div class="glass-effect rounded-xl w-full max-w-md overflow-hidden">
       <div class="bg-gradient-to-r from-primary-600 to-primary-700 px-6 py-4 text-white">
         <div class="flex justify-between items-center">
           <h2 class="text-xl font-semibold flex items-center gap-2">
@@ -131,6 +146,32 @@
     </div>
   </div>
 
+  <!-- Comment Modal -->
+  <div id="commentModal" class="fixed inset-0 bg-black bg-opacity-40 hidden flex items-center justify-center z-50 p-4">
+    <div class="glass-effect rounded-xl w-full max-w-md overflow-hidden">
+      <div class="bg-gradient-to-r from-primary-600 to-primary-700 px-6 py-4 text-white">
+        <div class="flex justify-between items-center">
+          <h2 class="text-xl font-semibold flex items-center gap-2">
+            <i class="fas fa-comments"></i>
+            Sharhlar
+          </h2>
+          <button id="closeCommentModal" class="text-white hover:text-gray-200">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+      <div id="commentList" class="max-h-96 overflow-y-auto p-4 space-y-3 scrollbar-hide"></div>
+      <div class="p-4 border-t border-gray-200">
+        <div class="flex gap-2">
+          <input type="text" id="commentInput" placeholder="Sharhingizni yozing..." class="flex-1 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500" />
+          <button id="submitComment" class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition">
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
     // Check authentication
     const currentUser = JSON.parse(localStorage.getItem("user"));
@@ -143,6 +184,12 @@
     const profileBtn = document.getElementById('profileBtn');
     const closeLikeModal = document.getElementById('closeLikeModal');
     const likeModal = document.getElementById('likeModal');
+    const closeCommentModal = document.getElementById('closeCommentModal');
+    const commentModal = document.getElementById('commentModal');
+    const commentInput = document.getElementById('commentInput');
+    const submitComment = document.getElementById('submitComment');
+    
+    let currentPostId = null;
 
     // Event Listeners
     if (logoutBtn) {
@@ -164,31 +211,43 @@
       });
     }
 
+    if (closeCommentModal) {
+      closeCommentModal.addEventListener('click', () => {
+        commentModal.classList.add('hidden');
+      });
+    }
+
     // Function to show likes
     function showLikes(postId) {
-      // Simulate fetching likes from backend
-      fetch(`https://school-b97p.onrender.com/api/posts/${postId}/likes`)
+      fetch(`https://school-b97p.onrender.com/api/posts/${postId}`)
         .then(response => response.json())
-        .then(likes => {
+        .then(post => {
           const likeList = document.getElementById('likeList');
           likeList.innerHTML = '';
           
-          if (likes.length === 0) {
+          if (!post.likes || post.likes.length === 0) {
             likeList.innerHTML = '<p class="text-gray-500 text-center py-4">Hali layk bosganlar yo\'q</p>';
           } else {
-            likes.forEach(user => {
-              const userElement = document.createElement('div');
-              userElement.className = 'flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg';
-              userElement.innerHTML = `
-                <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
-                  <i class="fas fa-user text-gray-500"></i>
-                </div>
-                <div>
-                  <p class="font-medium">${user.name}</p>
-                  <p class="text-sm text-gray-500">${user.school || 'Maktab ko\'rsatilmagan'}</p>
-                </div>
-              `;
-              likeList.appendChild(userElement);
+            // Fetch user data for each like
+            Promise.all(post.likes.map(userId => 
+              fetch(`https://school-b97p.onrender.com/api/users/${userId}`)
+                .then(res => res.json())
+                .catch(() => ({ id: userId, name: 'Noma\'lum foydalanuvchi', school: '' }))
+            )).then(users => {
+              users.forEach(user => {
+                const userElement = document.createElement('div');
+                userElement.className = 'flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg';
+                userElement.innerHTML = `
+                  <div class="w-10 h-10 rounded-full bg-gradient-to-r from-primary-500 to-primary-600 flex items-center justify-center text-white">
+                    ${user.name ? user.name.charAt(0) : 'N'}
+                  </div>
+                  <div>
+                    <p class="font-medium">${user.name || 'Noma\'lum foydalanuvchi'}</p>
+                    <p class="text-sm text-gray-500">${user.school || 'Maktab ko\'rsatilmagan'}</p>
+                  </div>
+                `;
+                likeList.appendChild(userElement);
+              });
             });
           }
           
@@ -202,6 +261,124 @@
         });
     }
 
+    // Function to show comments
+    function showComments(postId) {
+      currentPostId = postId;
+      
+      fetch(`https://school-b97p.onrender.com/api/posts/${postId}`)
+        .then(response => response.json())
+        .then(post => {
+          const commentList = document.getElementById('commentList');
+          commentList.innerHTML = '';
+          
+          if (!post.comments || post.comments.length === 0) {
+            commentList.innerHTML = '<p class="text-gray-500 text-center py-4">Hali sharhlar yo\'q</p>';
+          } else {
+            // Fetch user data for each comment
+            post.comments.forEach(comment => {
+              fetch(`https://school-b97p.onrender.com/api/users/${comment.userId}`)
+                .then(res => res.json())
+                .then(user => {
+                  const commentElement = document.createElement('div');
+                  commentElement.className = 'bg-gray-50 p-3 rounded-lg';
+                  commentElement.innerHTML = `
+                    <div class="flex items-center gap-2 mb-2">
+                      <div class="w-8 h-8 rounded-full bg-gradient-to-r from-primary-500 to-primary-600 flex items-center justify-center text-white text-xs">
+                        ${user.name ? user.name.charAt(0) : 'N'}
+                      </div>
+                      <div>
+                        <p class="font-medium text-sm">${user.name || 'Noma\'lum foydalanuvchi'}</p>
+                        <p class="text-xs text-gray-500">${new Date(comment.date).toLocaleString()}</p>
+                      </div>
+                    </div>
+                    <p class="text-gray-700">${comment.text}</p>
+                  `;
+                  commentList.appendChild(commentElement);
+                })
+                .catch(() => {
+                  const commentElement = document.createElement('div');
+                  commentElement.className = 'bg-gray-50 p-3 rounded-lg';
+                  commentElement.innerHTML = `
+                    <div class="flex items-center gap-2 mb-2">
+                      <div class="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 text-xs">
+                        N
+                      </div>
+                      <div>
+                        <p class="font-medium text-sm">Noma\'lum foydalanuvchi</p>
+                        <p class="text-xs text-gray-500">${new Date(comment.date).toLocaleString()}</p>
+                      </div>
+                    </div>
+                    <p class="text-gray-700">${comment.text}</p>
+                  `;
+                  commentList.appendChild(commentElement);
+                });
+            });
+          }
+          
+          commentModal.classList.remove('hidden');
+        })
+        .catch(error => {
+          console.error('Error fetching comments:', error);
+          const commentList = document.getElementById('commentList');
+          commentList.innerHTML = '<p class="text-red-500 text-center py-4">Sharhlar yuklanmadi. Iltimos, qayta urinib ko\'ring.</p>';
+          commentModal.classList.remove('hidden');
+        });
+    }
+
+    // Function to add a comment
+    if (submitComment) {
+      submitComment.addEventListener('click', () => {
+        const commentText = commentInput.value.trim();
+        if (!commentText || !currentPostId) return;
+        
+        // Add comment to the post
+        fetch(`https://school-b97p.onrender.com/api/posts/${currentPostId}/comment`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            userId: currentUser.id,
+            text: commentText
+          })
+        })
+        .then(response => response.json())
+        .then(updatedPost => {
+          // Clear input
+          commentInput.value = '';
+          
+          // Refresh comments
+          showComments(currentPostId);
+        })
+        .catch(error => {
+          console.error('Error adding comment:', error);
+          alert('Sharh qo\'shishda xatolik yuz berdi. Iltimos, qayta urinib ko\'ring.');
+        });
+      });
+    }
+
+    // Function to like a post
+    function likePost(postId) {
+      fetch(`https://school-b97p.onrender.com/api/posts/${postId}/like`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          userId: currentUser.id
+        })
+      })
+      .then(response => response.json())
+      .then(updatedPost => {
+        // Refresh posts
+        loadPosts();
+      })
+      .catch(error => {
+        console.error('Error liking post:', error);
+        alert('Postni layk qilishda xatolik yuz berdi. Iltimos, qayta urinib ko\'ring.');
+      });
+    }
+
     // Function to create post element
     function createPostElement(post) {
       const postElement = document.createElement('div');
@@ -211,11 +388,11 @@
           <!-- Post Header -->
           <div class="flex items-center gap-3 mb-4">
             <div class="w-12 h-12 rounded-full bg-gradient-to-r from-primary-500 to-primary-600 flex items-center justify-center text-white">
-              <i class="fas fa-user text-xl"></i>
+              ${post.authorName ? post.authorName.charAt(0) : 'U'}
             </div>
             <div>
-              <h3 class="font-bold text-gray-800">${post.author}</h3>
-              <p class="text-sm text-gray-500">${post.date}</p>
+              <h3 class="font-bold text-gray-800">${post.authorName || 'Noma\'lum foydalanuvchi'}</h3>
+              <p class="text-sm text-gray-500">${new Date(post.date).toLocaleString()}</p>
             </div>
           </div>
           
@@ -233,13 +410,13 @@
           
           <!-- Post Actions -->
           <div class="flex items-center justify-between border-t border-gray-100 pt-4">
-            <button onclick="showLikes('${post.id}')" class="flex items-center gap-1 text-gray-500 hover:text-red-500 transition">
-              <i class="fas fa-heart"></i>
-              <span>${post.likes} layk</span>
+            <button onclick="likePost('${post.id}')" class="flex items-center gap-1 text-gray-500 hover:text-red-500 transition like-btn">
+              <i class="fas fa-heart ${post.likes && post.likes.includes(currentUser.id) ? 'text-red-500' : ''}"></i>
+              <span>${post.likes ? post.likes.length : 0} layk</span>
             </button>
-            <button class="flex items-center gap-1 text-gray-500 hover:text-blue-500 transition">
+            <button onclick="showComments('${post.id}')" class="flex items-center gap-1 text-gray-500 hover:text-blue-500 transition">
               <i class="fas fa-comment"></i>
-              <span>${post.comments} sharh</span>
+              <span>${post.comments ? post.comments.length : 0} sharh</span>
             </button>
             <button class="flex items-center gap-1 text-gray-500 hover:text-green-500 transition">
               <i class="fas fa-share"></i>
@@ -253,7 +430,6 @@
 
     // Load posts
     function loadPosts() {
-      // Simulate fetching posts from backend
       fetch('https://school-b97p.onrender.com/api/posts')
         .then(response => response.json())
         .then(posts => {
@@ -269,8 +445,22 @@
               </div>
             `;
           } else {
-            posts.forEach(post => {
-              postContainer.appendChild(createPostElement(post));
+            // Fetch author information for each post
+            Promise.all(posts.map(post => 
+              fetch(`https://school-b97p.onrender.com/api/users/${post.authorId}`)
+                .then(res => res.json())
+                .then(user => {
+                  post.authorName = user.name;
+                  return post;
+                })
+                .catch(() => {
+                  post.authorName = 'Noma\'lum foydalanuvchi';
+                  return post;
+                })
+            )).then(postsWithAuthors => {
+              postsWithAuthors.forEach(post => {
+                postContainer.appendChild(createPostElement(post));
+              });
             });
           }
         })
