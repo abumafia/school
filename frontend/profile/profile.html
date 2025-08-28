@@ -107,7 +107,8 @@
         </button>
       </div>
 
-      <div>
+      <!-- Xabar yuborish tugmasi (barcha profillarda ko'rinadi) -->
+      <div class="flex justify-center mb-8">
         <button id="openChatBtn" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-full smooth-transition flex items-center">
           <i class="fas fa-comment mr-2"></i> Xabar yuborish
         </button>
@@ -122,15 +123,15 @@
           <div class="space-y-4">
             <div>
               <p class="text-sm text-gray-500">Ism</p>
-              <p id="name" class="text-lg font-medium text-gray-800">Yuklanmoqda...</p>
+              <p id="name" class="text-lg font-medium text-gray-800"></p>
             </div>
             <div>
               <p class="text-sm text-gray-500">Familiya</p>
-              <p id="surname" class="text-lg font-medium text-gray-800">Yuklanmoqda...</p>
+              <p id="surname" class="text-lg font-medium text-gray-800"></p>
             </div>
             <div>
               <p class="text-sm text-gray-500">Email</p>
-              <p id="email" class="text-lg font-medium text-gray-800">Yuklanmoqda...</p>
+              <p id="email" class="text-lg font-medium text-gray-800"></p>
             </div>
           </div>
         </div>
@@ -142,15 +143,15 @@
           <div class="space-y-4">
             <div>
               <p class="text-sm text-gray-500">Maktab</p>
-              <p id="school" class="text-lg font-medium text-gray-800">Yuklanmoqda...</p>
+              <p id="school" class="text-lg font-medium text-gray-800"></p>
             </div>
             <div>
               <p class="text-sm text-gray-500">Rol</p>
-              <p id="role" class="text-lg font-medium text-gray-800">Yuklanmoqda...</p>
+              <p id="role" class="text-lg font-medium text-gray-800"></p>
             </div>
             <div>
               <p class="text-sm text-gray-500">Foydalanuvchi ID</p>
-              <p id="userId" class="text-lg font-medium text-gray-800">Yuklanmoqda...</p>
+              <p id="userId" class="text-lg font-medium text-gray-800"></p>
             </div>
           </div>
         </div>
@@ -161,64 +162,8 @@
         <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
           <i class="fas fa-info-circle mr-2 text-indigo-600"></i> Bio
         </h2>
-        <p id="bio" class="text-gray-800">Yuklanmoqda...</p>
+        <p id="bio" class="text-gray-800"></p>
       </div>
-    </div>
-  </div>
-
-  <!-- Coin Modal -->
-  <div id="coinModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50 p-4">
-    <div class="glass-effect rounded-2xl p-6 w-full max-w-md">
-      <div class="flex justify-between items-center mb-4">
-        <h2 class="text-xl font-bold text-gray-800">Coin so'rov</h2>
-        <button onclick="closeCoinModal()" class="text-gray-500 hover:text-gray-700">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
-      <p class="text-gray-600 mb-4">Qancha coin so'ramoqchisiz?</p>
-      <input type="number" id="coin-amount" placeholder="Coin miqdori" class="border border-gray-300 rounded-xl px-4 py-3 w-full mb-4 focus:ring-2 focus:ring-indigo-500 focus:border-transparent" min="1" />
-      <div class="flex justify-end space-x-3">
-        <button onclick="closeCoinModal()" class="px-4 py-2 text-gray-600 hover:text-gray-800 smooth-transition">Bekor qilish</button>
-        <button onclick="sendCoinRequest()" id="request-coin-btn" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl smooth-transition">Yuborish</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Edit Modal -->
-  <div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50 p-4">
-    <div class="glass-effect rounded-2xl p-6 w-full max-w-md">
-      <div class="flex justify-between items-center mb-4">
-        <h2 class="text-xl font-bold text-gray-800">Profilni tahrirlash</h2>
-        <button id="cancelEdit" class="text-gray-500 hover:text-gray-700">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
-      <form id="editForm" class="space-y-4">
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Ism</label>
-          <input name="name" placeholder="Ism" class="border border-gray-300 rounded-xl px-4 py-3 w-full focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Familiya</label>
-          <input name="surname" placeholder="Familiya" class="border border-gray-300 rounded-xl px-4 py-3 w-full focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Maktab</label>
-          <input name="school" placeholder="Maktab" class="border border-gray-300 rounded-xl px-4 py-3 w-full focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-          <input name="email" placeholder="Email" class="border border-gray-300 rounded-xl px-4 py-3 w-full focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Bio</label>
-          <textarea name="bio" placeholder="Bio" rows="3" class="border border-gray-300 rounded-xl px-4 py-3 w-full focus:ring-2 focus:ring-indigo-500 focus:border-transparent"></textarea>
-        </div>
-        <div class="flex justify-end space-x-3 pt-2">
-          <button type="button" id="cancelEditBtn" class="px-4 py-2 text-gray-600 hover:text-gray-800 smooth-transition">Bekor qilish</button>
-          <button type="submit" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl smooth-transition">Saqlash</button>
-        </div>
-      </form>
     </div>
   </div>
 
@@ -226,7 +171,7 @@
   <div id="chatModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50 p-4">
     <div class="glass-effect rounded-2xl w-full max-w-md overflow-hidden">
       <div class="gradient-bg text-white p-4 flex justify-between items-center">
-        <h2 class="text-lg font-bold">Shaxsiy xabarlar</h2>
+        <h2 class="text-lg font-bold" id="chatModalTitle">Shaxsiy xabarlar</h2>
         <button id="closeChatBtn" class="text-white">
           <i class="fas fa-times"></i>
         </button>
@@ -263,49 +208,34 @@
     let isOwnProfile = viewedUserId === currentUser.id;
 
     // DOM Elements
-    const coinModal = document.getElementById('coinModal');
-    const editModal = document.getElementById('editModal');
     const chatModal = document.getElementById('chatModal');
+    const openChatBtn = document.getElementById('openChatBtn');
+    const closeChatBtn = document.getElementById('closeChatBtn');
+    const chatModalTitle = document.getElementById('chatModalTitle');
     const actionButtons = document.getElementById('actionButtons');
     const profileOwnerNote = document.getElementById('profileOwnerNote');
     
     // Load user data based on ID
     function loadUserData(userId) {
-      // First try to get from localStorage
-      const users = JSON.parse(localStorage.getItem('allUsers') || '[]');
-      let user = users.find(u => u.id === userId);
-      
-      if (user) {
-        displayUserData(user);
-      } else {
-        // If not found in localStorage, try to fetch from API
-        fetch('https://school-b97p.onrender.com/api/users')
-          .then(response => {
-            if (!response.ok) {
-              throw new Error('APIga ulanishda xatolik');
-            }
-            return response.json();
-          })
-          .then(users => {
-            // Save to localStorage for future use
-            localStorage.setItem('allUsers', JSON.stringify(users));
-            
-            user = users.find(u => u.id === userId);
-            if (user) {
-              displayUserData(user);
-            } else {
-              // If user not found, show current user's profile
-              displayUserData(currentUser);
-              profileOwnerNote.textContent = 'Foydalanuvchi topilmadi, sizning profilingiz koʻrsatilmoqda';
-            }
-          })
-          .catch(error => {
-            console.error('Xatolik:', error);
-            // Fallback to current user data if API fails
-            displayUserData(currentUser);
-            profileOwnerNote.textContent = 'Serverga ulanishda xatolik, sizning profilingiz koʻrsatilmoqda';
-          });
-      }
+      // In a real app, you would fetch user data from your backend API
+      // For now, we'll simulate fetching user data
+      fetch(`https://school-b97p.onrender.com/api/users/${userId}`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Foydalanuvchi topilmadi');
+          }
+          return response.json();
+        })
+        .then(user => {
+          displayUserData(user);
+        })
+        .catch(error => {
+          console.error('Xatolik:', error);
+          // Fallback to current user data if the requested user is not found
+          if (userId !== currentUser.id) {
+            loadUserData(currentUser.id);
+          }
+        });
     }
 
     // Display user data in the UI
@@ -333,68 +263,23 @@
       if (isOwnProfile) {
         actionButtons.classList.remove('hidden');
         profileOwnerNote.textContent = 'Bu sizning profilingiz';
+        // O'z profilida xabar yuborish tugmasini yashirish
+        document.getElementById('openChatBtn').classList.add('hidden');
       } else {
         actionButtons.classList.add('hidden');
         profileOwnerNote.textContent = 'Boshqa foydalanuvchi profili';
+        // Boshqa foydalanuvchi profilida xabar yuborish tugmasini ko'rsatish
+        document.getElementById('openChatBtn').classList.remove('hidden');
+        // Modal sarlavhasini yangilash
+        chatModalTitle.textContent = `${user.name || 'Foydalanuvchi'} ga xabar yuborish`;
       }
-    }
-
-    // Modal functions
-    function openCoinModal() {
-      coinModal.classList.remove('hidden');
-    }
-
-    function closeCoinModal() {
-      coinModal.classList.add('hidden');
-    }
-
-    function sendCoinRequest() {
-      const amount = document.getElementById('coin-amount').value;
-      if (amount && amount > 0) {
-        alert(`${amount} coin so'rovi yuborildi!`);
-        closeCoinModal();
-      } else {
-        alert('Iltimos, toʻgʻri miqdorni kiriting');
-      }
-    }
-
-    // Navigation function
-    function goBack() {
-      window.history.back();
     }
 
     // Event listeners
-    document.getElementById('editBtn').addEventListener('click', () => {
-      editModal.classList.remove('hidden');
-      
-      // Pre-fill form with current data
-      document.querySelector('input[name="name"]').value = currentUser.name || '';
-      document.querySelector('input[name="surname"]').value = currentUser.surname || '';
-      document.querySelector('input[name="school"]').value = currentUser.school || '';
-      document.querySelector('input[name="email"]').value = currentUser.email || '';
-      document.querySelector('textarea[name="bio"]').value = currentUser.bio || '';
-    });
-
-    document.getElementById('cancelEdit').addEventListener('click', () => {
-      editModal.classList.add('hidden');
-    });
-
-    document.getElementById('cancelEditBtn').addEventListener('click', () => {
-      editModal.classList.add('hidden');
-    });
-
-    document.getElementById('editForm').addEventListener('submit', (e) => {
-      e.preventDefault();
-      // Here you would typically send the updated data to your backend
-      alert('Profil maʼlumotlari yangilandi!');
-      editModal.classList.add('hidden');
-      
-      // Reload the page to see changes
-      location.reload();
-    });
-
     document.getElementById('openChatBtn').addEventListener('click', () => {
       chatModal.classList.remove('hidden');
+      // Chat xabarlarini yuklash
+      loadChatMessages();
     });
 
     document.getElementById('closeChatBtn').addEventListener('click', () => {
@@ -448,7 +333,20 @@
       }
     }
 
+    // Chat xabarlarini yuklash
+    function loadChatMessages() {
+      // Bu yerda serverdan oldingi xabarlarni yuklash kodi bo'ladi
+      const chatBox = document.getElementById('chatBox');
+      chatBox.innerHTML = '<p class="text-center text-gray-500">Xabarlar yuklanmoqda...</p>';
+      
+      // Simulyatsiya: keyinchalik serverdan haqiqiy xabarlarni yuklaysiz
+      setTimeout(() => {
+        chatBox.innerHTML = '<p class="text-center text-gray-500">Hozircha xabarlar mavjud emas</p>';
+      }, 1000);
+    }
+
     socket.on('message', (msg) => {
+      const chatBox = document.getElementById('chatBox');
       const div = document.createElement('div');
       div.classList.add("p-3", "rounded-xl", "max-w-xs", "bg-white", "shadow-sm");
 
@@ -464,8 +362,8 @@
         div.innerHTML = `<a href="${msg.content}" download class="text-indigo-600 hover:underline">📎 Faylni yuklab olish</a>`;
       }
 
-      document.getElementById('chatBox').appendChild(div);
-      document.getElementById('chatBox').scrollTop = document.getElementById('chatBox').scrollHeight;
+      chatBox.appendChild(div);
+      chatBox.scrollTop = chatBox.scrollHeight;
     });
 
     // Load user data on page load
