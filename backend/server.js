@@ -15,7 +15,7 @@ const io = new Server(server, {
 });
 
 // MongoDB ulash
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/school_platform';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://refbot:refbot00@gamepaymentbot.ffcsj5v.mongodb.net/school?retryWrites=true&w=majority';
 
 mongoose.connect(MONGODB_URI, {
   useNewUrlParser: true,
