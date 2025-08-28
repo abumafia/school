@@ -336,48 +336,6 @@
     </div>
   </div>
 
-  <div class="videos-container">
-  <h2 class="text-2xl font-bold mb-4">Videodarslar</h2>
-  <div id="videosList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-    <!-- Videolar bu yerda ko'rsatiladi -->
-  </div>
-</div>
-
-<script>
-// Videolarni yuklash
-async function loadVideos() {
-  try {
-    const response = await fetch('https://school-b97p.onrender.com/api/videos');
-    const videos = await response.json();
-    
-    const videosList = document.getElementById('videosList');
-    videosList.innerHTML = '';
-    
-    videos.forEach(video => {
-      const videoElement = document.createElement('div');
-      videoElement.className = 'bg-white rounded-lg overflow-hidden shadow';
-      videoElement.innerHTML = `
-        <video src="${video.src}" class="w-full h-48 object-cover" controls></video>
-        <div class="p-4">
-          <h3 class="font-bold">${video.title}</h3>
-          <p class="text-sm text-gray-600">${video.description}</p>
-          <div class="flex items-center mt-2">
-            <button onclick="likeVideo('${video._id}')" class="flex items-center text-gray-500 mr-4">
-              <i class="fas fa-heart"></i>
-              <span class="ml-1">${video.likes}</span>
-            </button>
-            <span class="text-sm text-gray-500">${video.uploaderName}</span>
-          </div>
-        </div>
-      `;
-      videosList.appendChild(videoElement);
-    });
-  } catch (error) {
-    console.error('Videolarni yuklashda xatolik:', error);
-  }
-}
-</script>
-
   <script>
     // Initialize animations
     document.addEventListener('DOMContentLoaded', function() {
